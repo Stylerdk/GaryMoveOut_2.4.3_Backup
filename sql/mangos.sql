@@ -1485,6 +1485,36 @@ LOCK TABLES `creature_template_addon` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `creature_template_spells`
+--
+
+DROP TABLE IF EXISTS `creature_template_spells`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `creature_template_spells` (
+  `entry` mediumint(8) unsigned NOT NULL,
+  `spell1` mediumint(8) unsigned NOT NULL,
+  `spell2` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `spell3` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `spell4` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `spell5` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `spell6` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `spell7` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `spell8` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`entry`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Creature System (Spells used by creature)';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `creature_template_spells`
+--
+
+LOCK TABLES `creature_template_spells` WRITE;
+/*!40000 ALTER TABLE `creature_template_spells` DISABLE KEYS */;
+/*!40000 ALTER TABLE `creature_template_spells` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `db_script_string`
 --
 
@@ -1525,7 +1555,7 @@ DROP TABLE IF EXISTS `db_version`;
 CREATE TABLE `db_version` (
   `version` varchar(120) DEFAULT NULL,
   `creature_ai_version` varchar(120) DEFAULT NULL,
-  `required_s1718_12113_01_mangos_spell_template` bit(1) DEFAULT NULL
+  `required_s1759_12189_01_mangos_creature_template_spells` bit(1) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Used DB version notes';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1535,7 +1565,7 @@ CREATE TABLE `db_version` (
 
 LOCK TABLES `db_version` WRITE;
 /*!40000 ALTER TABLE `db_version` DISABLE KEYS */;
-INSERT INTO `db_version` (`version`, `creature_ai_version`, `required_s1718_12113_01_mangos_spell_template`) VALUES
+INSERT INTO `db_version` (`version`, `creature_ai_version`, `required_s1759_12189_01_mangos_creature_template_spells`) VALUES
 ('Mangos default database.','Creature EventAI not provided.',NULL);
 /*!40000 ALTER TABLE `db_version` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1589,7 +1619,7 @@ CREATE TABLE `event_scripts` (
   `data_flags` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `dataint` int(11) NOT NULL DEFAULT '0',
   `dataint2` int(11) NOT NULL DEFAULT '0',
-  `dataint3` int(11) NOT NULL DEFAULT '0', 
+  `dataint3` int(11) NOT NULL DEFAULT '0',
   `dataint4` int(11) NOT NULL DEFAULT '0',
   `buddy_entry` int(11) NOT NULL DEFAULT '0',
   `search_radius` int(11) NOT NULL DEFAULT '0',
