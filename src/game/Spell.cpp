@@ -1495,6 +1495,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 case 31347:                                 // Doom TODO: exclude top threat target from target selection
                 case 33711:                                 // Murmur's Touch
                 case 38794:                                 // Murmur's Touch (h)
+                case 40834:                                 // Agonizing Flames (BT, Illidan Stormrage)
                 case 44869:                                 // Spectral Blast
                 case 45976:                                 // Open Portal
                     unMaxTargets = 1;
