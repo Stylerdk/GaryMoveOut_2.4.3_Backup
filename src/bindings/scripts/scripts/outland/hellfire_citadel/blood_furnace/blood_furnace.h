@@ -56,7 +56,7 @@ enum
 };
 
 // Random Magtheridon taunt
-static const int32 aRandomTaunt[]= {-1544000, -1544001, -1544002, -1544003, -1544004, -1544005};
+static const int32 aRandomTaunt[] = { -1544000, -1544001, -1544002, -1544003, -1544004, -1544005};
 
 struct BroggokEventInfo
 {

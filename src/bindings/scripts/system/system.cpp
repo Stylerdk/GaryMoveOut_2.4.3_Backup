@@ -38,7 +38,7 @@ SystemMgr& SystemMgr::Instance()
 
 void SystemMgr::LoadVersion()
 {
-    //Get Version information
+    // Get Version information
     QueryResult* pResult = SD2Database.PQuery("SELECT version FROM sd2_db_version LIMIT 1");
 
     if (pResult)
@@ -108,7 +108,8 @@ void SystemMgr::LoadScriptTexts()
 
             m_mTextDataMap[iId] = pTemp;
             ++uiCount;
-        } while (pResult->NextRow());
+        }
+        while (pResult->NextRow());
 
         delete pResult;
 
@@ -170,7 +171,8 @@ void SystemMgr::LoadScriptTextsCustom()
 
             m_mTextDataMap[iId] = pTemp;
             ++uiCount;
-        } while (pResult->NextRow());
+        }
+        while (pResult->NextRow());
 
         delete pResult;
 
@@ -243,7 +245,8 @@ void SystemMgr::LoadScriptWaypoints()
 
             m_mPointMoveMap[uiEntry].push_back(pTemp);
             ++uiNodeCount;
-        } while (pResult->NextRow());
+        }
+        while (pResult->NextRow());
 
         delete pResult;
 

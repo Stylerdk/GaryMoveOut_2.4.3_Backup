@@ -47,7 +47,7 @@ enum
     SPELL_FROSTNOVA                 = 32365,
 
     SPELL_ETHEREAL_BEACON           = 32371,                // Summons 18431
-    //SPELL_ETHEREAL_BEACON_VISUAL  = 32368,                // included in creature_template_addon
+    // SPELL_ETHEREAL_BEACON_VISUAL  = 32368,               // included in creature_template_addon
 };
 
 struct MANGOS_DLL_DECL boss_nexusprince_shaffarAI : public ScriptedAI
@@ -88,7 +88,7 @@ struct MANGOS_DLL_DECL boss_nexusprince_shaffarAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-        switch(urand(0, 2))
+        switch (urand(0, 2))
         {
             case 0: DoScriptText(SAY_AGGRO_1, m_creature); break;
             case 1: DoScriptText(SAY_AGGRO_2, m_creature); break;
@@ -98,7 +98,7 @@ struct MANGOS_DLL_DECL boss_nexusprince_shaffarAI : public ScriptedAI
 
     void JustSummoned(Creature* pSummoned)
     {
-        if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM,0))
+        if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             pSummoned->AI()->AttackStart(pTarget);
     }
 
@@ -145,7 +145,7 @@ struct MANGOS_DLL_DECL boss_nexusprince_shaffarAI : public ScriptedAI
         {
             if (DoCastSpellIfCan(m_creature, SPELL_BLINK) == CAST_OK)
             {
-                //expire movement, will prevent from running right back to victim after cast
+                // expire movement, will prevent from running right back to victim after cast
                 //(but should MoveChase be used again at a certain time or should he not move?)
                 if (m_creature->GetMotionMaster()->GetCurrentMovementGeneratorType() == CHASE_MOTION_TYPE)
                     m_creature->GetMotionMaster()->MovementExpired();
@@ -160,7 +160,7 @@ struct MANGOS_DLL_DECL boss_nexusprince_shaffarAI : public ScriptedAI
         {
             if (DoCastSpellIfCan(m_creature, SPELL_ETHEREAL_BEACON) == CAST_OK)
             {
-                if (!urand(0,3))
+                if (!urand(0, 3))
                     DoScriptText(SAY_SUMMON, m_creature);
 
                 m_uiBeaconTimer = urand(45000, 75000);

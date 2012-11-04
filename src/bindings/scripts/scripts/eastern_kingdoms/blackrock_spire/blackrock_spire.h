@@ -130,8 +130,8 @@ class MANGOS_DLL_DECL instance_blackrock_spire : public ScriptedInstance, privat
         void DoProcessEmberseerEvent();
 
         void DoSortRoomEventMobs();
-        void GetIncarceratorGUIDList(GuidList &lList) { lList = m_lIncarceratorGUIDList; }
-        void GetRookeryEggGUIDList(GuidList &lList) { lList = m_lRookeryEggGUIDList; }
+        void GetIncarceratorGUIDList(GuidList& lList) { lList = m_lIncarceratorGUIDList; }
+        void GetRookeryEggGUIDList(GuidList& lList) { lList = m_lRookeryEggGUIDList; }
 
         void Update(uint32 uiDiff);
 

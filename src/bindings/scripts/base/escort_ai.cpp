@@ -109,7 +109,7 @@ void npc_escortAI::Aggro(Unit* pEnemy)
 {
 }
 
-//see followerAI
+// see followerAI
 bool npc_escortAI::AssistPlayerInCombat(Unit* pWho)
 {
     if (!pWho->getVictim())
@@ -194,7 +194,7 @@ void npc_escortAI::JustDied(Unit* pKiller)
     {
         if (Group* pGroup = pPlayer->GetGroup())
         {
-            for(GroupReference* pRef = pGroup->GetFirstMember(); pRef != NULL; pRef = pRef->next())
+            for (GroupReference* pRef = pGroup->GetFirstMember(); pRef != NULL; pRef = pRef->next())
             {
                 if (Player* pMember = pRef->getSource())
                 {
@@ -218,7 +218,7 @@ void npc_escortAI::JustRespawned()
     if (!IsCombatMovement())
         SetCombatMovement(true);
 
-    //add a small delay before going to first waypoint, normal in near all cases
+    // add a small delay before going to first waypoint, normal in near all cases
     m_uiWPWaitTimer = 2500;
 
     if (m_creature->getFaction() != m_creature->GetCreatureInfo()->faction_A)
@@ -379,7 +379,7 @@ void npc_escortAI::MovementInform(uint32 uiMoveType, uint32 uiPointId)
     if (uiMoveType != POINT_MOTION_TYPE || !HasEscortState(STATE_ESCORT_ESCORTING))
         return;
 
-    //Combat start position reached, continue waypoint movement
+    // Combat start position reached, continue waypoint movement
     if (uiPointId == POINT_LAST_POINT)
     {
         debug_log("SD2: EscortAI has returned to original position before combat");
@@ -396,7 +396,7 @@ void npc_escortAI::MovementInform(uint32 uiMoveType, uint32 uiPointId)
     }
     else
     {
-        //Make sure that we are still on the right waypoint
+        // Make sure that we are still on the right waypoint
         if (CurrentWP->uiId != uiPointId)
         {
             error_log("SD2: EscortAI for Npc %u reached waypoint out of order %u, expected %u.", m_creature->GetEntry(), uiPointId, CurrentWP->uiId);
@@ -408,7 +408,7 @@ void npc_escortAI::MovementInform(uint32 uiMoveType, uint32 uiPointId)
         // In case we were moving while in combat, we should evade back to this position
         m_creature->SetCombatStartPosition(m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ());
 
-        //Call WP function
+        // Call WP function
         WaypointReached(CurrentWP->uiId);
 
         m_uiWPWaitTimer = CurrentWP->uiWaitTime;
@@ -435,7 +435,7 @@ void npc_escortAI::MovementInform(uint32 uiMoveType, uint32 uiPointId)
 
 void npc_escortAI::FillPointMovementListForCreature()
 {
-    std::vector<ScriptPointMove> const &pPointsEntries = pSystemMgr.GetPointMoveList(m_creature->GetEntry());
+    std::vector<ScriptPointMove> const& pPointsEntries = pSystemMgr.GetPointMoveList(m_creature->GetEntry());
 
     if (pPointsEntries.empty())
         return;
@@ -498,7 +498,7 @@ void npc_escortAI::SetRun(bool bRun)
     m_bIsRunning = bRun;
 }
 
-//TODO: get rid of this many variables passed in function.
+// TODO: get rid of this many variables passed in function.
 void npc_escortAI::Start(bool bRun, const Player* pPlayer, const Quest* pQuest, bool bInstantRespawn, bool bCanLoopPath)
 {
     if (m_creature->getVictim())
@@ -524,7 +524,7 @@ void npc_escortAI::Start(bool bRun, const Player* pPlayer, const Quest* pQuest, 
         return;
     }
 
-    //set variables
+    // set variables
     m_bIsRunning = bRun;
 
     m_playerGuid = pPlayer ? pPlayer->GetObjectGuid() : ObjectGuid();
@@ -543,14 +543,14 @@ void npc_escortAI::Start(bool bRun, const Player* pPlayer, const Quest* pQuest, 
         debug_log("SD2: EscortAI start with WAYPOINT_MOTION_TYPE, changed to MoveIdle.");
     }
 
-    //disable npcflags
+    // disable npcflags
     m_creature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
 
     debug_log("SD2: EscortAI started with " SIZEFMTD " waypoints. Run = %d, PlayerGuid = %s", WaypointList.size(), m_bIsRunning, m_playerGuid.GetString().c_str());
 
     CurrentWP = WaypointList.begin();
 
-    //Set initial speed
+    // Set initial speed
     m_creature->SetWalk(!m_bIsRunning);
 
     AddEscortState(STATE_ESCORT_ESCORTING);

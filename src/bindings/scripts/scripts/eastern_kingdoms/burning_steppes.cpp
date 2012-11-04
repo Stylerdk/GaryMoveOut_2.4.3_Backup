@@ -41,13 +41,13 @@ struct MANGOS_DLL_DECL npc_ragged_johnAI : public ScriptedAI
 
     void Reset() {}
 
-    void MoveInLineOfSight(Unit *who)
+    void MoveInLineOfSight(Unit* who)
     {
         if (who->HasAura(16468, EFFECT_INDEX_0))
         {
             if (who->GetTypeId() == TYPEID_PLAYER && m_creature->IsWithinDistInMap(who, 15) && who->isInAccessablePlaceFor(m_creature))
             {
-                DoCastSpellIfCan(who,16472);
+                DoCastSpellIfCan(who, 16472);
                 ((Player*)who)->AreaExploredOrEventHappens(4866);
             }
         }
@@ -86,7 +86,7 @@ bool GossipHello_npc_ragged_john(Player* pPlayer, Creature* pCreature)
 
 bool GossipSelect_npc_ragged_john(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
 {
-    switch(uiAction)
+    switch (uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF:
             pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "So what did you do?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
@@ -304,7 +304,7 @@ struct MANGOS_DLL_DECL npc_grark_lorkrubAI : public npc_escortAI, private Dialog
 
     void JustDidDialogueStep(int32 iEntry)
     {
-        switch(iEntry)
+        switch (iEntry)
         {
             case SAY_LEXLORT_1:
                 m_creature->SetStandState(UNIT_STAND_STATE_KNEEL);
@@ -430,7 +430,7 @@ bool QuestAccept_npc_grark_lorkrub(Player* pPlayer, Creature* pCreature, const Q
 
 bool EffectDummyCreature_spell_capture_grark(Unit* pCaster, uint32 uiSpellId, SpellEffectIndex uiEffIndex, Creature* pCreatureTarget)
 {
-    //always check spellid and effectindex
+    // always check spellid and effectindex
     if (uiSpellId == SPELL_CAPTURE_GRARK && uiEffIndex == EFFECT_INDEX_0)
     {
         // Note: this implementation needs additional research! There is a lot of guesswork involved in this!
@@ -442,7 +442,7 @@ bool EffectDummyCreature_spell_capture_grark(Unit* pCaster, uint32 uiSpellId, Sp
         pCreatureTarget->SetFactionTemporary(FACTION_FRIENDLY, TEMPFACTION_RESTORE_RESPAWN);
         pCreatureTarget->AI()->EnterEvadeMode();
 
-        //always return true when we are handling this spell and effect
+        // always return true when we are handling this spell and effect
         return true;
     }
 

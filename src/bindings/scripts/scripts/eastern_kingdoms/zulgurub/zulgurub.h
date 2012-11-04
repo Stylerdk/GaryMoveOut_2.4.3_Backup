@@ -55,7 +55,7 @@ enum
     AREATRIGGER_ALTAR       = 3960,
 };
 
-static const float aMandokirDownstairsPos[3] = {-12196.30f, -1948.37f, 130.31f};
+static const float aMandokirDownstairsPos[3] = { -12196.30f, -1948.37f, 130.31f};
 
 class MANGOS_DLL_DECL instance_zulgurub : public ScriptedInstance
 {

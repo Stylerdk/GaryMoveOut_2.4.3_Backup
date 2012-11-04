@@ -91,7 +91,7 @@ enum
     SPELL_FLAME_CRASH               = 40832,                // Summons an invis/unselect passive mob that has an uiAura of flame in a circle around him.
     SPELL_DRAW_SOUL                 = 40904,                // 5k Shadow Damage in front of him. Heals Illidan for 100k health (script effect)
     SPELL_PARASITIC_SHADOWFIEND     = 41917,                // DoT of 3k Shadow every 2 seconds. Lasts 10 seconds. (Script effect: Summon 2 parasites once the debuff has ticked off)
-    //SPELL_SUMMON_PARASITICS       = 41915,                // Summons 2 Parasitic Shadowfiends on the target. Handled in core.
+    // SPELL_SUMMON_PARASITICS       = 41915,               // Summons 2 Parasitic Shadowfiends on the target. Handled in core.
     SPELL_AGONIZING_FLAMES          = 40834,                // triggers 40932
     SPELL_FRENZY                    = 40683,                // Increases damage by 50% and attack speed by 30%. 20 seconds, PHASE 5 ONLY
 
@@ -167,14 +167,14 @@ enum
     /************** Creature Summons **************/
     NPC_ILLIDARI_ELITE              = 23226,                // attacks Akama on the stairs
     NPC_FLAME_CRASH                 = 23336,                // has aura 40836
-    //NPC_PARASITIC_SHADOWFIEND     = 23498,                // has aura 41913 (in c_t_a)
+    // NPC_PARASITIC_SHADOWFIEND     = 23498,               // has aura 41913 (in c_t_a)
     NPC_BLADE_OF_AZZINOTH           = 22996,                // has aura 41997 and summons 22997 on spawn
     NPC_FLAME_OF_AZZINOTH           = 22997,
     NPC_ILLIDAN_TARGET              = 23070,                // the eye blast target - has aura 40017
     NPC_DEMON_FIRE                  = 23069,                // has aura 40029
     NPC_BLAZE                       = 23259,                // has aura 40610
     NPC_SHADOW_DEMON                = 23375,
-    //NPC_CAGE_TRAP_DISTURB_TRIGGER = 23304,
+    // NPC_CAGE_TRAP_DISTURB_TRIGGER = 23304,
 
     GO_CAGE_TRAP                    = 185916,
 
@@ -265,13 +265,13 @@ struct Locations
     float fX, fY, fZ;
 };
 
-static const Locations aCenterLoc[]=
+static const Locations aCenterLoc[] =
 {
     {705.012f, 305.721f, 354.723f},             // front location
     {676.740f, 305.297f, 353.192f},             // center location
 };
 
-static const Locations aIllidariElitesPos[MAX_ILLIDARI_ELITES]=
+static const Locations aIllidariElitesPos[MAX_ILLIDARI_ELITES] =
 {
     {743.9686f, 289.6447f, 311.1807f},
     {753.8425f, 286.562f, 310.9353f},
@@ -285,7 +285,7 @@ static const Locations aIllidariElitesPos[MAX_ILLIDARI_ELITES]=
     {754.0332f, 325.8136f, 310.3195f},
 };
 
-static const Locations aEyeBlastPos[]=
+static const Locations aEyeBlastPos[] =
 {
     // spawn
     {650.600f, 258.124f, 352.996f},             // back left
@@ -354,7 +354,7 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI, private Dia
     void Reset()
     {
         m_uiPhase               = PHASE_AKAMA;
-        m_uiBerserkTimer        = 25*MINUTE*IN_MILLISECONDS;
+        m_uiBerserkTimer        = 25 * MINUTE * IN_MILLISECONDS;
 
         m_bHasSummonedElites    = false;
 
@@ -372,7 +372,7 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI, private Dia
         m_uiLandTimer           = 0;
         m_uiLandStage           = 0;
 
-        m_uiAgonizingFlamesTimer= 35000;
+        m_uiAgonizingFlamesTimer = 35000;
         m_uiTransformTimer      = 0;
 
         m_uiShadowBlastTimer    = urand(1000, 2000);
@@ -571,7 +571,9 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI, private Dia
                     pSummoned->CastSpell(pTarget, SPELL_PARALYZE, true);
 
                     // Move towards target (which is stunned)
-                    pSummoned->GetMotionMaster()->MovePoint(1, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ());
+                    float fX, fY, fZ;
+                    pTarget->GetContactPoint(pSummoned, fX, fY, fZ);
+                    pSummoned->GetMotionMaster()->MovePoint(1, fX, fY, fZ);
                 }
                 break;
             case NPC_MAIEV_SHADOWSONG:
@@ -1125,7 +1127,7 @@ struct MANGOS_DLL_DECL npc_akama_illidanAI : public npc_escortAI, private Dialog
                     if (Creature* pIllidan = m_pInstance->GetSingleCreatureFromStorage(NPC_ILLIDAN_STORMRAGE))
                     {
                         float fX, fY, fZ;
-                        m_creature->GetRandomPoint(pIllidan->GetPositionX(), pIllidan->GetPositionY(), pIllidan->GetPositionZ(), 5.0f, fX, fY, fZ);
+                        pIllidan->GetContactPoint(m_creature, fX, fY, fZ);
                         m_creature->GetMotionMaster()->MovePoint(100, fX, fY, fZ);
                     }
                 }
@@ -1257,13 +1259,13 @@ bool GossipHello_npc_akama_illidan(Player* pPlayer, Creature* pCreature)
     // Before climbing the stairs
     if (pCreature->GetPositionZ() < 300.0f)
     {
-        pPlayer->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, GOSSIP_ITEM_PREPARE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+        pPlayer->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, GOSSIP_ITEM_PREPARE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
         pPlayer->SEND_GOSSIP_MENU(TEXT_ID_AKAMA_ILLIDAN_PREPARE, pCreature->GetObjectGuid());
     }
     // Before starting combat
     else
     {
-        pPlayer->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, GOSSIP_ITEM_START_EVENT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+        pPlayer->ADD_GOSSIP_ITEM_ID(GOSSIP_ICON_CHAT, GOSSIP_ITEM_START_EVENT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
         pPlayer->SEND_GOSSIP_MENU(TEXT_ID_AKAMA_ILLIDAN_START, pCreature->GetObjectGuid());
     }
 
@@ -1272,7 +1274,7 @@ bool GossipHello_npc_akama_illidan(Player* pPlayer, Creature* pCreature)
 
 bool GossipSelect_npc_akama_illidan(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
 {
-    if (uiAction == GOSSIP_ACTION_INFO_DEF+1 || GOSSIP_ACTION_INFO_DEF+2)
+    if (uiAction == GOSSIP_ACTION_INFO_DEF + 1 || GOSSIP_ACTION_INFO_DEF + 2)
     {
         pPlayer->CLOSE_GOSSIP_MENU();
 

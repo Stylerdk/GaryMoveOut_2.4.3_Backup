@@ -50,15 +50,15 @@ enum
     SPELL_METAMORPHOSIS     = 37673,                    // demon transform spell
 
     // Inner demons already scripted in eventAI
-    //SPELL_DEMON_ALIGNMENT = 37713,
-    //SPELL_SHADOW_BOLT     = 39309,
-    //SPELL_DEMON_LINK      = 37716,
+    // SPELL_DEMON_ALIGNMENT = 37713,
+    // SPELL_SHADOW_BOLT     = 39309,
+    // SPELL_DEMON_LINK      = 37716,
 
-    //FACTION_DEMON_1       = 1829,
-    //FACTION_DEMON_2       = 1830,
-    //FACTION_DEMON_3       = 1831,
-    //FACTION_DEMON_4       = 1832,
-    //FACTION_DEMON_5       = 1833,
+    // FACTION_DEMON_1       = 1829,
+    // FACTION_DEMON_2       = 1830,
+    // FACTION_DEMON_3       = 1831,
+    // FACTION_DEMON_4       = 1832,
+    // FACTION_DEMON_5       = 1833,
 
     NPC_INNER_DEMON         = 21857,
     NPC_SHADOW_LEO          = 21875
@@ -93,7 +93,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
         m_uiSwitchTimer     = 60000;
         m_uiChaosBlastTimer = 0;
         m_uiFinalFormTimer  = 0;
-        m_uiEnrageTimer     = 10*MINUTE*IN_MILLISECONDS;
+        m_uiEnrageTimer     = 10 * MINUTE * IN_MILLISECONDS;
 
         m_bDemonForm        = false;
         m_bIsFinalForm      = false;
@@ -133,7 +133,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
         if (pVictim->GetTypeId() != TYPEID_PLAYER)
             return;
 
-        switch(urand(0, 2))
+        switch (urand(0, 2))
         {
             case 0: DoScriptText(m_bDemonForm ? SAY_DEMON_SLAY1 : SAY_NIGHTELF_SLAY1, m_creature); break;
             case 1: DoScriptText(m_bDemonForm ? SAY_DEMON_SLAY2 : SAY_NIGHTELF_SLAY2, m_creature); break;
@@ -178,7 +178,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
                 m_uiBanishTimer -= uiDiff;
         }
 
-        //Return since we have no target
+        // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
 
@@ -266,7 +266,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
                 if (m_creature->IsNonMeleeSpellCasted(false))
                     m_creature->InterruptNonMeleeSpells(false);
 
-                //switch to nightelf form
+                // switch to nightelf form
                 m_creature->RemoveAurasDueToSpell(SPELL_METAMORPHOSIS);
 
                 SetCombatMovement(true);
@@ -294,7 +294,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
                 if (m_creature->IsNonMeleeSpellCasted(false))
                     m_creature->InterruptNonMeleeSpells(false);
 
-                //switch to nightelf form
+                // switch to nightelf form
                 m_creature->RemoveAurasDueToSpell(SPELL_METAMORPHOSIS);
 
                 DoResetThreat();

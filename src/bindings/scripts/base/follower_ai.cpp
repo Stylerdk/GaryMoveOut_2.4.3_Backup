@@ -56,8 +56,8 @@ void FollowerAI::AttackStart(Unit* pWho)
     }
 }
 
-//This part provides assistance to a player that are attacked by pWho, even if out of normal aggro range
-//It will cause m_creature to attack pWho that are attacking _any_ player (which has been confirmed may happen also on offi)
+// This part provides assistance to a player that are attacked by pWho, even if out of normal aggro range
+// It will cause m_creature to attack pWho that are attacking _any_ player (which has been confirmed may happen also on offi)
 bool FollowerAI::AssistPlayerInCombat(Unit* pWho)
 {
     if (!pWho->getVictim())
@@ -138,12 +138,12 @@ void FollowerAI::JustDied(Unit* pKiller)
     if (!HasFollowState(STATE_FOLLOW_INPROGRESS) || !m_leaderGuid || !m_pQuestForFollow)
         return;
 
-    //TODO: need a better check for quests with time limit.
+    // TODO: need a better check for quests with time limit.
     if (Player* pPlayer = GetLeaderForFollower())
     {
         if (Group* pGroup = pPlayer->GetGroup())
         {
-            for(GroupReference* pRef = pGroup->GetFirstMember(); pRef != NULL; pRef = pRef->next())
+            for (GroupReference* pRef = pGroup->GetFirstMember(); pRef != NULL; pRef = pRef->next())
             {
                 if (Player* pMember = pRef->getSource())
                 {
@@ -228,7 +228,7 @@ void FollowerAI::UpdateAI(const uint32 uiDiff)
 
                 if (Group* pGroup = pPlayer->GetGroup())
                 {
-                    for(GroupReference* pRef = pGroup->GetFirstMember(); pRef != NULL; pRef = pRef->next())
+                    for (GroupReference* pRef = pGroup->GetFirstMember(); pRef != NULL; pRef = pRef->next())
                     {
                         Player* pMember = pRef->getSource();
 
@@ -301,7 +301,7 @@ void FollowerAI::StartFollow(Player* pLeader, uint32 uiFactionForFollower, const
         return;
     }
 
-    //set variables
+    // set variables
     m_leaderGuid = pLeader->GetObjectGuid();
 
     if (uiFactionForFollower)
@@ -335,7 +335,7 @@ Player* FollowerAI::GetLeaderForFollower()
         {
             if (Group* pGroup = pLeader->GetGroup())
             {
-                for(GroupReference* pRef = pGroup->GetFirstMember(); pRef != NULL; pRef = pRef->next())
+                for (GroupReference* pRef = pGroup->GetFirstMember(); pRef != NULL; pRef = pRef->next())
                 {
                     Player* pMember = pRef->getSource();
 

@@ -11,6 +11,7 @@
 #                                                                                          #
 ############################################################################################
 
+[7] --> Update scripts ([s2649] Replace some movement parts with GetNearPoint in Illidan's script).
 [6] --> Project Astranaar + Reset Duel Cooldowns, Hp, Mana and Rage.
 [5] --> Add Name Admin, GameMaster and Guard Announces.
 [4] --> Add External Mail.

@@ -52,7 +52,7 @@ bool instance_magtheridons_lair::IsEncounterInProgress() const
 
 void instance_magtheridons_lair::OnCreatureCreate(Creature* pCreature)
 {
-    switch(pCreature->GetEntry())
+    switch (pCreature->GetEntry())
     {
         case NPC_MAGTHERIDON:
             m_mNpcEntryGuidStore[NPC_MAGTHERIDON] = pCreature->GetObjectGuid();
@@ -65,7 +65,7 @@ void instance_magtheridons_lair::OnCreatureCreate(Creature* pCreature)
 
 void instance_magtheridons_lair::OnObjectCreate(GameObject* pGo)
 {
-    switch(pGo->GetEntry())
+    switch (pGo->GetEntry())
     {
         case GO_DOODAD_HF_MAG_DOOR01:                       // event door
             m_mGoEntryGuidStore[GO_DOODAD_HF_MAG_DOOR01] = pGo->GetObjectGuid();
@@ -87,7 +87,7 @@ void instance_magtheridons_lair::OnObjectCreate(GameObject* pGo)
 
 void instance_magtheridons_lair::SetData(uint32 uiType, uint32 uiData)
 {
-    switch(uiType)
+    switch (uiType)
     {
         case TYPE_MAGTHERIDON_EVENT:
             switch (uiData)
@@ -177,7 +177,7 @@ void instance_magtheridons_lair::SetData(uint32 uiType, uint32 uiData)
                     if (pMagtheridon->isAlive())
                     {
                         DoScriptText(EMOTE_EVENT_BEGIN, pMagtheridon);
-                        m_uiCageBreakTimer = MINUTE*IN_MILLISECONDS;
+                        m_uiCageBreakTimer = MINUTE * IN_MILLISECONDS;
                     }
                 }
 
@@ -214,7 +214,7 @@ void instance_magtheridons_lair::Update(uint32 uiDiff)
                         if (pMagtheridon->isAlive())
                         {
                             DoScriptText(EMOTE_NEARLY_FREE, pMagtheridon);
-                            m_uiCageBreakTimer = MINUTE*IN_MILLISECONDS;
+                            m_uiCageBreakTimer = MINUTE * IN_MILLISECONDS;
                         }
                     }
                     break;

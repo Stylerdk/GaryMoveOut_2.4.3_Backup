@@ -48,10 +48,10 @@ enum
 
 static const float afLocations[MAX_ACTIVE_GUESTS][4] =
 {
-    {-10991.0f, -1884.33f, 81.73f, 0.614315f},
-    {-10989.4f, -1885.88f, 81.73f, 0.904913f},
-    {-10978.1f, -1887.07f, 81.73f, 2.035550f},
-    {-10975.9f, -1885.81f, 81.73f, 2.253890f}
+    { -10991.0f, -1884.33f, 81.73f, 0.614315f},
+    { -10989.4f, -1885.88f, 81.73f, 0.904913f},
+    { -10978.1f, -1887.07f, 81.73f, 2.035550f},
+    { -10975.9f, -1885.81f, 81.73f, 2.253890f}
 };
 
 static const uint32 auiGuests[MAX_GUESTS] =
@@ -105,7 +105,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
 
     void KilledUnit(Unit* pVictim)
     {
-        switch(urand(0, 2))
+        switch (urand(0, 2))
         {
             case 0: DoScriptText(SAY_KILL_1, m_creature); break;
             case 1: DoScriptText(SAY_KILL_2, m_creature); break;
@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
 
     void DoSpawnGuests()
     {
-        //not if m_creature are dead, so avoid
+        // not if m_creature are dead, so avoid
         if (!m_creature->isAlive())
             return;
 
@@ -185,7 +185,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
         Map* pMap = m_creature->GetMap();
         if (pMap->IsDungeon())
         {
-            Map::PlayerList const &PlayerList = pMap->GetPlayers();
+            Map::PlayerList const& PlayerList = pMap->GetPlayers();
 
             if (PlayerList.isEmpty())
                 return;
@@ -245,7 +245,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
             else
                 m_uiVanishTimer -= uiDiff;
 
-            //Gouge highest aggro, and attack second highest
+            // Gouge highest aggro, and attack second highest
             if (m_uiGougeTimer < uiDiff)
             {
                 if (DoCastSpellIfCan(m_creature->getVictim(), SPELL_GOUGE) == CAST_OK)

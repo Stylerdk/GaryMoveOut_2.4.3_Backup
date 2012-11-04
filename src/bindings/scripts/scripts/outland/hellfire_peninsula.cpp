@@ -19,7 +19,7 @@
 /* ScriptData
 SDName: Hellfire_Peninsula
 SD%Complete: 100
-SDComment: Quest support: 9375, 9410, 9418, 10838
+SDComment: Quest support: 9375, 9410, 9418, 10629, 10838
 SDCategory: Hellfire Peninsula
 EndScriptData */
 
@@ -28,10 +28,12 @@ npc_aeranas
 npc_ancestral_wolf
 npc_demoniac_scryer
 npc_wounded_blood_elf
+npc_fel_guard_hound
 EndContentData */
 
 #include "precompiled.h"
 #include "escort_ai.h"
+#include "pet_ai.h"
 
 /*######
 ## npc_aeranas
@@ -154,7 +156,7 @@ struct MANGOS_DLL_DECL npc_ancestral_wolfAI : public npc_escortAI
 
     void WaypointReached(uint32 uiPointId)
     {
-        switch(uiPointId)
+        switch (uiPointId)
         {
             case 0:
                 DoScriptText(EMOTE_WOLF_LIFT_HEAD, m_creature);
@@ -189,21 +191,21 @@ enum
 
     QUEST_DEMONIAC                  = 10838,
     NPC_HELLFIRE_WARDLING           = 22259,
-    NPC_BUTTRESS                    = 22267,                //the 4x nodes
-    NPC_SPAWNER                     = 22260,                //just a dummy, not used
+    NPC_BUTTRESS                    = 22267,                // the 4x nodes
+    NPC_SPAWNER                     = 22260,                // just a dummy, not used
 
     MAX_BUTTRESS                    = 4,
-    TIME_TOTAL                      = MINUTE*10*IN_MILLISECONDS,
+    TIME_TOTAL                      = MINUTE * 10 * IN_MILLISECONDS,
 
-    SPELL_SUMMONED_DEMON            = 7741,                 //visual spawn-in for demon
-    SPELL_DEMONIAC_VISITATION       = 38708,                //create item
+    SPELL_SUMMONED_DEMON            = 7741,                 // visual spawn-in for demon
+    SPELL_DEMONIAC_VISITATION       = 38708,                // create item
 
-    SPELL_BUTTRESS_APPERANCE        = 38719,                //visual on 4x bunnies + the flying ones
-    SPELL_SUCKER_CHANNEL            = 38721,                //channel to the 4x nodes
+    SPELL_BUTTRESS_APPERANCE        = 38719,                // visual on 4x bunnies + the flying ones
+    SPELL_SUCKER_CHANNEL            = 38721,                // channel to the 4x nodes
     SPELL_SUCKER_DESPAWN_MOB        = 38691
 };
 
-//script is basic support, details like end event are not implemented
+// script is basic support, details like end event are not implemented
 struct MANGOS_DLL_DECL npc_demoniac_scryerAI : public ScriptedAI
 {
     npc_demoniac_scryerAI(Creature* pCreature) : ScriptedAI(pCreature)
@@ -223,7 +225,7 @@ struct MANGOS_DLL_DECL npc_demoniac_scryerAI : public ScriptedAI
 
     void Reset() {}
 
-    //we don't want anything to happen when attacked
+    // we don't want anything to happen when attacked
     void AttackedBy(Unit* pEnemy) {}
     void AttackStart(Unit* pEnemy) {}
 
@@ -233,11 +235,11 @@ struct MANGOS_DLL_DECL npc_demoniac_scryerAI : public ScriptedAI
 
         float fAngle = 0.0f;
 
-        switch(m_uiButtressCount)
+        switch (m_uiButtressCount)
         {
             case 1: fAngle = 0.0f; break;
-            case 2: fAngle = M_PI_F+M_PI_F/2; break;
-            case 3: fAngle = M_PI_F/2; break;
+            case 2: fAngle = M_PI_F + M_PI_F / 2; break;
+            case 3: fAngle = M_PI_F / 2; break;
             case 4: fAngle = M_PI_F; break;
         }
 
@@ -441,6 +443,96 @@ bool QuestAccept_npc_wounded_blood_elf(Player* pPlayer, Creature* pCreature, con
     return true;
 }
 
+/*######
+## npc_fel_guard_hound
+######*/
+
+enum
+{
+    SPELL_CREATE_POODAD         = 37688,
+    SPELL_FAKE_DOG_SPART        = 37692,
+    SPELL_INFORM_DOG            = 37689,
+
+    NPC_DERANGED_HELBOAR        = 16863,
+};
+
+struct MANGOS_DLL_DECL npc_fel_guard_houndAI : public ScriptedPetAI
+{
+    npc_fel_guard_houndAI(Creature* pCreature) : ScriptedPetAI(pCreature) { Reset(); }
+
+    uint32 m_uiPoodadTimer;
+
+    bool m_bIsPooActive;
+
+    void Reset()
+    {
+        m_uiPoodadTimer = 0;
+        m_bIsPooActive  = false;
+    }
+
+    void MovementInform(uint32 uiMoveType, uint32 uiPointId)
+    {
+        if (uiMoveType != POINT_MOTION_TYPE || !uiPointId)
+            return;
+
+        if (DoCastSpellIfCan(m_creature, SPELL_FAKE_DOG_SPART) == CAST_OK)
+            m_uiPoodadTimer = 2000;
+    }
+
+    // Function to allow the boar to move to target
+    void DoMoveToCorpse(Unit* pBoar)
+    {
+        if (!pBoar)
+            return;
+
+        m_bIsPooActive = true;
+        m_creature->GetMotionMaster()->MovePoint(1, pBoar->GetPositionX(), pBoar->GetPositionY(), pBoar->GetPositionZ());
+    }
+
+    void UpdateAI(const uint32 uiDiff)
+    {
+        if (m_uiPoodadTimer)
+        {
+            if (m_uiPoodadTimer <= uiDiff)
+            {
+                if (DoCastSpellIfCan(m_creature, SPELL_CREATE_POODAD) == CAST_OK)
+                {
+                    m_uiPoodadTimer = 0;
+                    m_bIsPooActive = false;
+                }
+            }
+            else
+                m_uiPoodadTimer -= uiDiff;
+        }
+
+        if (!m_bIsPooActive)
+            ScriptedPetAI::UpdateAI(uiDiff);
+    }
+};
+
+CreatureAI* GetAI_npc_fel_guard_hound(Creature* pCreature)
+{
+    return new npc_fel_guard_houndAI(pCreature);
+}
+
+bool EffectDummyCreature_npc_fel_guard_hound(Unit* pCaster, uint32 uiSpellId, SpellEffectIndex uiEffIndex, Creature* pCreatureTarget)
+{
+    // always check spellid and effectindex
+    if (uiSpellId == SPELL_INFORM_DOG && uiEffIndex == EFFECT_INDEX_0)
+    {
+        if (pCaster->GetEntry() == NPC_DERANGED_HELBOAR)
+        {
+            if (npc_fel_guard_houndAI* pHoundAI = dynamic_cast<npc_fel_guard_houndAI*>(pCreatureTarget->AI()))
+                pHoundAI->DoMoveToCorpse(pCaster);
+        }
+
+        // always return true when we are handling this spell and effect
+        return true;
+    }
+
+    return false;
+}
+
 void AddSC_hellfire_peninsula()
 {
     Script* pNewScript;
@@ -466,5 +558,11 @@ void AddSC_hellfire_peninsula()
     pNewScript->Name = "npc_wounded_blood_elf";
     pNewScript->GetAI = &GetAI_npc_wounded_blood_elf;
     pNewScript->pQuestAcceptNPC = &QuestAccept_npc_wounded_blood_elf;
+    pNewScript->RegisterSelf();
+
+    pNewScript = new Script;
+    pNewScript->Name = "npc_fel_guard_hound";
+    pNewScript->GetAI = &GetAI_npc_fel_guard_hound;
+    pNewScript->pEffectDummyNPC = &EffectDummyCreature_npc_fel_guard_hound;
     pNewScript->RegisterSelf();
 }
