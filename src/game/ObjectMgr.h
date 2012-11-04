@@ -441,6 +441,13 @@ public:
 
     typedef UNORDERED_MAP<uint32, PetCreateSpellEntry> PetCreateSpellMap;
 
+    static Player* GetPlayer(uint64 guid)
+    {
+        ObjectGuid oGuid;
+        oGuid.Set(guid);
+        return GetPlayer(oGuid);
+    }
+
     void LoadGameobjectInfo();
     void AddGameobjectInfo(GameObjectInfo* goinfo);
 

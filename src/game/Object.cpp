@@ -588,7 +588,7 @@ bool Object::LoadValues(const char* data)
 
 void Object::_SetUpdateBits(UpdateMask* updateMask, Player* /*target*/) const
 {
-    for (uint16 index = 0; index < m_valuesCount; ++index)
+    for (uint16 index = 0; index < m_valuesCount; ++index, ++m_changedFields[index])
     {
         if (m_changedFields[index])
             updateMask->SetBit(index);

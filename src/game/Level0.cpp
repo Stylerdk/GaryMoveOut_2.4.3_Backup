@@ -96,7 +96,7 @@ bool ChatHandler::HandleServerInfoCommand(char* /*args*/)
     std::string str = secsToTimeString(sWorld.GetUptime());
 
     char const* full;
-    if (m_session)
+    /* if (m_session)
         full = _FULLVERSION(REVISION_DATE, REVISION_TIME, REVISION_NR, "|cffffffff|Hurl:" REVISION_ID "|h" REVISION_ID "|h|r");
     else
         full = _FULLVERSION(REVISION_DATE, REVISION_TIME, REVISION_NR, REVISION_ID);
@@ -114,7 +114,10 @@ bool ChatHandler::HandleServerInfoCommand(char* /*args*/)
         SendSysMessage(LANG_USING_SCRIPT_LIB_NONE);
 
     PSendSysMessage(LANG_USING_WORLD_DB, sWorld.GetDBVersion());
-    PSendSysMessage(LANG_USING_EVENT_AI, sWorld.GetCreatureEventAIVersion());
+    PSendSysMessage(LANG_USING_EVENT_AI, sWorld.GetCreatureEventAIVersion()); */
+    PSendSysMessage("Core: GaryMoveOut 2.4.3");
+    PSendSysMessage("Rev: XX.11.2012");
+    PSendSysMessage("Sponsors: BlizzNet.PL");
     PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
     PSendSysMessage(LANG_UPTIME, str.c_str());
 
