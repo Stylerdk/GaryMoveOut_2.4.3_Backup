@@ -1712,3 +1712,20 @@ Warden.ClientCheckHoldOff   = 15
 
 PvPRank.Rate.ExtraHonor = 1
 PvPRank.HKPerRank = "10,50,100,200,450,750,1300,2000,3500,6000,9500,15000,21000,30000"
+
+###################################################################################################################
+# AUTO BROADCAST
+#
+# AutoBroadcast.On
+# Enable auto broadcast
+# Default: 0 - off
+# 1 - on
+#
+# AutoBroadcast.Timer
+# Timer for auto broadcast
+# Default: 300000 - 5 minutes
+#
+###################################################################################################################
+
+AutoBroadcast.On = 0
+AutoBroadcast.Timer = 300000

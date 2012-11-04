@@ -74,7 +74,8 @@ enum WorldTimers
     WUPDATE_EVENTS      = 4,
     WUPDATE_DELETECHARS = 5,
     WUPDATE_AHBOT       = 6,
-    WUPDATE_COUNT       = 7
+    WUPDATE_AUTOBROADCAST = 7,
+    WUPDATE_COUNT       = 8
 };
 
 /// Configuration elements
@@ -336,6 +337,7 @@ enum eConfigBoolValues
     CONFIG_BOOL_PET_UNSUMMON_AT_MOUNT,
     CONFIG_BOOL_MMAP_ENABLED,
     CONFIG_BOOL_WARDEN_ENABLED,
+    CONFIG_BOOL_AUTOBROADCAST_ENABLE,
     CONFIG_BOOL_VALUE_COUNT
 };
 
@@ -467,6 +469,7 @@ public:
     WorldSession* FindSession(uint32 id) const;
     void AddSession(WorldSession* s);
     bool RemoveSession(uint32 id);
+    void SendBroadcast();
     /// Get the number of current active sessions
     void UpdateMaxSessionCounters();
     uint32 GetActiveAndQueuedSessionCount() const { return m_sessions.size(); }

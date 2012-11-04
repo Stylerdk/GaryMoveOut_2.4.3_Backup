@@ -892,6 +892,10 @@ void World::LoadConfigSettings(bool reload)
         else
             pvp_ranks[i] = atoi(strtok (NULL, ","));
     }
+
+    // AutoAnnounce System
+    setConfig(CONFIG_BOOL_AUTOBROADCAST_ENABLE,"AutoBroadcast.On", false);
+    sLog.outString("WORLD: autobroadcast is %sabled", getConfig(CONFIG_BOOL_AUTOBROADCAST_ENABLE) ? "en" : "dis");
 }
 
 /// Initialize the World
@@ -1323,6 +1327,9 @@ void World::SetInitialWorldSettings()
     // for AhBot
     m_timers[WUPDATE_AHBOT].SetInterval(20 * IN_MILLISECONDS); // every 20 sec
 
+    // AutoAnnounce System
+    m_timers[WUPDATE_AUTOBROADCAST].SetInterval(sConfig.GetIntDefault("AutoBroadcast.Timer", 60000));
+
     // to set mailtimer to return mails every day between 4 and 5 am
     // mailtimer is increased when updating auctions
     // one second is 1000 -(tested on win system)
@@ -1533,6 +1540,16 @@ void World::Update(uint32 diff)
         uint32 nextGameEvent = sGameEventMgr.Update();
         m_timers[WUPDATE_EVENTS].SetInterval(nextGameEvent);
         m_timers[WUPDATE_EVENTS].Reset();
+    }
+
+    // AutoAnnounce System
+    if(getConfig(CONFIG_BOOL_AUTOBROADCAST_ENABLE))
+    {
+        if (m_timers[WUPDATE_AUTOBROADCAST].Passed())
+        {
+            m_timers[WUPDATE_AUTOBROADCAST].Reset();
+            SendBroadcast();
+        }
     }
 
     /// </ul>
@@ -1938,6 +1955,26 @@ void World::ProcessCliCommands()
 
         delete command;
     }
+}
+
+// AutoAnnounce System
+void World::SendBroadcast()
+{
+    std::string msg;
+    msg.reserve(2048);
+    msg = MSG_COLOR_MAGENTA"[Server]"MSG_COLOR_WHITE": ";
+    QueryResult *result = WorldDatabase.PQuery("SELECT text FROM autobroadcast ORDER BY RAND() LIMIT 1");
+    if (result)
+    {
+        msg = ""+msg+""+result->Fetch()[0].GetString()+"";
+        delete result;
+
+        SendServerMessage(SERVER_MSG_CUSTOM,msg.c_str(),NULL);
+
+        sLog.outString("AutoBroadcast: '%s'",msg.c_str());
+    }
+    else
+        sLog.outError("AutoBroadcast enabled, but no broadcast texts was found");
 }
 
 void World::InitResultQueue()

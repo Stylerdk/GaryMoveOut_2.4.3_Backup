@@ -11,5 +11,6 @@
 #                                                                                          #
 ############################################################################################
 
+[3] --> Add AutoAnnounce System.
 [2] --> Add PvP Ranks.
 [1] --> Add scripts ([s2643] Fix build for Reliquary of Souls).
