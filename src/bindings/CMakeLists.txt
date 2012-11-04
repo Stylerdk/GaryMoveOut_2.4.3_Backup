@@ -18,5 +18,5 @@
 
 # Uncomment once you have cloned https://github.com/mangos-one/scripts
 # into the scripts subdirectory.
-#add_subdirectory(scripts)
+add_subdirectory(scripts)
 
