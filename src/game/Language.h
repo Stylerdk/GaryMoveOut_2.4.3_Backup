@@ -1015,6 +1015,11 @@ enum MangosStrings
     LANG_COMMAND_FRIEND                 = 1700,
     LANG_COMMAND_FRIEND_ERROR           = 1701,
 
+    // Admin, GameMaster and Guard Announce
+    LANG_SYSTEMMESSAGE_ADMINISTRATOR    = 2001,
+    LANG_SYSTEMMESSAGE_GAMEMASTER       = 2002,
+    LANG_SYSTEMMESSAGE_GUARD            = 2003,
+
     // FREE IDS                           1800-9999
 
     // Use for not-in-official-sources patches

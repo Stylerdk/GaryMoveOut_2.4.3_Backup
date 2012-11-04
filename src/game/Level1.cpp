@@ -132,6 +132,36 @@ bool ChatHandler::HandleAnnounceCommand(char* args)
     return true;
 }
 
+// Admin Announce
+bool ChatHandler::HandleAdminAnnounceCommand(char* args)
+{
+    if (!*args)
+        return false;
+
+    sWorld.SendWorldText(LANG_SYSTEMMESSAGE_ADMINISTRATOR, m_session->GetPlayerName(), args);
+    return true;
+}
+
+// GameMaster Announce
+bool ChatHandler::HandleGMAnnounceCommand(char* args)
+{
+    if (!*args)
+        return false;
+
+    sWorld.SendWorldText(LANG_SYSTEMMESSAGE_GAMEMASTER, m_session->GetPlayerName(), args);
+    return true;
+}
+
+// Guard Announce
+bool ChatHandler::HandleGuardAnnounceCommand(char* args)
+{
+    if (!*args)
+        return false;
+
+    sWorld.SendWorldText(LANG_SYSTEMMESSAGE_GUARD, m_session->GetPlayerName(), args);
+    return true;
+}
+
 // notification player at the screen
 bool ChatHandler::HandleNotifyCommand(char* args)
 {

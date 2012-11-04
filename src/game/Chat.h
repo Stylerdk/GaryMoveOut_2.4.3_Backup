@@ -518,6 +518,9 @@ protected:
     bool HandleGroupgoCommand(char* args);
     bool HandleRecallCommand(char* args);
     bool HandleAnnounceCommand(char* args);
+    bool HandleAdminAnnounceCommand(char* args);
+    bool HandleGMAnnounceCommand(char* args);
+    bool HandleGuardAnnounceCommand(char* args);
     bool HandleNotifyCommand(char* args);
     bool HandleGPSCommand(char* args);
     bool HandleTaxiCheatCommand(char* args);

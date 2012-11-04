@@ -11,6 +11,7 @@
 #                                                                                          #
 ############################################################################################
 
+[5] --> Add Name Admin, GameMaster and Guard Announces.
 [4] --> Add External Mail.
 [3] --> Add AutoAnnounce System.
 [2] --> Add PvP Ranks.
