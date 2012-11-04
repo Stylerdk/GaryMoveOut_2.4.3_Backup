@@ -896,6 +896,10 @@ void World::LoadConfigSettings(bool reload)
     // AutoAnnounce System
     setConfig(CONFIG_BOOL_AUTOBROADCAST_ENABLE,"AutoBroadcast.On", false);
     sLog.outString("WORLD: autobroadcast is %sabled", getConfig(CONFIG_BOOL_AUTOBROADCAST_ENABLE) ? "en" : "dis");
+
+    // External Mail
+    setConfig(CONFIG_BOOL_EXTERNAL_MAIL, "ExternalMail",false);
+    setConfig(CONFIG_UINT32_EXTERNAL_MAIL_INTERVAL,"ExternalMail.Interval",1);
 }
 
 /// Initialize the World
@@ -1330,6 +1334,9 @@ void World::SetInitialWorldSettings()
     // AutoAnnounce System
     m_timers[WUPDATE_AUTOBROADCAST].SetInterval(sConfig.GetIntDefault("AutoBroadcast.Timer", 60000));
 
+    // External Mail
+    extmail_timer.SetInterval(getConfig(CONFIG_UINT32_EXTERNAL_MAIL_INTERVAL) * MINUTE * IN_MILLISECONDS);
+
     // to set mailtimer to return mails every day between 4 and 5 am
     // mailtimer is increased when updating auctions
     // one second is 1000 -(tested on win system)
@@ -1452,6 +1459,17 @@ void World::Update(uint32 diff)
     /// Handle daily quests reset time
     if (m_gameTime > m_NextDailyQuestReset)
         ResetDailyQuests();
+
+    /// External Mail
+    if (getConfig(CONFIG_BOOL_EXTERNAL_MAIL))
+    {
+        extmail_timer.Update(diff);
+        if (extmail_timer.Passed())
+        {
+            WorldSession::SendExternalMails();
+            extmail_timer.Reset();
+        }
+    }
 
     /// <ul><li> Handle auctions when the timer has passed
     if (m_timers[WUPDATE_AUCTIONS].Passed())

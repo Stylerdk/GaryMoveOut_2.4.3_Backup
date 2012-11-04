@@ -184,6 +184,7 @@ enum eConfigUInt32Values
     CONFIG_UINT32_WARDEN_CLIENT_CHECK_HOLDOFF,
     CONFIG_UINT32_WARDEN_CLIENT_RESPONSE_DELAY,
     CONFIG_UINT32_WARDEN_BAN_TIME,
+    CONFIG_UINT32_EXTERNAL_MAIL_INTERVAL,
     CONFIG_UINT32_VALUE_COUNT
 };
 
@@ -338,6 +339,7 @@ enum eConfigBoolValues
     CONFIG_BOOL_MMAP_ENABLED,
     CONFIG_BOOL_WARDEN_ENABLED,
     CONFIG_BOOL_AUTOBROADCAST_ENABLE,
+    CONFIG_BOOL_EXTERNAL_MAIL,
     CONFIG_BOOL_VALUE_COUNT
 };
 
@@ -642,6 +644,7 @@ private:
     time_t m_startTime;
     time_t m_gameTime;
     IntervalTimer m_timers[WUPDATE_COUNT];
+    IntervalTimer extmail_timer;
     uint32 mail_timer;
     uint32 mail_timer_expires;
 

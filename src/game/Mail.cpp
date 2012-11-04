@@ -408,4 +408,57 @@ void Mail::prepareTemplateItems(Player* receiver)
     CharacterDatabase.CommitTransaction();
 }
 
+void WorldSession::SendExternalMails()
+{
+    sLog.outDebug("External Mail - Send Mails from Queue...");
+    QueryResult* result = CharacterDatabase.Query("SELECT id,receiver,subject,message,money,item,item_count FROM mail_external");
+    if (!result)
+    {
+        sLog.outDebug("External Mail - No Mails in Queue...");
+        return;
+    }
+    else
+    {
+        do
+        {
+            Field *fields = result->Fetch();
+            uint32 id = fields[0].GetUInt32();
+            Player *pReceiver = sObjectMgr.GetPlayer(fields[1].GetUInt64());
+            std::string subject = fields[2].GetString();
+            std::string message = fields[3].GetString();
+            uint32 money = fields[4].GetUInt32();
+            uint32 ItemID = fields[5].GetUInt32();
+            uint32 ItemCount = fields[6].GetUInt32();
+
+            if (pReceiver)
+            {
+                MailDraft draft;
+                draft.SetSubjectAndBody(subject, message);
+                MailSender sender(MAIL_NORMAL, pReceiver ? pReceiver->GetObjectGuid().GetCounter() : 0, MAIL_STATIONERY_GM);
+                MailReceiver reciever(pReceiver, pReceiver->GetObjectGuid());
+
+                sLog.outDebug("External Mail - Sending mail to %u, Item:%u", pReceiver->GetObjectGuid().GetCounter(), ItemID);
+                uint32 itemTextId = !message.empty() ? sObjectMgr.CreateItemText(message) : 0;
+                if (ItemID != 0)
+                {
+                    Item* ToMailItem = Item::CreateItem(ItemID, ItemCount, pReceiver);
+                    ToMailItem -> SaveToDB();
+
+                    draft.AddItem(ToMailItem);
+                    draft.SetMoney(money);
+                }
+                else
+                    draft.SetMoney(money);
+
+                draft.SendMailTo(reciever,sender,MAIL_CHECK_MASK_RETURNED);
+                CharacterDatabase.PExecute("DELETE FROM mail_external WHERE id=%u", id);
+            }
+            else
+                sLog.outDebug("External Mail - Mail with unknown player GUID %u in mail_external",fields[1].GetUInt32());
+        }
+        while(result->NextRow());
+    }
+    sLog.outDebug("External Mail - All Mails Sent...");
+}
+
 /*! @} */
