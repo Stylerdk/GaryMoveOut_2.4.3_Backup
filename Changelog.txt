@@ -11,6 +11,7 @@
 #                                                                                          #
 ############################################################################################
 
+[6] --> Project Astranaar + Reset Duel Cooldowns, Hp, Mana and Rage.
 [5] --> Add Name Admin, GameMaster and Guard Announces.
 [4] --> Add External Mail.
 [3] --> Add AutoAnnounce System.
