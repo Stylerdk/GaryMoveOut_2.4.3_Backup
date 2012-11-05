@@ -111,7 +111,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recv_data)
     else
     {
         // send in universal language if player in .gmon mode (ignore spell effects)
-        if (_player->isGameMaster() || sender->GetAreaId() == 415)
+        if (_player->isGameMaster() || _player->GetAreaId() == 415)
             lang = LANG_UNIVERSAL;
         else
         {
