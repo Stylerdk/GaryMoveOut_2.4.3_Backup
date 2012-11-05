@@ -166,67 +166,67 @@ struct BG_AB_BannerTimer
 
 class BattleGroundABScore : public BattleGroundScore
 {
-public:
-    BattleGroundABScore(): BasesAssaulted(0), BasesDefended(0) {};
-    virtual ~BattleGroundABScore() {};
-    uint32 BasesAssaulted;
-    uint32 BasesDefended;
+    public:
+        BattleGroundABScore(): BasesAssaulted(0), BasesDefended(0) {};
+        virtual ~BattleGroundABScore() {};
+        uint32 BasesAssaulted;
+        uint32 BasesDefended;
 };
 
 class BattleGroundAB : public BattleGround
 {
-    friend class BattleGroundMgr;
+        friend class BattleGroundMgr;
 
-public:
-    BattleGroundAB();
-    ~BattleGroundAB();
+    public:
+        BattleGroundAB();
+        ~BattleGroundAB();
 
-    void Update(uint32 diff) override;
-    void AddPlayer(Player* plr) override;
-    virtual void StartingEventCloseDoors() override;
-    virtual void StartingEventOpenDoors() override;
-    void RemovePlayer(Player* plr, ObjectGuid guid) override;
-    void HandleAreaTrigger(Player* source, uint32 trigger) override;
-    virtual bool SetupBattleGround() override;
-    virtual void Reset() override;
-    void EndBattleGround(Team winner) override;
-    virtual WorldSafeLocsEntry const* GetClosestGraveYard(Player* player) override;
+        void Update(uint32 diff) override;
+        void AddPlayer(Player* plr) override;
+        virtual void StartingEventCloseDoors() override;
+        virtual void StartingEventOpenDoors() override;
+        void RemovePlayer(Player* plr, ObjectGuid guid) override;
+        void HandleAreaTrigger(Player* source, uint32 trigger) override;
+        virtual bool SetupBattleGround() override;
+        virtual void Reset() override;
+        void EndBattleGround(Team winner) override;
+        virtual WorldSafeLocsEntry const* GetClosestGraveYard(Player* player) override;
 
-    /* Scorekeeping */
-    virtual void UpdatePlayerScore(Player* source, uint32 type, uint32 value) override;
+        /* Scorekeeping */
+        virtual void UpdatePlayerScore(Player* source, uint32 type, uint32 value) override;
 
-    virtual void FillInitialWorldStates(WorldPacket& data, uint32& count) override;
+        virtual void FillInitialWorldStates(WorldPacket& data, uint32& count) override;
 
-    /* Nodes occupying */
-    virtual void EventPlayerClickedOnFlag(Player* source, GameObject* target_obj) override;
+        /* Nodes occupying */
+        virtual void EventPlayerClickedOnFlag(Player* source, GameObject* target_obj) override;
 
-private:
-    /* Gameobject spawning/despawning */
-    void _CreateBanner(uint8 node, uint8 type, uint8 teamIndex, bool delay);
-    void _DelBanner(uint8 node, uint8 type, uint8 teamIndex);
-    void _SendNodeUpdate(uint8 node);
+    private:
+        /* Gameobject spawning/despawning */
+        void _CreateBanner(uint8 node, uint8 type, uint8 teamIndex, bool delay);
+        void _DelBanner(uint8 node, uint8 type, uint8 teamIndex);
+        void _SendNodeUpdate(uint8 node);
 
-    /* Creature spawning/despawning */
-    // TODO: working, scripted peons spawning
-    void _NodeOccupied(uint8 node, Team team);
+        /* Creature spawning/despawning */
+        // TODO: working, scripted peons spawning
+        void _NodeOccupied(uint8 node, Team team);
 
-    int32 _GetNodeNameId(uint8 node);
+        int32 _GetNodeNameId(uint8 node);
 
-    /* Nodes info:
-        0: neutral
-        1: ally contested
-        2: horde contested
-        3: ally occupied
-        4: horde occupied     */
-    uint8               m_Nodes[BG_AB_NODES_MAX];
-    uint8               m_prevNodes[BG_AB_NODES_MAX];   // used for performant wordlstate-updating
-    BG_AB_BannerTimer   m_BannerTimers[BG_AB_NODES_MAX];
-    uint32              m_NodeTimers[BG_AB_NODES_MAX];
-    uint32              m_lastTick[BG_TEAMS_COUNT];
-    uint32              m_HonorScoreTics[BG_TEAMS_COUNT];
-    uint32              m_ReputationScoreTics[BG_TEAMS_COUNT];
-    bool                m_IsInformedNearVictory;
-    uint32              m_HonorTics;
-    uint32              m_ReputationTics;
+        /* Nodes info:
+            0: neutral
+            1: ally contested
+            2: horde contested
+            3: ally occupied
+            4: horde occupied     */
+        uint8               m_Nodes[BG_AB_NODES_MAX];
+        uint8               m_prevNodes[BG_AB_NODES_MAX];   // used for performant wordlstate-updating
+        BG_AB_BannerTimer   m_BannerTimers[BG_AB_NODES_MAX];
+        uint32              m_NodeTimers[BG_AB_NODES_MAX];
+        uint32              m_lastTick[BG_TEAMS_COUNT];
+        uint32              m_HonorScoreTics[BG_TEAMS_COUNT];
+        uint32              m_ReputationScoreTics[BG_TEAMS_COUNT];
+        bool                m_IsInformedNearVictory;
+        uint32              m_HonorTics;
+        uint32              m_ReputationTics;
 };
 #endif

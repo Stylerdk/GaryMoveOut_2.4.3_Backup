@@ -860,7 +860,7 @@ void error_db_log(const char* str, ...)
     sLog.outErrorDb("%s", buf);
 }
 
-void Log::outWarden(const char * str, ...)
+void Log::outWarden(const char* str, ...)
 {
     if (!str)
         return;

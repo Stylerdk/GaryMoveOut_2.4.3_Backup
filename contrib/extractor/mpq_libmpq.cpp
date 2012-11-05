@@ -83,7 +83,7 @@ MPQFile::MPQFile(const char* filename):
 {
     for (ArchiveSet::iterator i = gOpenArchives.begin(); i != gOpenArchives.end(); ++i)
     {
-        mpq_archive &mpq_a = (*i)->mpq_a;
+        mpq_archive& mpq_a = (*i)->mpq_a;
 
         mpq_hash hash = (*i)->GetHashEntry(filename);
         uint32 blockindex = hash.blockindex;

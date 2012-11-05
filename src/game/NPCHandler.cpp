@@ -286,7 +286,7 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recv_data)
 
     SendPlaySpellVisual(guid, 0xB3);                        // visual effect on trainer
 
-    WorldPacket data(SMSG_PLAY_SPELL_IMPACT, 8+4);          // visual effect on player
+    WorldPacket data(SMSG_PLAY_SPELL_IMPACT, 8 + 4);        // visual effect on player
     data << _player->GetObjectGuid();
     data << uint32(0x016A);                                 // index from SpellVisualKit.dbc
     SendPacket(&data);
@@ -757,7 +757,7 @@ void WorldSession::HandleBuyStableSlot(WorldPacket& recv_data)
         SendStableResult(STABLE_ERR_STABLE);
 }
 
-void WorldSession::HandleStableRevivePet(WorldPacket &/* recv_data */)
+void WorldSession::HandleStableRevivePet(WorldPacket& /* recv_data */)
 {
     DEBUG_LOG("HandleStableRevivePet: Not implemented");
 }

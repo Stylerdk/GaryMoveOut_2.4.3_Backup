@@ -51,156 +51,156 @@
 */
 class ReactorRunnable : protected ACE_Task_Base
 {
-public:
-    ReactorRunnable() :
-        m_Reactor(0),
-        m_Connections(0),
-        m_ThreadId(-1)
-    {
-        ACE_Reactor_Impl* imp = 0;
+    public:
+        ReactorRunnable() :
+            m_Reactor(0),
+            m_Connections(0),
+            m_ThreadId(-1)
+        {
+            ACE_Reactor_Impl* imp = 0;
 
 #if defined (ACE_HAS_EVENT_POLL) || defined (ACE_HAS_DEV_POLL)
 
-        imp = new ACE_Dev_Poll_Reactor();
+            imp = new ACE_Dev_Poll_Reactor();
 
-        imp->max_notify_iterations(128);
-        imp->restart(1);
+            imp->max_notify_iterations(128);
+            imp->restart(1);
 
 #else
 
-        imp = new ACE_TP_Reactor();
-        imp->max_notify_iterations(128);
+            imp = new ACE_TP_Reactor();
+            imp->max_notify_iterations(128);
 
 #endif
 
-        m_Reactor = new ACE_Reactor(imp, 1);
-    }
-
-    virtual ~ReactorRunnable()
-    {
-        Stop();
-        Wait();
-
-        delete m_Reactor;
-    }
-
-    void Stop()
-    {
-        m_Reactor->end_reactor_event_loop();
-    }
-
-    int Start()
-    {
-        if (m_ThreadId != -1)
-            return -1;
-
-        return (m_ThreadId = activate());
-    }
-
-    void Wait() { ACE_Task_Base::wait(); }
-
-    long Connections()
-    {
-        return static_cast<long>(m_Connections.value());
-    }
-
-    int AddSocket(WorldSocket* sock)
-    {
-        ACE_GUARD_RETURN(ACE_Thread_Mutex, Guard, m_NewSockets_Lock, -1);
-
-        ++m_Connections;
-        sock->AddReference();
-        sock->reactor(m_Reactor);
-        m_NewSockets.insert(sock);
-
-        return 0;
-    }
-
-    ACE_Reactor* GetReactor()
-    {
-        return m_Reactor;
-    }
-
-protected:
-    void AddNewSockets()
-    {
-        ACE_GUARD(ACE_Thread_Mutex, Guard, m_NewSockets_Lock);
-
-        if (m_NewSockets.empty())
-            return;
-
-        for (SocketSet::const_iterator i = m_NewSockets.begin(); i != m_NewSockets.end(); ++i)
-        {
-            WorldSocket* sock = (*i);
-
-            if (sock->IsClosed())
-            {
-                sock->RemoveReference();
-                --m_Connections;
-            }
-            else
-                m_Sockets.insert(sock);
+            m_Reactor = new ACE_Reactor(imp, 1);
         }
 
-        m_NewSockets.clear();
-    }
-
-    virtual int svc()
-    {
-        DEBUG_LOG("Network Thread Starting");
-
-        WorldDatabase.ThreadStart();
-
-        MANGOS_ASSERT(m_Reactor);
-
-        SocketSet::iterator i, t;
-
-        while (!m_Reactor->reactor_event_loop_done())
+        virtual ~ReactorRunnable()
         {
-            // dont be too smart to move this outside the loop
-            // the run_reactor_event_loop will modify interval
-            ACE_Time_Value interval(0, 10000);
+            Stop();
+            Wait();
 
-            if (m_Reactor->run_reactor_event_loop(interval) == -1)
-                break;
+            delete m_Reactor;
+        }
 
-            AddNewSockets();
+        void Stop()
+        {
+            m_Reactor->end_reactor_event_loop();
+        }
 
-            for (i = m_Sockets.begin(); i != m_Sockets.end();)
+        int Start()
+        {
+            if (m_ThreadId != -1)
+                return -1;
+
+            return (m_ThreadId = activate());
+        }
+
+        void Wait() { ACE_Task_Base::wait(); }
+
+        long Connections()
+        {
+            return static_cast<long>(m_Connections.value());
+        }
+
+        int AddSocket(WorldSocket* sock)
+        {
+            ACE_GUARD_RETURN(ACE_Thread_Mutex, Guard, m_NewSockets_Lock, -1);
+
+            ++m_Connections;
+            sock->AddReference();
+            sock->reactor(m_Reactor);
+            m_NewSockets.insert(sock);
+
+            return 0;
+        }
+
+        ACE_Reactor* GetReactor()
+        {
+            return m_Reactor;
+        }
+
+    protected:
+        void AddNewSockets()
+        {
+            ACE_GUARD(ACE_Thread_Mutex, Guard, m_NewSockets_Lock);
+
+            if (m_NewSockets.empty())
+                return;
+
+            for (SocketSet::const_iterator i = m_NewSockets.begin(); i != m_NewSockets.end(); ++i)
             {
-                if ((*i)->Update() == -1)
+                WorldSocket* sock = (*i);
+
+                if (sock->IsClosed())
                 {
-                    t = i;
-                    ++i;
-                    (*t)->CloseSocket();
-                    (*t)->RemoveReference();
+                    sock->RemoveReference();
                     --m_Connections;
-                    m_Sockets.erase(t);
                 }
                 else
-                    ++i;
+                    m_Sockets.insert(sock);
             }
+
+            m_NewSockets.clear();
         }
 
-        WorldDatabase.ThreadEnd();
+        virtual int svc()
+        {
+            DEBUG_LOG("Network Thread Starting");
 
-        DEBUG_LOG("Network Thread Exitting");
+            WorldDatabase.ThreadStart();
 
-        return 0;
-    }
+            MANGOS_ASSERT(m_Reactor);
 
-private:
-    typedef ACE_Atomic_Op<ACE_SYNCH_MUTEX, long> AtomicInt;
-    typedef std::set<WorldSocket*> SocketSet;
+            SocketSet::iterator i, t;
 
-    ACE_Reactor* m_Reactor;
-    AtomicInt m_Connections;
-    int m_ThreadId;
+            while (!m_Reactor->reactor_event_loop_done())
+            {
+                // dont be too smart to move this outside the loop
+                // the run_reactor_event_loop will modify interval
+                ACE_Time_Value interval(0, 10000);
 
-    SocketSet m_Sockets;
+                if (m_Reactor->run_reactor_event_loop(interval) == -1)
+                    break;
 
-    SocketSet m_NewSockets;
-    ACE_Thread_Mutex m_NewSockets_Lock;
+                AddNewSockets();
+
+                for (i = m_Sockets.begin(); i != m_Sockets.end();)
+                {
+                    if ((*i)->Update() == -1)
+                    {
+                        t = i;
+                        ++i;
+                        (*t)->CloseSocket();
+                        (*t)->RemoveReference();
+                        --m_Connections;
+                        m_Sockets.erase(t);
+                    }
+                    else
+                        ++i;
+                }
+            }
+
+            WorldDatabase.ThreadEnd();
+
+            DEBUG_LOG("Network Thread Exitting");
+
+            return 0;
+        }
+
+    private:
+        typedef ACE_Atomic_Op<ACE_SYNCH_MUTEX, long> AtomicInt;
+        typedef std::set<WorldSocket*> SocketSet;
+
+        ACE_Reactor* m_Reactor;
+        AtomicInt m_Connections;
+        int m_ThreadId;
+
+        SocketSet m_Sockets;
+
+        SocketSet m_NewSockets;
+        ACE_Thread_Mutex m_NewSockets_Lock;
 };
 
 WorldSocketMgr::WorldSocketMgr():

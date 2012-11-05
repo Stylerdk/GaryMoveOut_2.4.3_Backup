@@ -24,7 +24,7 @@
 #include <algorithm>
 #include <cstdio>
 
-Model::Model(std::string &filename) : filename(filename)
+Model::Model(std::string& filename) : filename(filename)
 {
 }
 
@@ -52,10 +52,10 @@ bool Model::open()
             vertices[i] = fixCoordSystem(origVertices[i].pos);;
         }
 
-        ModelView *view = (ModelView*)(f.getBuffer() + header.ofsViews);
+        ModelView* view = (ModelView*)(f.getBuffer() + header.ofsViews);
 
-        uint16 *indexLookup = (uint16*)(f.getBuffer() + view->ofsIndex);
-        uint16 *triangles = (uint16*)(f.getBuffer() + view->ofsTris);
+        uint16* indexLookup = (uint16*)(f.getBuffer() + view->ofsIndex);
+        uint16* triangles = (uint16*)(f.getBuffer() + view->ofsTris);
 
         nIndices = view->nTris;
         indices = new uint16[nIndices];
@@ -74,10 +74,10 @@ bool Model::open()
     return true;
 }
 
-bool Model::ConvertToVMAPModel(char * outfilename)
+bool Model::ConvertToVMAPModel(char* outfilename)
 {
     int N[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    FILE * output = fopen(outfilename, "wb");
+    FILE* output = fopen(outfilename, "wb");
     if (!output)
     {
         printf("Can't create the output file '%s'\n", outfilename);
@@ -145,7 +145,7 @@ Vec3D fixCoordSystem2(Vec3D v)
     return Vec3D(v.x, v.z, v.y);
 }
 
-ModelInstance::ModelInstance(MPQFile &f, const char* ModelInstName, uint32 mapID, uint32 tileX, uint32 tileY, FILE *pDirfile)
+ModelInstance::ModelInstance(MPQFile& f, const char* ModelInstName, uint32 mapID, uint32 tileX, uint32 tileY, FILE* pDirfile)
 {
     float ff[3];
     f.read(&id, 4);
@@ -159,7 +159,7 @@ ModelInstance::ModelInstance(MPQFile &f, const char* ModelInstName, uint32 mapID
 
     char tempname[512];
     sprintf(tempname, "%s/%s", szWorkDirWmo, ModelInstName);
-    FILE *input;
+    FILE* input;
     input = fopen(tempname, "r+b");
 
     if (!input)

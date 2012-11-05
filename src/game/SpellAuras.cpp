@@ -659,9 +659,9 @@ void AreaAura::Update(uint32 diff)
         // or caster is (no longer) friendly
         bool needFriendly = (m_areaAuraType == AREA_AURA_ENEMY ? false : true);
         if (!caster || caster->hasUnitState(UNIT_STAT_ISOLATED) ||
-            !caster->IsWithinDistInMap(target, m_radius)        ||
-            !caster->HasAura(GetId(), GetEffIndex())            ||
-            caster->IsFriendlyTo(target) != needFriendly
+                !caster->IsWithinDistInMap(target, m_radius)        ||
+                !caster->HasAura(GetId(), GetEffIndex())            ||
+                caster->IsFriendlyTo(target) != needFriendly
            )
         {
             target->RemoveSingleAuraFromSpellAuraHolder(GetId(), GetEffIndex(), GetCasterGuid());
@@ -795,10 +795,10 @@ void Aura::ReapplyAffectedPassiveAuras(Unit* target, bool owner_mode)
         // permanent passive or permanent area aura
         // passive spells can be affected only by own or owner spell mods)
         if ((itr->second->IsPermanent() && ((owner_mode && itr->second->IsPassive()) || itr->second->IsAreaAura())) &&
-            // non deleted and not same aura (any with same spell id)
-            !itr->second->IsDeleted() && itr->second->GetId() != GetId() &&
-            // and affected by aura
-            isAffectedOnSpell(itr->second->GetSpellProto()))
+                // non deleted and not same aura (any with same spell id)
+                !itr->second->IsDeleted() && itr->second->GetId() != GetId() &&
+                // and affected by aura
+                isAffectedOnSpell(itr->second->GetSpellProto()))
         {
             // only applied by self or aura caster
             if (itr->second->GetCasterGuid() == target->GetObjectGuid())
@@ -1272,8 +1272,8 @@ void Aura::TriggerSpell()
                             return;
                         // move loot to player inventory and despawn target
                         if (caster->GetTypeId() == TYPEID_PLAYER &&
-                            triggerTarget->GetTypeId() == TYPEID_UNIT &&
-                            ((Creature*)triggerTarget)->GetCreatureInfo()->type == CREATURE_TYPE_GAS_CLOUD)
+                                triggerTarget->GetTypeId() == TYPEID_UNIT &&
+                                ((Creature*)triggerTarget)->GetCreatureInfo()->type == CREATURE_TYPE_GAS_CLOUD)
                         {
                             Player* player = (Player*)caster;
                             Creature* creature = (Creature*)triggerTarget;
@@ -1664,7 +1664,7 @@ void Aura::TriggerSpell()
                         {
                             SpellEntry const* spell = itr->second->GetSpellProto();
                             if (spell->SpellFamilyName == SPELLFAMILY_SHAMAN &&
-                                (spell->SpellFamilyFlags & UI64LIT(0x0000000000000400)))
+                                    (spell->SpellFamilyFlags & UI64LIT(0x0000000000000400)))
                                 return;
                         }
                         triggerTarget->RemoveAurasDueToSpell(28820);
@@ -2714,9 +2714,9 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
 
                 // If spell that caused this aura has Croud Control or Daze effect
                 if ((aurMechMask & MECHANIC_NOT_REMOVED_BY_SHAPESHIFT) ||
-                    // some Daze spells have these parameters instead of MECHANIC_DAZE (skip snare spells)
-                    (aurSpellInfo->SpellIconID == 15 && aurSpellInfo->Dispel == 0 &&
-                     (aurMechMask & (1 << (MECHANIC_SNARE - 1))) == 0))
+                        // some Daze spells have these parameters instead of MECHANIC_DAZE (skip snare spells)
+                        (aurSpellInfo->SpellIconID == 15 && aurSpellInfo->Dispel == 0 &&
+                         (aurMechMask & (1 << (MECHANIC_SNARE - 1))) == 0))
                 {
                     ++iter;
                     continue;
@@ -3151,7 +3151,7 @@ void Aura::HandleChannelDeathItem(bool apply, bool Real)
         {
             // Only from non-grey units
             if (!((Player*)caster)->isHonorOrXPTarget(victim) ||
-                (victim->GetTypeId() == TYPEID_UNIT && !((Player*)caster)->isAllowedToLoot((Creature*)victim)))
+                    (victim->GetTypeId() == TYPEID_UNIT && !((Player*)caster)->isAllowedToLoot((Creature*)victim)))
                 return;
         }
 
@@ -4251,7 +4251,7 @@ void Aura::HandleAuraModEffectImmunity(bool apply, bool /*Real*/)
 
     // when removing flag aura, handle flag drop
     if (!apply && target->GetTypeId() == TYPEID_PLAYER
-        && (GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_FLAG_IMMUNE_OR_LOST_SELECTION))
+            && (GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_FLAG_IMMUNE_OR_LOST_SELECTION))
     {
         Player* player = (Player*)target;
         if (BattleGround* bg = player->GetBattleGround())
@@ -4294,8 +4294,8 @@ void Aura::HandleAuraModSchoolImmunity(bool apply, bool Real)
 
     // TODO: optimalize this cycle - use RemoveAurasWithInterruptFlags call or something else
     if (Real && apply
-        && GetSpellProto()->HasAttribute(SPELL_ATTR_EX_DISPEL_AURAS_ON_IMMUNITY)
-        && IsPositiveSpell(GetId()))                    // Only positive immunity removes auras
+            && GetSpellProto()->HasAttribute(SPELL_ATTR_EX_DISPEL_AURAS_ON_IMMUNITY)
+            && IsPositiveSpell(GetId()))                    // Only positive immunity removes auras
     {
         uint32 school_mask = m_modifier.m_miscvalue;
         Unit::SpellAuraHolderMap& Auras = target->GetSpellAuraHolderMap();
@@ -4305,9 +4305,9 @@ void Aura::HandleAuraModSchoolImmunity(bool apply, bool Real)
             ++next;
             SpellEntry const* spell = iter->second->GetSpellProto();
             if ((GetSpellSchoolMask(spell) & school_mask)   // Check for school mask
-                && !spell->HasAttribute(SPELL_ATTR_UNAFFECTED_BY_INVULNERABILITY)   // Spells unaffected by invulnerability
-                && !iter->second->IsPositive()          // Don't remove positive spells
-                && spell->Id != GetId())                // Don't remove self
+                    && !spell->HasAttribute(SPELL_ATTR_UNAFFECTED_BY_INVULNERABILITY)   // Spells unaffected by invulnerability
+                    && !iter->second->IsPositive()          // Don't remove positive spells
+                    && spell->Id != GetId())                // Don't remove self
             {
                 target->RemoveAurasDueToSpell(spell->Id);
                 if (Auras.empty())
@@ -5848,7 +5848,7 @@ void Aura::PeriodicTick()
                 return;
 
             if (spellProto->Effect[GetEffIndex()] == SPELL_EFFECT_PERSISTENT_AREA_AURA &&
-                pCaster->SpellHitResult(target, spellProto, false) != SPELL_MISS_NONE)
+                    pCaster->SpellHitResult(target, spellProto, false) != SPELL_MISS_NONE)
                 return;
 
             // Check for immune (not use charges)
@@ -5916,7 +5916,7 @@ void Aura::PeriodicTick()
             // Calculate armor mitigation if it is a physical spell
             // But not for bleed mechanic spells
             if (GetSpellSchoolMask(spellProto) & SPELL_SCHOOL_MASK_NORMAL &&
-                GetEffectMechanic(spellProto, m_effIndex) != MECHANIC_BLEED)
+                    GetEffectMechanic(spellProto, m_effIndex) != MECHANIC_BLEED)
             {
                 uint32 pdamageReductedArmor = pCaster->CalcArmorReducedDamage(target, pdamage);
                 cleanDamage.damage += pdamage - pdamageReductedArmor;
@@ -5978,7 +5978,7 @@ void Aura::PeriodicTick()
                 return;
 
             if (spellProto->Effect[GetEffIndex()] == SPELL_EFFECT_PERSISTENT_AREA_AURA &&
-                pCaster->SpellHitResult(target, spellProto, false) != SPELL_MISS_NONE)
+                    pCaster->SpellHitResult(target, spellProto, false) != SPELL_MISS_NONE)
                 return;
 
             // Check for immune
@@ -6141,7 +6141,7 @@ void Aura::PeriodicTick()
                 return;
 
             if (GetSpellProto()->Effect[GetEffIndex()] == SPELL_EFFECT_PERSISTENT_AREA_AURA &&
-                pCaster->SpellHitResult(target, spellProto, false) != SPELL_MISS_NONE)
+                    pCaster->SpellHitResult(target, spellProto, false) != SPELL_MISS_NONE)
                 return;
 
             // Check for immune (not use charges)
@@ -7073,7 +7073,7 @@ void SpellAuraHolder::CleanupTriggeredSpells()
         // needed for spell 43680, maybe others
         // TODO: is there a spell flag, which can solve this in a more sophisticated way?
         if (m_spellProto->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_TRIGGER_SPELL &&
-            GetSpellDuration(m_spellProto) == int32(m_spellProto->EffectAmplitude[i]))
+                GetSpellDuration(m_spellProto) == int32(m_spellProto->EffectAmplitude[i]))
             continue;
 
         m_target->RemoveAurasDueToSpell(tSpellId);
@@ -7174,7 +7174,7 @@ bool SpellAuraHolder::IsWeaponBuffCoexistableWith(SpellAuraHolder const* ref) co
 
     // Limit to Weapon-Slots
     if (!castItem->IsEquipped() ||
-        (castItem->GetSlot() != EQUIPMENT_SLOT_MAINHAND && castItem->GetSlot() != EQUIPMENT_SLOT_OFFHAND))
+            (castItem->GetSlot() != EQUIPMENT_SLOT_MAINHAND && castItem->GetSlot() != EQUIPMENT_SLOT_OFFHAND))
         return false;
 
     // form different weapons
@@ -7251,8 +7251,8 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                 Unit::AuraList const& PeriodicDamage = m_target->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
                 for (Unit::AuraList::const_iterator i = PeriodicDamage.begin(); i != PeriodicDamage.end(); ++i)
                     if ((*i)->GetCasterGuid() == GetCasterGuid() &&
-                        (*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARRIOR &&
-                        (*i)->GetSpellProto()->Mechanic == MECHANIC_BLEED)
+                            (*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARRIOR &&
+                            (*i)->GetSpellProto()->Mechanic == MECHANIC_BLEED)
                         return;
 
                 spellId1 = 30069;                           // Blood Frenzy (Rank 1)

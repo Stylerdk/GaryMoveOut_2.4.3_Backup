@@ -1102,7 +1102,7 @@ void CreatureEventAI::MoveInLineOfSight(Unit* who)
                 {
                     // if friendly event&&who is not hostile OR hostile event&&who is hostile
                     if (((*itr).Event.ooc_los.noHostile && !m_creature->IsHostileTo(who)) ||
-                        ((!(*itr).Event.ooc_los.noHostile) && m_creature->IsHostileTo(who)))
+                            ((!(*itr).Event.ooc_los.noHostile) && m_creature->IsHostileTo(who)))
                         ProcessEvent(*itr, who);
                 }
             }
@@ -1113,7 +1113,7 @@ void CreatureEventAI::MoveInLineOfSight(Unit* who)
         return;
 
     if (m_creature->CanInitiateAttack() && who->isTargetableForAttack() &&
-        m_creature->IsHostileTo(who) && who->isInAccessablePlaceFor(m_creature))
+            m_creature->IsHostileTo(who) && who->isInAccessablePlaceFor(m_creature))
     {
         if (!m_creature->CanFly() && m_creature->GetDistanceZ(who) > CREATURE_Z_ATTACK_RANGE)
             return;

@@ -63,9 +63,9 @@ typedef struct
     uint32 id;
 } map_id;
 
-map_id *map_ids;
-uint16 *areas;
-uint16 *LiqType;
+map_id* map_ids;
+uint16* areas;
+uint16* LiqType;
 char output_path[128] = ".";
 char input_path[128] = ".";
 uint32 maxAreaId = 0;
@@ -94,7 +94,7 @@ float CONF_flat_height_delta_limit = 0.005f; // If max - min less this value - s
 float CONF_flat_liquid_delta_limit = 0.001f; // If max - min less this value - liquid surface is flat
 
 // List MPQ for extract from
-char *CONF_mpq_list[] =
+char* CONF_mpq_list[] =
 {
     "common.MPQ",
     "common-2.MPQ",
@@ -144,7 +144,7 @@ void Usage(char* prg)
     exit(1);
 }
 
-void HandleArgs(int argc, char * arg[])
+void HandleArgs(int argc, char* arg[])
 {
     for (int c = 1; c < argc; ++c)
     {
@@ -351,14 +351,14 @@ uint8 liquid_type[ADT_CELLS_PER_GRID][ADT_CELLS_PER_GRID];
 bool  liquid_show[ADT_GRID_SIZE][ADT_GRID_SIZE];
 float liquid_height[ADT_GRID_SIZE + 1][ADT_GRID_SIZE + 1];
 
-bool ConvertADT(char *filename, char *filename2, int cell_y, int cell_x)
+bool ConvertADT(char* filename, char* filename2, int cell_y, int cell_x)
 {
     ADT_file adt;
 
     if (!adt.loadFile(filename))
         return false;
 
-    adt_MCIN *cells = adt.a_grid->getMCIN();
+    adt_MCIN* cells = adt.a_grid->getMCIN();
     if (!cells)
     {
         printf("Can't find cells in '%s'\n", filename);
@@ -378,7 +378,7 @@ bool ConvertADT(char *filename, char *filename2, int cell_y, int cell_x)
     {
         for (int j = 0; j < ADT_CELLS_PER_GRID; j++)
         {
-            adt_MCNK * cell = cells->getMCNK(i, j);
+            adt_MCNK* cell = cells->getMCNK(i, j);
             uint32 areaid = cell->areaid;
             if (areaid && areaid <= maxAreaId)
             {
@@ -433,7 +433,7 @@ bool ConvertADT(char *filename, char *filename2, int cell_y, int cell_x)
     {
         for (int j = 0; j < ADT_CELLS_PER_GRID; j++)
         {
-            adt_MCNK * cell = cells->getMCNK(i, j);
+            adt_MCNK* cell = cells->getMCNK(i, j);
             if (!cell)
                 continue;
             // Height values for triangles stored in order:
@@ -472,7 +472,7 @@ bool ConvertADT(char *filename, char *filename2, int cell_y, int cell_x)
                 }
             }
             // Get custom height
-            adt_MCVT *v = cell->getMCVT();
+            adt_MCVT* v = cell->getMCVT();
             if (!v)
                 continue;
             // get V9 height map
@@ -600,14 +600,14 @@ bool ConvertADT(char *filename, char *filename2, int cell_y, int cell_x)
     }
 
     // Get liquid map for grid (in WOTLK used MH2O chunk)
-    adt_MH2O * h2o = adt.a_grid->getMH2O();
+    adt_MH2O* h2o = adt.a_grid->getMH2O();
     if (h2o)
     {
         for (int i = 0; i < ADT_CELLS_PER_GRID; i++)
         {
             for (int j = 0; j < ADT_CELLS_PER_GRID; j++)
             {
-                adt_liquid_header *h = h2o->getLiquidData(i, j);
+                adt_liquid_header* h = h2o->getLiquidData(i, j);
                 if (!h)
                     continue;
 
@@ -642,7 +642,7 @@ bool ConvertADT(char *filename, char *filename2, int cell_y, int cell_x)
                 // Dark water detect
                 if (type == LIQUID_TYPE_OCEAN)
                 {
-                    uint8 *lm = h2o->getLiquidLightMap(h);
+                    uint8* lm = h2o->getLiquidLightMap(h);
                     if (!lm)
                         liquid_type[i][j] |= MAP_LIQUID_TYPE_DARK_WATER;
                 }
@@ -650,7 +650,7 @@ bool ConvertADT(char *filename, char *filename2, int cell_y, int cell_x)
                 if (!count && liquid_type[i][j])
                     printf("Wrong liquid detect in MH2O chunk");
 
-                float *height = h2o->getLiquidHeightMap(h);
+                float* height = h2o->getLiquidHeightMap(h);
                 int pos = 0;
                 for (int y = 0; y <= h->height; y++)
                 {
@@ -675,11 +675,11 @@ bool ConvertADT(char *filename, char *filename2, int cell_y, int cell_x)
         {
             for (int j = 0; j < ADT_CELLS_PER_GRID; j++)
             {
-                adt_MCNK *cell = cells->getMCNK(i, j);
+                adt_MCNK* cell = cells->getMCNK(i, j);
                 if (!cell)
                     continue;
 
-                adt_MCLQ *liquid = cell->getMCLQ();
+                adt_MCLQ* liquid = cell->getMCLQ();
                 int count = 0;
                 if (!liquid || cell->sizeMCLQ <= 8)
                     continue;
@@ -820,7 +820,7 @@ bool ConvertADT(char *filename, char *filename2, int cell_y, int cell_x)
     {
         for (int j = 0; j < ADT_CELLS_PER_GRID; ++j)
         {
-            adt_MCNK * cell = cells->getMCNK(i, j);
+            adt_MCNK* cell = cells->getMCNK(i, j);
             if (!cell)
                 continue;
             holes[i][j] = cell->holes;
@@ -828,7 +828,7 @@ bool ConvertADT(char *filename, char *filename2, int cell_y, int cell_x)
     }
 
     // Ok all data prepared - store it
-    FILE *output = fopen(filename2, "wb");
+    FILE* output = fopen(filename2, "wb");
     if (!output)
     {
         printf("Can't create the output file '%s'\n", filename2);
@@ -932,7 +932,7 @@ void ExtractMapsFromMpq()
 
 bool ExtractFile(char const* mpq_name, std::string const& filename)
 {
-    FILE *output = fopen(filename.c_str(), "wb");
+    FILE* output = fopen(filename.c_str(), "wb");
     if (!output)
     {
         printf("Can't create the output file '%s'\n", filename.c_str());
@@ -1022,7 +1022,7 @@ inline void CloseMPQFiles()
     gOpenArchives.clear();
 }
 
-int main(int argc, char * arg[])
+int main(int argc, char* arg[])
 {
     printf("Map & DBC Extractor\n");
     printf("===================\n\n");

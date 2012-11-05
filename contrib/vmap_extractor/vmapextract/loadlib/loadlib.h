@@ -63,17 +63,17 @@ struct file_MVER
 
 class FileLoader
 {
-    uint8  *data;
-    uint32  data_size;
-public:
-    virtual bool prepareLoadedData();
-    uint8 *GetData()     {return data;}
-    uint32 GetDataSize() {return data_size;}
+        uint8*  data;
+        uint32  data_size;
+    public:
+        virtual bool prepareLoadedData();
+        uint8* GetData()     {return data;}
+        uint32 GetDataSize() {return data_size;}
 
-    file_MVER *version;
-    FileLoader();
-    ~FileLoader();
-    bool loadFile(char *filename, bool log = true);
-    virtual void free();
+        file_MVER* version;
+        FileLoader();
+        ~FileLoader();
+        bool loadFile(char* filename, bool log = true);
+        virtual void free();
 };
 #endif

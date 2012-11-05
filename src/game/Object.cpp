@@ -1348,22 +1348,22 @@ namespace MaNGOS
 {
     class MonsterChatBuilder
     {
-    public:
-        MonsterChatBuilder(WorldObject const& obj, ChatMsg msgtype, int32 textId, uint32 language, Unit* target)
-            : i_object(obj), i_msgtype(msgtype), i_textId(textId), i_language(language), i_target(target) {}
-        void operator()(WorldPacket& data, int32 loc_idx)
-        {
-            char const* text = sObjectMgr.GetMangosString(i_textId, loc_idx);
+        public:
+            MonsterChatBuilder(WorldObject const& obj, ChatMsg msgtype, int32 textId, uint32 language, Unit* target)
+                : i_object(obj), i_msgtype(msgtype), i_textId(textId), i_language(language), i_target(target) {}
+            void operator()(WorldPacket& data, int32 loc_idx)
+            {
+                char const* text = sObjectMgr.GetMangosString(i_textId, loc_idx);
 
-            WorldObject::BuildMonsterChat(&data, i_object.GetObjectGuid(), i_msgtype, text, i_language, i_object.GetNameForLocaleIdx(loc_idx), i_target ? i_target->GetObjectGuid() : ObjectGuid(), i_target ? i_target->GetNameForLocaleIdx(loc_idx) : "");
-        }
+                WorldObject::BuildMonsterChat(&data, i_object.GetObjectGuid(), i_msgtype, text, i_language, i_object.GetNameForLocaleIdx(loc_idx), i_target ? i_target->GetObjectGuid() : ObjectGuid(), i_target ? i_target->GetNameForLocaleIdx(loc_idx) : "");
+            }
 
-    private:
-        WorldObject const& i_object;
-        ChatMsg i_msgtype;
-        int32 i_textId;
-        uint32 i_language;
-        Unit* i_target;
+        private:
+            WorldObject const& i_object;
+            ChatMsg i_msgtype;
+            int32 i_textId;
+            uint32 i_language;
+            Unit* i_target;
     };
 }                                                           // namespace MaNGOS
 
@@ -1549,75 +1549,75 @@ namespace MaNGOS
 {
     class NearUsedPosDo
     {
-    public:
-        NearUsedPosDo(WorldObject const& obj, WorldObject const* searcher, float absAngle, ObjectPosSelector& selector)
-            : i_object(obj), i_searcher(searcher), i_absAngle(MapManager::NormalizeOrientation(absAngle)), i_selector(selector) {}
+        public:
+            NearUsedPosDo(WorldObject const& obj, WorldObject const* searcher, float absAngle, ObjectPosSelector& selector)
+                : i_object(obj), i_searcher(searcher), i_absAngle(MapManager::NormalizeOrientation(absAngle)), i_selector(selector) {}
 
-        void operator()(Corpse*) const {}
-        void operator()(DynamicObject*) const {}
+            void operator()(Corpse*) const {}
+            void operator()(DynamicObject*) const {}
 
-        void operator()(Creature* c) const
-        {
-            // skip self or target
-            if (c == i_searcher || c == &i_object)
-                return;
-
-            float x, y, z;
-
-            if (c->IsStopped() || !c->GetMotionMaster()->GetDestination(x, y, z))
+            void operator()(Creature* c) const
             {
-                x = c->GetPositionX();
-                y = c->GetPositionY();
+                // skip self or target
+                if (c == i_searcher || c == &i_object)
+                    return;
+
+                float x, y, z;
+
+                if (c->IsStopped() || !c->GetMotionMaster()->GetDestination(x, y, z))
+                {
+                    x = c->GetPositionX();
+                    y = c->GetPositionY();
+                }
+
+                add(c, x, y);
             }
 
-            add(c, x, y);
-        }
+            template<class T>
+            void operator()(T* u) const
+            {
+                // skip self or target
+                if (u == i_searcher || u == &i_object)
+                    return;
 
-        template<class T>
-        void operator()(T* u) const
-        {
-            // skip self or target
-            if (u == i_searcher || u == &i_object)
-                return;
+                float x, y;
 
-            float x, y;
+                x = u->GetPositionX();
+                y = u->GetPositionY();
 
-            x = u->GetPositionX();
-            y = u->GetPositionY();
+                add(u, x, y);
+            }
 
-            add(u, x, y);
-        }
+            // we must add used pos that can fill places around center
+            void add(WorldObject* u, float x, float y) const
+            {
+                // dist include size of u and i_object
+                float dx = i_object.GetPositionX() - x;
+                float dy = i_object.GetPositionY() - y;
+                float dist2d = sqrt((dx * dx) + (dy * dy));
 
-        // we must add used pos that can fill places around center
-        void add(WorldObject* u, float x, float y) const
-        {
-            // dist include size of u and i_object
-            float dx = i_object.GetPositionX() - x;
-            float dy = i_object.GetPositionY() - y;
-            float dist2d = sqrt((dx * dx) + (dy * dy));
+                float delta = i_selector.m_searcherSize + u->GetObjectBoundingRadius();
 
-            float delta = i_selector.m_searcherSize + u->GetObjectBoundingRadius();
+                // u is too nearest/far away to i_object
+                if (dist2d < i_selector.m_searcherDist - delta ||
+                        dist2d >= i_selector.m_searcherDist + delta)
+                    return;
 
-            // u is too nearest/far away to i_object
-            if (dist2d < i_selector.m_searcherDist - delta ||
-                dist2d >= i_selector.m_searcherDist + delta)
-                return;
+                float angle = i_object.GetAngle(u) - i_absAngle;
 
-            float angle = i_object.GetAngle(u) - i_absAngle;
+                // move angle to range -pi ... +pi, range before is -2Pi..2Pi
+                if (angle > M_PI_F)
+                    angle -= 2.0f * M_PI_F;
+                else if (angle < -M_PI_F)
+                    angle += 2.0f * M_PI_F;
 
-            // move angle to range -pi ... +pi, range before is -2Pi..2Pi
-            if (angle > M_PI_F)
-                angle -= 2.0f * M_PI_F;
-            else if (angle < -M_PI_F)
-                angle += 2.0f * M_PI_F;
-
-            i_selector.AddUsedArea(u->GetObjectBoundingRadius(), angle, dist2d);
-        }
-    private:
-        WorldObject const& i_object;
-        WorldObject const* i_searcher;
-        float              i_absAngle;
-        ObjectPosSelector& i_selector;
+                i_selector.AddUsedArea(u->GetObjectBoundingRadius(), angle, dist2d);
+            }
+        private:
+            WorldObject const& i_object;
+            WorldObject const* i_searcher;
+            float              i_absAngle;
+            ObjectPosSelector& i_selector;
     };
 }                                                           // namespace MaNGOS
 
@@ -1809,7 +1809,7 @@ struct WorldObjectChangeAccumulator
         }
     }
 
-    template<class SKIP> void Visit(GridRefManager<SKIP> &) {}
+    template<class SKIP> void Visit(GridRefManager<SKIP>&) {}
 };
 
 void WorldObject::BuildUpdateData(UpdateDataMapType& update_players)

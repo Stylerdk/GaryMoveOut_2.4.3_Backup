@@ -26,16 +26,16 @@
 #define snprintf _snprintf
 #endif
 
-char * GetPlainName(char * FileName)
+char* GetPlainName(char* FileName)
 {
-    char * szTemp;
+    char* szTemp;
 
     if ((szTemp = strrchr(FileName, '\\')) != NULL)
         FileName = szTemp + 1;
     return FileName;
 }
 
-void fixnamen(char *name, size_t len)
+void fixnamen(char* name, size_t len)
 {
     for (size_t i = 0; i < len - 3; i++)
     {
@@ -53,7 +53,7 @@ void fixnamen(char *name, size_t len)
         name[i] |= 0x20;
 }
 
-void fixname2(char *name, size_t len)
+void fixname2(char* name, size_t len)
 {
     for (size_t i = 0; i < len - 3; i++)
     {
@@ -90,7 +90,7 @@ bool ADTFile::init(uint32 map_num, uint32 tileX, uint32 tileY)
     //printf("yMap = %s\n", yMap.c_str());
 
     std::string dirname = std::string(szWorkDirWmo) + "/dir_bin";
-    FILE *dirfile;
+    FILE* dirfile;
     dirfile = fopen(dirname.c_str(), "ab");
     if (!dirfile)
     {
@@ -118,9 +118,9 @@ bool ADTFile::init(uint32 map_num, uint32 tileX, uint32 tileY)
         {
             if (size)
             {
-                char *buf = new char[size];
+                char* buf = new char[size];
                 ADT.read(buf, size);
-                char *p = buf;
+                char* p = buf;
                 int t = 0;
                 ModelInstansName = new string[size];
                 while (p < buf + size)
@@ -146,7 +146,7 @@ bool ADTFile::init(uint32 map_num, uint32 tileX, uint32 tileY)
 
                     char szLocalFile[1024];
                     snprintf(szLocalFile, 1024, "%s/%s", szWorkDirWmo, s);
-                    FILE * output = fopen(szLocalFile, "rb");
+                    FILE* output = fopen(szLocalFile, "rb");
                     if (!output)
                     {
                         Model m2(path);
@@ -163,9 +163,9 @@ bool ADTFile::init(uint32 map_num, uint32 tileX, uint32 tileY)
         {
             if (size)
             {
-                char *buf = new char[size];
+                char* buf = new char[size];
                 ADT.read(buf, size);
-                char *p = buf;
+                char* p = buf;
                 int q = 0;
                 WmoInstansName = new string[size];
                 while (p < buf + size)

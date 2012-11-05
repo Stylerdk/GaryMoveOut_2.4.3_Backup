@@ -25,123 +25,123 @@
 
 class SQLStorageBase
 {
-    template<class DerivedLoader, class StorageClass> friend class SQLStorageLoaderBase;
+        template<class DerivedLoader, class StorageClass> friend class SQLStorageLoaderBase;
 
-public:
-    char const* GetTableName() const { return m_tableName; }
-    char const* EntryFieldName() const { return m_entry_field; }
+    public:
+        char const* GetTableName() const { return m_tableName; }
+        char const* EntryFieldName() const { return m_entry_field; }
 
-    FieldFormat GetDstFormat(uint32 idx) const { return (FieldFormat)m_dst_format[idx]; };
-    const char* GetDstFormat() const { return m_dst_format; };
-    FieldFormat GetSrcFormat(uint32 idx) const { return (FieldFormat)m_src_format[idx]; };
-    const char* GetSrcFormat() const { return m_src_format; };
+        FieldFormat GetDstFormat(uint32 idx) const { return (FieldFormat)m_dst_format[idx]; };
+        const char* GetDstFormat() const { return m_dst_format; };
+        FieldFormat GetSrcFormat(uint32 idx) const { return (FieldFormat)m_src_format[idx]; };
+        const char* GetSrcFormat() const { return m_src_format; };
 
-    uint32 GetMaxEntry() const { return m_maxEntry; };
-    uint32 GetRecordCount() const { return m_recordCount; };
+        uint32 GetMaxEntry() const { return m_maxEntry; };
+        uint32 GetRecordCount() const { return m_recordCount; };
 
-    template<typename T>
-    class SQLSIterator
-    {
-        friend class SQLStorageBase;
+        template<typename T>
+        class SQLSIterator
+        {
+                friend class SQLStorageBase;
 
-        public:
-            T const* getValue() const { return reinterpret_cast<T const*>(pointer); }
+            public:
+                T const* getValue() const { return reinterpret_cast<T const*>(pointer); }
 
-            void operator ++() { pointer += recordSize; }
-            T const* operator *() const { return getValue(); }
-            T const* operator ->() const { return getValue(); }
-            bool operator <(const SQLSIterator& r) const { return pointer < r.pointer; }
-            void operator =(const SQLSIterator& r) { pointer = r.pointer; recordSize = r.recordSize; }
+                void operator ++() { pointer += recordSize; }
+                T const* operator *() const { return getValue(); }
+                T const* operator ->() const { return getValue(); }
+                bool operator <(const SQLSIterator& r) const { return pointer < r.pointer; }
+                void operator =(const SQLSIterator& r) { pointer = r.pointer; recordSize = r.recordSize; }
 
-        private:
-            SQLSIterator(char* ptr, uint32 _recordSize) : pointer(ptr), recordSize(_recordSize) {}
-            char* pointer;
-            uint32 recordSize;
-    };
+            private:
+                SQLSIterator(char* ptr, uint32 _recordSize) : pointer(ptr), recordSize(_recordSize) {}
+                char* pointer;
+                uint32 recordSize;
+        };
 
-    template<typename T>
-    SQLSIterator<T> getDataBegin() const { return SQLSIterator<T>(m_data, m_recordSize); }
-    template<typename T>
-    SQLSIterator<T> getDataEnd() const { return SQLSIterator<T>(m_data + m_recordCount * m_recordSize, m_recordSize); }
+        template<typename T>
+        SQLSIterator<T> getDataBegin() const { return SQLSIterator<T>(m_data, m_recordSize); }
+        template<typename T>
+        SQLSIterator<T> getDataEnd() const { return SQLSIterator<T>(m_data + m_recordCount * m_recordSize, m_recordSize); }
 
-protected:
-    SQLStorageBase();
-    virtual ~SQLStorageBase() { Free(); }
+    protected:
+        SQLStorageBase();
+        virtual ~SQLStorageBase() { Free(); }
 
-    void Initialize(const char* tableName, const char* entry_field, const char* src_format, const char* dst_format);
+        void Initialize(const char* tableName, const char* entry_field, const char* src_format, const char* dst_format);
 
-    uint32 GetDstFieldCount() const { return m_dstFieldCount; }
-    uint32 GetSrcFieldCount() const { return m_srcFieldCount; }
-    uint32 GetRecordSize() const { return m_recordSize; }
+        uint32 GetDstFieldCount() const { return m_dstFieldCount; }
+        uint32 GetSrcFieldCount() const { return m_srcFieldCount; }
+        uint32 GetRecordSize() const { return m_recordSize; }
 
-    virtual void prepareToLoad(uint32 maxRecordId, uint32 recordCount, uint32 recordSize);
-    virtual void JustCreatedRecord(uint32 recordId, char* record) = 0;
-    virtual void Free();
+        virtual void prepareToLoad(uint32 maxRecordId, uint32 recordCount, uint32 recordSize);
+        virtual void JustCreatedRecord(uint32 recordId, char* record) = 0;
+        virtual void Free();
 
-private:
-    char* createRecord(uint32 recordId);
+    private:
+        char* createRecord(uint32 recordId);
 
-    // Information about the table
-    const char* m_tableName;
-    const char* m_entry_field;
-    const char* m_src_format;
-    const char* m_dst_format;
+        // Information about the table
+        const char* m_tableName;
+        const char* m_entry_field;
+        const char* m_src_format;
+        const char* m_dst_format;
 
-    // Information about the records
-    uint32 m_dstFieldCount;
-    uint32 m_srcFieldCount;
-    uint32 m_recordCount;
-    uint32 m_maxEntry;
-    uint32 m_recordSize;
+        // Information about the records
+        uint32 m_dstFieldCount;
+        uint32 m_srcFieldCount;
+        uint32 m_recordCount;
+        uint32 m_maxEntry;
+        uint32 m_recordSize;
 
-    // Data Storage
-    char* m_data;
+        // Data Storage
+        char* m_data;
 };
 
 class SQLStorage : public SQLStorageBase
 {
-    template<class DerivedLoader, class StorageClass> friend class SQLStorageLoaderBase;
+        template<class DerivedLoader, class StorageClass> friend class SQLStorageLoaderBase;
 
-public:
-    SQLStorage(const char* fmt, const char* _entry_field, const char* sqlname);
+    public:
+        SQLStorage(const char* fmt, const char* _entry_field, const char* sqlname);
 
-    SQLStorage(const char* src_fmt, const char* dst_fmt, const char* _entry_field, const char* sqlname);
+        SQLStorage(const char* src_fmt, const char* dst_fmt, const char* _entry_field, const char* sqlname);
 
-    ~SQLStorage() { Free(); }
+        ~SQLStorage() { Free(); }
 
-    template<class T>
-    T const* LookupEntry(uint32 id) const
-    {
-        if (id >= GetMaxEntry())
-            return NULL;
-        return reinterpret_cast<T const*>(m_Index[id]);
-    }
+        template<class T>
+        T const* LookupEntry(uint32 id) const
+        {
+            if (id >= GetMaxEntry())
+                return NULL;
+            return reinterpret_cast<T const*>(m_Index[id]);
+        }
 
-    void Load(bool error_at_empty = true);
+        void Load(bool error_at_empty = true);
 
-    void EraseEntry(uint32 id);
+        void EraseEntry(uint32 id);
 
-protected:
-    void prepareToLoad(uint32 maxRecordId, uint32 recordCount, uint32 recordSize) override;
-    void JustCreatedRecord(uint32 recordId, char* record) override
-    {
-        m_Index[recordId] = record;
-    }
+    protected:
+        void prepareToLoad(uint32 maxRecordId, uint32 recordCount, uint32 recordSize) override;
+        void JustCreatedRecord(uint32 recordId, char* record) override
+        {
+            m_Index[recordId] = record;
+        }
 
-    void Free() override;
+        void Free() override;
 
-private:
-    // Lookup access
-    char** m_Index;
+    private:
+        // Lookup access
+        char** m_Index;
 };
 
 class SQLHashStorage : public SQLStorageBase
 {
-    template<class DerivedLoader, class StorageClass> friend class SQLStorageLoaderBase;
+        template<class DerivedLoader, class StorageClass> friend class SQLStorageLoaderBase;
 
     public:
-        SQLHashStorage(const char* fmt, const char * _entry_field, const char * sqlname);
-        SQLHashStorage(const char* src_fmt, const char* dst_fmt, const char * _entry_field, const char * sqlname);
+        SQLHashStorage(const char* fmt, const char* _entry_field, const char* sqlname);
+        SQLHashStorage(const char* src_fmt, const char* dst_fmt, const char* _entry_field, const char* sqlname);
 
         ~SQLHashStorage() { Free(); }
 
@@ -168,29 +168,29 @@ class SQLHashStorage : public SQLStorageBase
         void Free() override;
 
     private:
-        typedef UNORDERED_MAP<uint32/*recordId*/, char* /*record*/> RecordMap;
+        typedef UNORDERED_MAP < uint32/*recordId*/, char* /*record*/ > RecordMap;
         RecordMap m_indexMap;
 };
 
 class SQLMultiStorage : public SQLStorageBase
 {
-    template<class DerivedLoader, class StorageClass> friend class SQLStorageLoaderBase;
-    template<typename T> friend class SQLMultiSIterator;
-    template<typename T> friend class SQLMSIteratorBounds;
+        template<class DerivedLoader, class StorageClass> friend class SQLStorageLoaderBase;
+        template<typename T> friend class SQLMultiSIterator;
+        template<typename T> friend class SQLMSIteratorBounds;
 
     private:
-        typedef std::multimap<uint32/*recordId*/, char* /*record*/> RecordMultiMap;
+        typedef std::multimap < uint32/*recordId*/, char* /*record*/ > RecordMultiMap;
 
     public:
-        SQLMultiStorage(const char* fmt, const char * _entry_field, const char * sqlname);
-        SQLMultiStorage(const char* src_fmt, const char* dst_fmt, const char * _entry_field, const char * sqlname);
+        SQLMultiStorage(const char* fmt, const char* _entry_field, const char* sqlname);
+        SQLMultiStorage(const char* src_fmt, const char* dst_fmt, const char* _entry_field, const char* sqlname);
 
         ~SQLMultiStorage() { Free(); }
 
         template<typename T>
         class SQLMultiSIterator
         {
-            friend class SQLMultiStorage;
+                friend class SQLMultiStorage;
 
             public:
                 T const* getValue() const { return reinterpret_cast<T const*>(citerator->second); }
@@ -209,7 +209,7 @@ class SQLMultiStorage : public SQLStorageBase
         template<typename T>
         class SQLMSIteratorBounds
         {
-            friend class SQLMultiStorage;
+                friend class SQLMultiStorage;
 
             public:
                 const SQLMultiSIterator<T> first;
@@ -242,32 +242,32 @@ class SQLMultiStorage : public SQLStorageBase
 template <class DerivedLoader, class StorageClass>
 class SQLStorageLoaderBase
 {
-public:
-    void Load(StorageClass& storage, bool error_at_empty = true);
+    public:
+        void Load(StorageClass& storage, bool error_at_empty = true);
 
-    template<class S, class D>
-    void convert(uint32 field_pos, S src, D& dst);
-    template<class S>
-    void convert_to_str(uint32 field_pos, S src, char*& dst);
-    template<class D>
-    void convert_from_str(uint32 field_pos, char const* src, D& dst);
-    void convert_str_to_str(uint32 field_pos, char const* src, char*& dst);
-    template<class S, class D>
-    void default_fill(uint32 field_pos, S src, D& dst);
-    void default_fill_to_str(uint32 field_pos, char const* src, char*& dst);
+        template<class S, class D>
+        void convert(uint32 field_pos, S src, D& dst);
+        template<class S>
+        void convert_to_str(uint32 field_pos, S src, char*& dst);
+        template<class D>
+        void convert_from_str(uint32 field_pos, char const* src, D& dst);
+        void convert_str_to_str(uint32 field_pos, char const* src, char*& dst);
+        template<class S, class D>
+        void default_fill(uint32 field_pos, S src, D& dst);
+        void default_fill_to_str(uint32 field_pos, char const* src, char*& dst);
 
-    // trap, no body
-    template<class D>
-    void convert_from_str(uint32 field_pos, char* src, D& dst);
-    void convert_str_to_str(uint32 field_pos, char* src, char*& dst);
+        // trap, no body
+        template<class D>
+        void convert_from_str(uint32 field_pos, char* src, D& dst);
+        void convert_str_to_str(uint32 field_pos, char* src, char*& dst);
 
-private:
-    template<class V>
-    void storeValue(V value, StorageClass& store, char* record, uint32 field_pos, uint32& offset);
-    void storeValue(char const* value, StorageClass& store, char* record, uint32 field_pos, uint32& offset);
+    private:
+        template<class V>
+        void storeValue(V value, StorageClass& store, char* record, uint32 field_pos, uint32& offset);
+        void storeValue(char const* value, StorageClass& store, char* record, uint32 field_pos, uint32& offset);
 
-    // trap, no body
-    void storeValue(char* value, StorageClass& store, char* record, uint32 field_pos, uint32& offset);
+        // trap, no body
+        void storeValue(char* value, StorageClass& store, char* record, uint32 field_pos, uint32& offset);
 };
 
 class SQLStorageLoader : public SQLStorageLoaderBase<SQLStorageLoader, SQLStorage>

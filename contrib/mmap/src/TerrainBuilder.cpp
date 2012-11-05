@@ -32,7 +32,7 @@ namespace MMAP
     TerrainBuilder::~TerrainBuilder() { }
 
     /**************************************************************************/
-    void TerrainBuilder::getLoopVars(Spot portion, int &loopStart, int &loopEnd, int &loopInc)
+    void TerrainBuilder::getLoopVars(Spot portion, int& loopStart, int& loopEnd, int& loopInc)
     {
         switch (portion)
         {
@@ -65,7 +65,7 @@ namespace MMAP
     }
 
     /**************************************************************************/
-    void TerrainBuilder::loadMap(uint32 mapID, uint32 tileX, uint32 tileY, MeshData &meshData)
+    void TerrainBuilder::loadMap(uint32 mapID, uint32 tileX, uint32 tileY, MeshData& meshData)
     {
         if (loadMap(mapID, tileX, tileY, meshData, ENTIRE))
         {
@@ -77,7 +77,7 @@ namespace MMAP
     }
 
     /**************************************************************************/
-    bool TerrainBuilder::loadMap(uint32 mapID, uint32 tileX, uint32 tileY, MeshData &meshData, Spot portion)
+    bool TerrainBuilder::loadMap(uint32 mapID, uint32 tileX, uint32 tileY, MeshData& meshData, Spot portion)
     {
         char mapFileName[255];
         sprintf(mapFileName, "maps/%03u%02u%02u.map", mapID, tileY, tileX);
@@ -235,7 +235,7 @@ namespace MMAP
                         col = i % V9_SIZE;
 
                         if (row < lheader.offsetY || row >= lheader.offsetY + lheader.height ||
-                            col < lheader.offsetX || col >= lheader.offsetX + lheader.width)
+                                col < lheader.offsetX || col >= lheader.offsetX + lheader.width)
                         {
                             // dummy vert using invalid height
                             meshData.liquidVerts.append((xoffset + col * GRID_PART_SIZE) * -1, INVALID_MAP_LIQ_HEIGHT, (yoffset + row * GRID_PART_SIZE) * -1);
@@ -551,7 +551,7 @@ namespace MMAP
     }
 
     /**************************************************************************/
-    bool TerrainBuilder::loadVMap(uint32 mapID, uint32 tileX, uint32 tileY, MeshData &meshData)
+    bool TerrainBuilder::loadVMap(uint32 mapID, uint32 tileX, uint32 tileY, MeshData& meshData)
     {
         IVMapManager* vmapManager = new VMapManager2();
         VMAPLoadResult result = vmapManager->loadMap("vmaps", mapID, tileX, tileY);
@@ -707,7 +707,7 @@ namespace MMAP
     }
 
     /**************************************************************************/
-    void TerrainBuilder::transform(vector<Vector3> &source, vector<Vector3> &transformedVertices, float scale, G3D::Matrix3 &rotation, Vector3 &position)
+    void TerrainBuilder::transform(vector<Vector3>& source, vector<Vector3>& transformedVertices, float scale, G3D::Matrix3& rotation, Vector3& position)
     {
         for (vector<Vector3>::iterator it = source.begin(); it != source.end(); ++it)
         {
@@ -720,7 +720,7 @@ namespace MMAP
     }
 
     /**************************************************************************/
-    void TerrainBuilder::copyVertices(vector<Vector3> &source, G3D::Array<float> &dest)
+    void TerrainBuilder::copyVertices(vector<Vector3>& source, G3D::Array<float>& dest)
     {
         for (vector<Vector3>::iterator it = source.begin(); it != source.end(); ++it)
         {
@@ -731,7 +731,7 @@ namespace MMAP
     }
 
     /**************************************************************************/
-    void TerrainBuilder::copyIndices(vector<MeshTriangle> &source, G3D::Array<int> &dest, int offset, bool flip)
+    void TerrainBuilder::copyIndices(vector<MeshTriangle>& source, G3D::Array<int>& dest, int offset, bool flip)
     {
         if (flip)
         {
@@ -754,7 +754,7 @@ namespace MMAP
     }
 
     /**************************************************************************/
-    void TerrainBuilder::copyIndices(G3D::Array<int> &source, G3D::Array<int> &dest, int offset)
+    void TerrainBuilder::copyIndices(G3D::Array<int>& source, G3D::Array<int>& dest, int offset)
     {
         int* src = source.getCArray();
         for (int32 i = 0; i < source.size(); ++i)
@@ -762,7 +762,7 @@ namespace MMAP
     }
 
     /**************************************************************************/
-    void TerrainBuilder::cleanVertices(G3D::Array<float> &verts, G3D::Array<int> &tris)
+    void TerrainBuilder::cleanVertices(G3D::Array<float>& verts, G3D::Array<int>& tris)
     {
         map<int, int> vertMap;
 
@@ -806,7 +806,7 @@ namespace MMAP
     }
 
     /**************************************************************************/
-    void TerrainBuilder::loadOffMeshConnections(uint32 mapID, uint32 tileX, uint32 tileY, MeshData &meshData, const char* offMeshFilePath)
+    void TerrainBuilder::loadOffMeshConnections(uint32 mapID, uint32 tileX, uint32 tileY, MeshData& meshData, const char* offMeshFilePath)
     {
         // no meshfile input given?
         if (offMeshFilePath == NULL)

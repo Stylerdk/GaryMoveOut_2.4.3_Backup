@@ -29,9 +29,9 @@
 #include "mpq_libmpq04.h"
 
 using namespace std;
-extern uint16 *LiqType;
+extern uint16* LiqType;
 
-WMORoot::WMORoot(std::string &filename) : filename(filename)
+WMORoot::WMORoot(std::string& filename) : filename(filename)
 {
 }
 
@@ -120,7 +120,7 @@ bool WMORoot::open()
     return true;
 }
 
-bool WMORoot::ConvertToVMAPRootWmo(FILE *pOutfile)
+bool WMORoot::ConvertToVMAPRootWmo(FILE* pOutfile)
 {
     //printf("Convert RootWmo...\n");
 
@@ -136,7 +136,7 @@ WMORoot::~WMORoot()
 {
 }
 
-WMOGroup::WMOGroup(std::string &filename) : filename(filename),
+WMOGroup::WMOGroup(std::string& filename) : filename(filename),
     MOPY(0), MOVI(0), MoviEx(0), MOVT(0), MOBA(0), MobaEx(0), hlq(0), LiquEx(0), LiquBytes(0)
 {
 }
@@ -237,7 +237,7 @@ bool WMOGroup::open()
     return true;
 }
 
-int WMOGroup::ConvertToVMAPGroupWmo(FILE *output, WMORoot *rootWMO, bool pPreciseVectorData)
+int WMOGroup::ConvertToVMAPGroupWmo(FILE* output, WMORoot* rootWMO, bool pPreciseVectorData)
 {
     fwrite(&mogpFlags, sizeof(uint32), 1, output);
     fwrite(&groupWMOID, sizeof(uint32), 1, output);
@@ -339,13 +339,13 @@ int WMOGroup::ConvertToVMAPGroupWmo(FILE *output, WMORoot *rootWMO, bool pPrecis
         //-------INDX------------------------------------
         //-------MOPY--------
         MoviEx = new uint16[nTriangles * 3]; // "worst case" size...
-        int *IndexRenum = new int[nVertices];
+        int* IndexRenum = new int[nVertices];
         memset(IndexRenum, 0xFF, nVertices * sizeof(int));
         for (int i = 0; i < nTriangles; ++i)
         {
             // Skip no collision triangles
             if (MOPY[2 * i]&WMO_MATERIAL_NO_COLLISION ||
-                !(MOPY[2 * i] & (WMO_MATERIAL_HINT | WMO_MATERIAL_COLLIDE_HIT)))
+                    !(MOPY[2 * i] & (WMO_MATERIAL_HINT | WMO_MATERIAL_COLLIDE_HIT)))
                 continue;
             // Use this triangle
             for (int j = 0; j < 3; ++j)
@@ -396,7 +396,7 @@ int WMOGroup::ConvertToVMAPGroupWmo(FILE *output, WMORoot *rootWMO, bool pPrecis
     //------LIQU------------------------
     if (LiquEx_size != 0)
     {
-        int LIQU_h[] = {0x5551494C, sizeof(WMOLiquidHeader) + LiquEx_size + hlq->xtiles*hlq->ytiles};// "LIQU"
+        int LIQU_h[] = {0x5551494C, sizeof(WMOLiquidHeader) + LiquEx_size + hlq->xtiles* hlq->ytiles}; // "LIQU"
         fwrite(LIQU_h, 4, 2, output);
 
         /* std::ofstream llog("Buildings/liquid.log", ios_base::out | ios_base::app);
@@ -417,7 +417,7 @@ int WMOGroup::ConvertToVMAPGroupWmo(FILE *output, WMORoot *rootWMO, bool pPrecis
     return nColTriangles;
 }
 
-int WMOGroup::ConvertLiquidType(int hlqLiquid, std::string &filename)
+int WMOGroup::ConvertLiquidType(int hlqLiquid, std::string& filename)
 {
     if (hlqLiquid == 4)                                             // lava in Blackrock Mountain, Blackrock Depths, Blackrock Spire and Old Ironforge
         return 2;
@@ -446,7 +446,7 @@ WMOGroup::~WMOGroup()
     delete [] LiquBytes;
 }
 
-WMOInstance::WMOInstance(MPQFile &f, const char* WmoInstName, uint32 mapID, uint32 tileX, uint32 tileY, FILE *pDirfile)
+WMOInstance::WMOInstance(MPQFile& f, const char* WmoInstName, uint32 mapID, uint32 tileX, uint32 tileY, FILE* pDirfile)
 {
     pos = Vec3D(0, 0, 0);
 
@@ -470,7 +470,7 @@ WMOInstance::WMOInstance(MPQFile &f, const char* WmoInstName, uint32 mapID, uint
 
     char tempname[512];
     sprintf(tempname, "%s/%s", szWorkDirWmo, WmoInstName);
-    FILE *input;
+    FILE* input;
     input = fopen(tempname, "r+b");
 
     if (!input)

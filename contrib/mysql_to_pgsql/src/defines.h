@@ -60,7 +60,7 @@ typedef vector<string> T_TableList;
 typedef map< string, T_Table > TDataBase;
 
 static
-void pg_notice(void *arg, const char *message)
+void pg_notice(void* arg, const char* message)
 {
     /// Do nothing
     //printf("%s\n", message);
@@ -160,9 +160,9 @@ bool IsNeeedEscapeString(enum_field_types mysqlType)
 }
 
 inline
-void PG_Exec_str(string sql, PGconn *mPGconn)
+void PG_Exec_str(string sql, PGconn* mPGconn)
 {
-    PGresult *res = PQexec(mPGconn, sql.c_str());
+    PGresult* res = PQexec(mPGconn, sql.c_str());
     if (PQresultStatus(res) != PGRES_COMMAND_OK)
     {
         printf("SQL: %s", sql.c_str());

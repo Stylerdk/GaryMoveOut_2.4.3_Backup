@@ -31,14 +31,14 @@ class HmacHash
 {
     public:
         HmacHash();
-        HmacHash(uint32 len, uint8 *seed);
+        HmacHash(uint32 len, uint8* seed);
         ~HmacHash();
-        void UpdateBigNumber(BigNumber *bn);
-        void UpdateData(const uint8 *data, int length);
-        void UpdateData(const std::string &str);
+        void UpdateBigNumber(BigNumber* bn);
+        void UpdateData(const uint8* data, int length);
+        void UpdateData(const std::string& str);
         void Initialize();
         void Finalize();
-        uint8 *GetDigest() { return m_digest; };
+        uint8* GetDigest() { return m_digest; };
         int GetLength() { return SHA_DIGEST_LENGTH; };
     private:
         HMAC_CTX m_ctx;
