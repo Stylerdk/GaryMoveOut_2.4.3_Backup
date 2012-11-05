@@ -151,7 +151,7 @@ namespace MMAP
     }
 
     /**************************************************************************/
-    void MapBuilder::getGridBounds(uint32 mapID, uint32 &minX, uint32 &minY, uint32 &maxX, uint32 &maxY)
+    void MapBuilder::getGridBounds(uint32 mapID, uint32& minX, uint32& minY, uint32& maxX, uint32& maxY)
     {
         maxX = INT_MAX;
         maxY = INT_MAX;
@@ -297,7 +297,7 @@ namespace MMAP
     }
 
     /**************************************************************************/
-    void MapBuilder::buildNavMesh(uint32 mapID, dtNavMesh* &navMesh)
+    void MapBuilder::buildNavMesh(uint32 mapID, dtNavMesh*& navMesh)
     {
         set<uint32>* tiles = getTileList(mapID);
 
@@ -374,7 +374,7 @@ namespace MMAP
 
     /**************************************************************************/
     void MapBuilder::buildMoveMapTile(uint32 mapID, uint32 tileX, uint32 tileY,
-                                      MeshData &meshData, float bmin[3], float bmax[3],
+                                      MeshData& meshData, float bmin[3], float bmax[3],
                                       dtNavMesh* navMesh)
     {
         // console output
@@ -668,7 +668,7 @@ namespace MMAP
                 continue;
             }
             if (!params.polyCount || !params.polys ||
-                TILES_PER_MAP * TILES_PER_MAP == params.polyCount)
+                    TILES_PER_MAP * TILES_PER_MAP == params.polyCount)
             {
                 // we have flat tiles with no actual geometry - don't build those, its useless
                 // keep in mind that we do output those into debug info

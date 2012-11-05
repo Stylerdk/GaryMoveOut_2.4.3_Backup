@@ -227,8 +227,8 @@ void WorldSession::HandleWhoOpcode(WorldPacket& recv_data)
             if (!str[i].empty())
             {
                 if (wgname.find(str[i]) != std::wstring::npos ||
-                    wpname.find(str[i]) != std::wstring::npos ||
-                    Utf8FitTo(aname, str[i]))
+                        wpname.find(str[i]) != std::wstring::npos ||
+                        Utf8FitTo(aname, str[i]))
                 {
                     s_show = true;
                     break;
@@ -260,7 +260,7 @@ void WorldSession::HandleWhoOpcode(WorldPacket& recv_data)
     DEBUG_LOG("WORLD: Send SMSG_WHO Message");
 }
 
-void WorldSession::HandleLogoutRequestOpcode(WorldPacket & /*recv_data*/)
+void WorldSession::HandleLogoutRequestOpcode(WorldPacket& /*recv_data*/)
 {
     DEBUG_LOG("WORLD: Recvd CMSG_LOGOUT_REQUEST Message, security - %u", GetSecurity());
 
@@ -269,9 +269,9 @@ void WorldSession::HandleLogoutRequestOpcode(WorldPacket & /*recv_data*/)
 
     // Can not logout if...
     if (GetPlayer()->isInCombat() ||                        //...is in combat
-        GetPlayer()->duel         ||                    //...is in Duel
-        //...is jumping ...is falling
-        GetPlayer()->m_movementInfo.HasMovementFlag(MovementFlags(MOVEFLAG_FALLING | MOVEFLAG_FALLINGFAR)))
+            GetPlayer()->duel         ||                    //...is in Duel
+            //...is jumping ...is falling
+            GetPlayer()->m_movementInfo.HasMovementFlag(MovementFlags(MOVEFLAG_FALLING | MOVEFLAG_FALLINGFAR)))
     {
         WorldPacket data(SMSG_LOGOUT_RESPONSE, (2 + 4)) ;
         data << (uint8)0xC;
@@ -284,7 +284,7 @@ void WorldSession::HandleLogoutRequestOpcode(WorldPacket & /*recv_data*/)
 
     // instant logout in taverns/cities or on taxi or for admins, gm's, mod's if its enabled in mangosd.conf
     if (GetPlayer()->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING) || GetPlayer()->IsTaxiFlying() ||
-        GetSecurity() >= (AccountTypes)sWorld.getConfig(CONFIG_UINT32_INSTANT_LOGOUT))
+            GetSecurity() >= (AccountTypes)sWorld.getConfig(CONFIG_UINT32_INSTANT_LOGOUT))
     {
         LogoutPlayer(true);
         return;
@@ -311,12 +311,12 @@ void WorldSession::HandleLogoutRequestOpcode(WorldPacket & /*recv_data*/)
     LogoutRequest(time(NULL));
 }
 
-void WorldSession::HandlePlayerLogoutOpcode(WorldPacket & /*recv_data*/)
+void WorldSession::HandlePlayerLogoutOpcode(WorldPacket& /*recv_data*/)
 {
     DEBUG_LOG("WORLD: Recvd CMSG_PLAYER_LOGOUT Message");
 }
 
-void WorldSession::HandleLogoutCancelOpcode(WorldPacket & /*recv_data*/)
+void WorldSession::HandleLogoutCancelOpcode(WorldPacket& /*recv_data*/)
 {
     DEBUG_LOG("WORLD: Recvd CMSG_LOGOUT_CANCEL Message");
 
@@ -810,7 +810,7 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket& recv_data)
         if (at->requiredItem)
         {
             if (!pl->HasItemCount(at->requiredItem, 1) &&
-                (!at->requiredItem2 || !GetPlayer()->HasItemCount(at->requiredItem2, 1)))
+                    (!at->requiredItem2 || !GetPlayer()->HasItemCount(at->requiredItem2, 1)))
                 missingItem = at->requiredItem;
         }
         else if (at->requiredItem2 && !GetPlayer()->HasItemCount(at->requiredItem2, 1))
@@ -824,7 +824,7 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket& recv_data)
             if (at->heroicKey)
             {
                 if (!GetPlayer()->HasItemCount(at->heroicKey, 1) &&
-                    (!at->heroicKey2 || !GetPlayer()->HasItemCount(at->heroicKey2, 1)))
+                        (!at->heroicKey2 || !GetPlayer()->HasItemCount(at->heroicKey2, 1)))
                     missingKey = at->heroicKey;
             }
             else if (at->heroicKey2 && !GetPlayer()->HasItemCount(at->heroicKey2, 1))
@@ -918,12 +918,12 @@ void WorldSession::HandleSetActionButtonOpcode(WorldPacket& recv_data)
     }
 }
 
-void WorldSession::HandleCompleteCinematic(WorldPacket & /*recv_data*/)
+void WorldSession::HandleCompleteCinematic(WorldPacket& /*recv_data*/)
 {
     DEBUG_LOG("WORLD: Player is watching cinema");
 }
 
-void WorldSession::HandleNextCinematicCamera(WorldPacket & /*recv_data*/)
+void WorldSession::HandleNextCinematicCamera(WorldPacket& /*recv_data*/)
 {
     DEBUG_LOG("WORLD: Which movie to play");
 }
@@ -1417,7 +1417,7 @@ void WorldSession::HandleSetDungeonDifficultyOpcode(WorldPacket& recv_data)
     }
 }
 
-void WorldSession::HandleCancelMountAuraOpcode(WorldPacket & /*recv_data*/)
+void WorldSession::HandleCancelMountAuraOpcode(WorldPacket& /*recv_data*/)
 {
     DEBUG_LOG("WORLD: CMSG_CANCEL_MOUNT_AURA");
 
@@ -1454,7 +1454,7 @@ void WorldSession::HandleMoveSetCanFlyAckOpcode(WorldPacket& recv_data)
     _player->m_movementInfo.SetMovementFlags(movementInfo.GetMovementFlags());
 }
 
-void WorldSession::HandleRequestPetInfoOpcode(WorldPacket & /*recv_data */)
+void WorldSession::HandleRequestPetInfoOpcode(WorldPacket& /*recv_data */)
 {
     /*
         DEBUG_LOG("WORLD: CMSG_REQUEST_PET_INFO");
@@ -1481,7 +1481,7 @@ void WorldSession::HandleGrantLevel(WorldPacket& recv_data)
     if (!guid.IsPlayer())
         return;
 
-    Player * target = sObjectMgr.GetPlayer(guid);
+    Player* target = sObjectMgr.GetPlayer(guid);
 
     // cheating and other check
     ReferAFriendError err = _player->GetReferFriendError(target, false);
@@ -1513,7 +1513,7 @@ void WorldSession::HandleAcceptGrantLevel(WorldPacket& recv_data)
         return;
 
     _player->AccessGrantableLevel(ObjectGuid());
-    Player * grant_giver = sObjectMgr.GetPlayer(guid);
+    Player* grant_giver = sObjectMgr.GetPlayer(guid);
 
     if (!grant_giver)
         return;

@@ -62,7 +62,7 @@ typedef struct
     unsigned int id;
 } map_id;
 
-map_id * map_ids;
+map_id* map_ids;
 uint32 map_count;
 char output_path[128] = ".";
 char input_path[1024] = ".";
@@ -72,14 +72,14 @@ bool preciseVectorData = false;
 // Constants
 
 //static const char * szWorkDirMaps = ".\\Maps";
-const char * szWorkDirWmo = "./Buildings";
-const char * szRawVMAPMagic = "VMAPs03";
+const char* szWorkDirWmo = "./Buildings";
+const char* szRawVMAPMagic = "VMAPs03";
 
 // Local testing functions
 
-static const char * GetPlainName(const char * szFileName)
+static const char* GetPlainName(const char* szFileName)
 {
-    const char * szTemp;
+    const char* szTemp;
 
     if ((szTemp = strrchr(szFileName, '\\')) != NULL)
         szFileName = szTemp + 1;
@@ -107,12 +107,12 @@ int ExtractWmo()
                 //std::cout << "found *.wmo file " << *fname << std::endl;
                 sprintf(szLocalFile, "%s/%s", szWorkDirWmo, GetPlainName(fname->c_str()));
                 fixnamen(szLocalFile, strlen(szLocalFile));
-                FILE * n;
+                FILE* n;
                 if ((n = fopen(szLocalFile, "rb")) == NULL)
                 {
                     int p = 0;
                     //Select root wmo files
-                    const char * rchr = strrchr(GetPlainName(fname->c_str()), 0x5f);
+                    const char* rchr = strrchr(GetPlainName(fname->c_str()), 0x5f);
                     if (rchr != NULL)
                     {
                         char cpy[4];
@@ -127,14 +127,14 @@ int ExtractWmo()
                     if (p != 3)
                     {
                         std::cout << "Extracting " << *fname << std::endl;
-                        WMORoot * froot = new WMORoot(*fname);
+                        WMORoot* froot = new WMORoot(*fname);
                         if (!froot->open())
                         {
                             printf("Couldn't open RootWmo!!!\n");
                             delete froot;
                             continue;
                         }
-                        FILE *output = fopen(szLocalFile, "wb");
+                        FILE* output = fopen(szLocalFile, "wb");
                         if (!output)
                         {
                             printf("couldn't open %s for writing!\n", szLocalFile);
@@ -154,7 +154,7 @@ int ExtractWmo()
                                 sprintf(groupFileName, "%s_%03d.wmo", temp, i);
                                 //printf("Trying to open groupfile %s\n",groupFileName);
                                 string s = groupFileName;
-                                WMOGroup * fgroup = new WMOGroup(s);
+                                WMOGroup* fgroup = new WMOGroup(s);
                                 if (!fgroup->open())
                                 {
                                     printf("Could not open all Group file for: %s\n", GetPlainName(fname->c_str()));
@@ -206,7 +206,7 @@ void ParsMapFiles()
             {
                 for (int y = 0; y < 64; ++y)
                 {
-                    if (ADTFile *ADT = WDT.GetMap(x, y))
+                    if (ADTFile* ADT = WDT.GetMap(x, y))
                     {
                         //sprintf(id_filename,"%02u %02u %03u",x,y,map_ids[i].id);//!!!!!!!!!
                         ADT->init(map_ids[i].id, x, y);
@@ -338,7 +338,7 @@ bool fillArchiveNameVector(std::vector<std::string>& pArchiveNames)
     return true;
 }
 
-bool processArgv(int argc, char ** argv, const char *versionString)
+bool processArgv(int argc, char** argv, const char* versionString)
 {
     bool result = true;
     hasInputPathParam = false;
@@ -400,10 +400,10 @@ bool processArgv(int argc, char ** argv, const char *versionString)
 // Arg2 - Listfile name
 //
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
     bool success = true;
-    const char *versionString = "V3.00 2010_07";
+    const char* versionString = "V3.00 2010_07";
 
     // Use command line arguments, when some
     if (!processArgv(argc, argv, versionString))
@@ -440,7 +440,7 @@ int main(int argc, char ** argv)
     fillArchiveNameVector(archiveNames);
     for (size_t i = 0; i < archiveNames.size(); ++i)
     {
-        MPQArchive *archive = new MPQArchive(archiveNames[i].c_str());
+        MPQArchive* archive = new MPQArchive(archiveNames[i].c_str());
         if (!gOpenArchives.size() || gOpenArchives.front() != archive)
             delete archive;
     }
@@ -459,7 +459,7 @@ int main(int argc, char ** argv)
     //map.dbc
     if (success)
     {
-        DBCFile * dbc = new DBCFile("DBFilesClient\\Map.dbc");
+        DBCFile* dbc = new DBCFile("DBFilesClient\\Map.dbc");
         if (!dbc->open())
         {
             delete dbc;

@@ -219,8 +219,8 @@ void AuthSocket::OnRead()
         for (i = 0; i < AUTH_TOTAL_COMMANDS; ++i)
         {
             if ((uint8)table[i].cmd == _cmd &&
-                (table[i].status == STATUS_CONNECTED ||
-                 (_authed && table[i].status == STATUS_AUTHED)))
+                    (table[i].status == STATUS_CONNECTED ||
+                     (_authed && table[i].status == STATUS_AUTHED)))
             {
                 DEBUG_LOG("[Auth] got data for cmd %u recv length %u",
                           (uint32)_cmd, (uint32)recv_len());
@@ -791,7 +791,7 @@ bool AuthSocket::_HandleReconnectChallenge()
 
     _os = (const char*)ch->os;
 
-    if(_os.size() > 4)
+    if (_os.size() > 4)
         return false;
 
     // Restore string order as its byte order is reversed

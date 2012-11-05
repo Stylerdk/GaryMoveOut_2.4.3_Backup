@@ -28,7 +28,7 @@ namespace Movement
         &SplineBase::EvaluateLinear,
         &SplineBase::EvaluateCatmullRom,
         &SplineBase::EvaluateBezier3,
-        (EvaluationMethtod)&SplineBase::UninitializedSpline,
+        (EvaluationMethtod)& SplineBase::UninitializedSpline,
     };
 
     SplineBase::EvaluationMethtod SplineBase::derivative_evaluators[SplineBase::ModesEnd] =
@@ -36,7 +36,7 @@ namespace Movement
         &SplineBase::EvaluateDerivativeLinear,
         &SplineBase::EvaluateDerivativeCatmullRom,
         &SplineBase::EvaluateDerivativeBezier3,
-        (EvaluationMethtod)&SplineBase::UninitializedSpline,
+        (EvaluationMethtod)& SplineBase::UninitializedSpline,
     };
 
     SplineBase::SegLenghtMethtod SplineBase::seglengths[SplineBase::ModesEnd] =
@@ -44,7 +44,7 @@ namespace Movement
         &SplineBase::SegLengthLinear,
         &SplineBase::SegLengthCatmullRom,
         &SplineBase::SegLengthBezier3,
-        (SegLenghtMethtod)&SplineBase::UninitializedSpline,
+        (SegLenghtMethtod)& SplineBase::UninitializedSpline,
     };
 
     SplineBase::InitMethtod SplineBase::initializers[SplineBase::ModesEnd] =
@@ -53,7 +53,7 @@ namespace Movement
         &SplineBase::InitCatmullRom,    // we should use catmullrom initializer even for linear mode! (client's internal structure limitation)
         &SplineBase::InitCatmullRom,
         &SplineBase::InitBezier3,
-        (InitMethtod)&SplineBase::UninitializedSpline,
+        (InitMethtod)& SplineBase::UninitializedSpline,
     };
 
 ///////////

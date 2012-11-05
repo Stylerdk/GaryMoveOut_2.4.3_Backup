@@ -792,15 +792,15 @@ void ObjectMgr::LoadEquipmentTemplates()
             }
 
             if (itemProto->InventoryType != INVTYPE_WEAPON &&
-                itemProto->InventoryType != INVTYPE_SHIELD &&
-                itemProto->InventoryType != INVTYPE_RANGED &&
-                itemProto->InventoryType != INVTYPE_2HWEAPON &&
-                itemProto->InventoryType != INVTYPE_WEAPONMAINHAND &&
-                itemProto->InventoryType != INVTYPE_WEAPONOFFHAND &&
-                itemProto->InventoryType != INVTYPE_HOLDABLE &&
-                itemProto->InventoryType != INVTYPE_THROWN &&
-                itemProto->InventoryType != INVTYPE_RANGEDRIGHT &&
-                itemProto->InventoryType != INVTYPE_RELIC)
+                    itemProto->InventoryType != INVTYPE_SHIELD &&
+                    itemProto->InventoryType != INVTYPE_RANGED &&
+                    itemProto->InventoryType != INVTYPE_2HWEAPON &&
+                    itemProto->InventoryType != INVTYPE_WEAPONMAINHAND &&
+                    itemProto->InventoryType != INVTYPE_WEAPONOFFHAND &&
+                    itemProto->InventoryType != INVTYPE_HOLDABLE &&
+                    itemProto->InventoryType != INVTYPE_THROWN &&
+                    itemProto->InventoryType != INVTYPE_RANGEDRIGHT &&
+                    itemProto->InventoryType != INVTYPE_RELIC)
             {
                 sLog.outErrorDb("Item (entry=%u) in creature_equip_template.equipentry%u for entry = %u is not equipable in a hand, forced to 0.", eqInfo->equipentry[j], j + 1, i);
                 const_cast<EquipmentInfo*>(eqInfo)->equipentry[j] = 0;
@@ -2203,9 +2203,9 @@ void ObjectMgr::LoadItemRequiredTarget()
                     for (int j = 0; j < MAX_EFFECT_INDEX; ++j)
                     {
                         if (pSpellInfo->EffectImplicitTargetA[j] == TARGET_CHAIN_DAMAGE ||
-                            pSpellInfo->EffectImplicitTargetB[j] == TARGET_CHAIN_DAMAGE ||
-                            pSpellInfo->EffectImplicitTargetA[j] == TARGET_DUELVSPLAYER ||
-                            pSpellInfo->EffectImplicitTargetB[j] == TARGET_DUELVSPLAYER)
+                                pSpellInfo->EffectImplicitTargetB[j] == TARGET_CHAIN_DAMAGE ||
+                                pSpellInfo->EffectImplicitTargetA[j] == TARGET_DUELVSPLAYER ||
+                                pSpellInfo->EffectImplicitTargetB[j] == TARGET_DUELVSPLAYER)
                         {
                             bIsItemSpellValid = true;
                             break;
@@ -3093,7 +3093,7 @@ void ObjectMgr::LoadArenaTeams()
 
         ArenaTeam* newArenaTeam = new ArenaTeam;
         if (!newArenaTeam->LoadArenaTeamFromDB(result) ||
-            !newArenaTeam->LoadMembersFromDB(arenaTeamMembersResult))
+                !newArenaTeam->LoadMembersFromDB(arenaTeamMembersResult))
         {
             newArenaTeam->Disband(NULL);
             delete newArenaTeam;
@@ -3633,7 +3633,7 @@ void ObjectMgr::LoadQuests()
                     for (int k = 0; k < MAX_EFFECT_INDEX; ++k)
                     {
                         if ((spellInfo->Effect[k] == SPELL_EFFECT_QUEST_COMPLETE && uint32(spellInfo->EffectMiscValue[k]) == qinfo->QuestId) ||
-                            spellInfo->Effect[k] == SPELL_EFFECT_SEND_EVENT)
+                                spellInfo->Effect[k] == SPELL_EFFECT_SEND_EVENT)
                         {
                             found = true;
                             break;
@@ -5095,9 +5095,9 @@ WorldSafeLocsEntry const* ObjectMgr::GetClosestGraveYard(float x, float y, float
         {
             // if find graveyard at different map from where entrance placed (or no entrance data), use any first
             if (!mapEntry ||
-                mapEntry->ghost_entrance_map < 0 ||
-                uint32(mapEntry->ghost_entrance_map) != entry->map_id ||
-                (mapEntry->ghost_entrance_x == 0 && mapEntry->ghost_entrance_y == 0))
+                    mapEntry->ghost_entrance_map < 0 ||
+                    uint32(mapEntry->ghost_entrance_map) != entry->map_id ||
+                    (mapEntry->ghost_entrance_x == 0 && mapEntry->ghost_entrance_y == 0))
             {
                 // not have any coordinates for check distance anyway
                 entryFar = entry;
@@ -5995,8 +5995,8 @@ void ObjectMgr::LoadPetNumber()
 
 std::string ObjectMgr::GeneratePetName(uint32 entry)
 {
-    std::vector<std::string> & list0 = PetHalfName0[entry];
-    std::vector<std::string> & list1 = PetHalfName1[entry];
+    std::vector<std::string>& list0 = PetHalfName0[entry];
+    std::vector<std::string>& list1 = PetHalfName1[entry];
 
     if (list0.empty() || list1.empty())
     {
@@ -6397,7 +6397,7 @@ struct SQLSpellLoader : public SQLStorageLoaderBase<SQLSpellLoader, SQLHashStora
             dst = D(src);
     }
 
-    void default_fill_to_str(uint32 field_pos, char const* /*src*/, char * & dst)
+    void default_fill_to_str(uint32 field_pos, char const* /*src*/, char*& dst)
     {
         if (field_pos == LOADED_SPELLDBC_FIELD_POS_SPELLNAME_0)
         {
@@ -6889,7 +6889,7 @@ void ObjectMgr::LoadGameObjectForQuests()
             case GAMEOBJECT_TYPE_QUESTGIVER:
             {
                 if (m_GOQuestRelations.find(go_entry) != m_GOQuestRelations.end() ||
-                    m_GOQuestInvolvedRelations.find(go_entry) != m_GOQuestInvolvedRelations.end())
+                        m_GOQuestInvolvedRelations.find(go_entry) != m_GOQuestInvolvedRelations.end())
                 {
                     mGameObjectForQuestSet.insert(go_entry);
                     ++count;

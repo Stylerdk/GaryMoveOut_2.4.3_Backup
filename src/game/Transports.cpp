@@ -205,7 +205,7 @@ struct keyFrame
     float tFrom, tTo;
 };
 
-bool Transport::GenerateWaypoints(uint32 pathid, std::set<uint32> &mapids)
+bool Transport::GenerateWaypoints(uint32 pathid, std::set<uint32>& mapids)
 {
     if (pathid >= sTaxiPathNodesByPath.size())
         return false;

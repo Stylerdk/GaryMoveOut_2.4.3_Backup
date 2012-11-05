@@ -42,12 +42,12 @@ WardenBase::~WardenBase()
     m_initialized = false;
 }
 
-void WardenBase::Init(WorldSession *pClient, BigNumber *K)
+void WardenBase::Init(WorldSession* pClient, BigNumber* K)
 {
     MANGOS_ASSERT(false);
 }
 
-ClientWardenModule *WardenBase::GetModuleForClient(WorldSession *session)
+ClientWardenModule* WardenBase::GetModuleForClient(WorldSession* session)
 {
     MANGOS_ASSERT(false);
     return NULL;
@@ -63,7 +63,7 @@ void WardenBase::RequestHash()
     MANGOS_ASSERT(false);
 }
 
-void WardenBase::HandleHashResult(ByteBuffer &buff)
+void WardenBase::HandleHashResult(ByteBuffer& buff)
 {
     MANGOS_ASSERT(false);
 }
@@ -73,7 +73,7 @@ void WardenBase::RequestData()
     MANGOS_ASSERT(false);
 }
 
-void WardenBase::HandleData(ByteBuffer &buff)
+void WardenBase::HandleData(ByteBuffer& buff)
 {
     MANGOS_ASSERT(false);
 }
@@ -157,17 +157,17 @@ void WardenBase::Update()
     }
 }
 
-void WardenBase::DecryptData(uint8 *Buffer, uint32 Len)
+void WardenBase::DecryptData(uint8* Buffer, uint32 Len)
 {
     iCrypto.UpdateData(Len, Buffer);
 }
 
-void WardenBase::EncryptData(uint8 *Buffer, uint32 Len)
+void WardenBase::EncryptData(uint8* Buffer, uint32 Len)
 {
     oCrypto.UpdateData(Len, Buffer);
 }
 
-bool WardenBase::IsValidCheckSum(uint32 checksum, const uint8 *Data, const uint16 Length)
+bool WardenBase::IsValidCheckSum(uint32 checksum, const uint8* Data, const uint16 Length)
 {
     uint32 newchecksum = BuildChecksum(Data, Length);
 
@@ -193,7 +193,7 @@ uint32 WardenBase::BuildChecksum(const uint8* data, uint32 dataLen)
     return checkSum;
 }
 
-void WorldSession::HandleWardenDataOpcode(WorldPacket & recv_data)
+void WorldSession::HandleWardenDataOpcode(WorldPacket& recv_data)
 {
     m_Warden->DecryptData(const_cast<uint8*>(recv_data.contents()), recv_data.size());
     uint8 Opcode;
@@ -201,7 +201,7 @@ void WorldSession::HandleWardenDataOpcode(WorldPacket & recv_data)
     sLog.outDebug("Got packet, opcode %02X, size %u", Opcode, recv_data.size());
     recv_data.hexlike();
 
-    switch(Opcode)
+    switch (Opcode)
     {
         case WARDEN_CMSG_MODULE_MISSING:
             m_Warden->SendModuleToClient();

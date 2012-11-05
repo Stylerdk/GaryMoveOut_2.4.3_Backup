@@ -50,8 +50,8 @@ class CWardenDataStorage
 
     public:
         inline uint32 GenerateInternalDataID() { return InternalDataID++; }
-        WardenData *GetWardenDataById(uint32 Id);
-        WardenDataResult *GetWardenResultById(uint32 Id);
+        WardenData* GetWardenDataById(uint32 Id);
+        WardenDataResult* GetWardenResultById(uint32 Id);
         void Init();
 
     protected:

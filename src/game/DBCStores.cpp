@@ -549,12 +549,12 @@ void LoadDBCStores(const std::string& dataPath)
 
     // Check loaded DBC files proper version
     if (!sSpellStore.LookupEntry(53085)            ||
-        !sSkillLineAbilityStore.LookupEntry(17514) ||
-        !sMapStore.LookupEntry(598)                ||
-        !sGemPropertiesStore.LookupEntry(1127)     ||
-        !sItemExtendedCostStore.LookupEntry(2425)  ||
-        !sCharTitlesStore.LookupEntry(71)          ||
-        !sAreaStore.LookupEntry(1768))
+            !sSkillLineAbilityStore.LookupEntry(17514) ||
+            !sMapStore.LookupEntry(598)                ||
+            !sGemPropertiesStore.LookupEntry(1127)     ||
+            !sItemExtendedCostStore.LookupEntry(2425)  ||
+            !sCharTitlesStore.LookupEntry(71)          ||
+            !sAreaStore.LookupEntry(1768))
     {
         sLog.outError("\nYou have _outdated_ DBC files. Please re-extract DBC files for one from client build: %s", AcceptableClientBuildsListStr().c_str());
         Log::WaitBeforeContinueIfNeed();
@@ -800,8 +800,8 @@ bool IsPointInAreaTriggerZone(AreaTriggerEntry const* atEntry, uint32 mapid, flo
         float dx = rotPlayerX - atEntry->x;
         float dy = rotPlayerY - atEntry->y;
         if ((fabs(dx) > atEntry->box_x / 2 + delta) ||
-            (fabs(dy) > atEntry->box_y / 2 + delta) ||
-            (fabs(dz) > atEntry->box_z / 2 + delta))
+                (fabs(dy) > atEntry->box_y / 2 + delta) ||
+                (fabs(dz) > atEntry->box_z / 2 + delta))
         {
             return false;
         }

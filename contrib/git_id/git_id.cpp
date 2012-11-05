@@ -129,12 +129,12 @@ char new_index_cmd[MAX_CMD];
 
 std::set<std::string> new_sql_updates;
 
-FILE *cmd_pipe;
+FILE* cmd_pipe;
 
 bool find_path()
 {
     printf("+ finding path\n");
-    char *ptr;
+    char* ptr;
     char cur_path[MAX_PATH];
     getcwd(cur_path, MAX_PATH);
     size_t len = strlen(cur_path);
@@ -244,7 +244,7 @@ bool check_fwd()
     return true;
 }
 
-int get_rev(const char *from_msg)
+int get_rev(const char* from_msg)
 {
     // accept only the rev number format, not the sql update format
     char nr_str[256];
@@ -306,7 +306,7 @@ std::string generateSqlHeader()
     return newData.str();
 }
 
-void system_switch_index(const char *cmd)
+void system_switch_index(const char* cmd)
 {
     // do the command for the original index and then for the new index
     // both need to be updated with the changes before commit
@@ -389,7 +389,7 @@ bool find_head_msg()
         }
 
         // skip the rev number in the commit
-        char *p = strchr(head_message, ']'), *q = head_message;
+        char* p = strchr(head_message, ']'), *q = head_message;
         assert(p && *(p + 1));
         p += 2;
         while (*p) *q = *p, p++, q++;
@@ -428,7 +428,7 @@ struct sql_update_info
     bool has_table;
 };
 
-bool get_sql_update_info(const char *buffer, sql_update_info &info)
+bool get_sql_update_info(const char* buffer, sql_update_info& info)
 {
     info.table[0] = '\0';
     int dummy[3];
@@ -437,7 +437,7 @@ bool get_sql_update_info(const char *buffer, sql_update_info &info)
         return false;
 
     if (sscanf(buffer, REV_SCAN "_%[^_]_%d_%[^_]_%[^.].sql", &info.rev, &info.parentRev, &info.nr, info.db, info.table) != 5 &&
-        sscanf(buffer, REV_SCAN "_%[^_]_%d_%[^.].sql", &info.rev, &info.parentRev, &info.nr, info.db) != 3)
+            sscanf(buffer, REV_SCAN "_%[^_]_%d_%[^.].sql", &info.rev, &info.parentRev, &info.nr, info.db) != 3)
     {
         return false;
     }
@@ -524,11 +524,11 @@ bool find_sql_updates()
     return true;
 }
 
-bool copy_file(const char *src_file, const char *dst_file)
+bool copy_file(const char* src_file, const char* dst_file)
 {
-    FILE * fin = fopen(src_file, "rb");
+    FILE* fin = fopen(src_file, "rb");
     if (!fin) return false;
-    FILE * fout = fopen(dst_file, "wb");
+    FILE* fout = fopen(dst_file, "wb");
     if (!fout) { fclose(fin); return false; }
 
     for (char c = getc(fin); !feof(fin); putc(c, fout), c = getc(fin));
@@ -562,7 +562,7 @@ bool convert_sql_updates()
         else
             strncpy(new_req_name, new_name, MAX_PATH);
 
-        FILE * fin = fopen(src_file, "r");
+        FILE* fin = fopen(src_file, "r");
         if (!fin) return false;
 
         std::ostringstream out_buff;
@@ -596,7 +596,7 @@ bool convert_sql_updates()
 
         fclose(fin);
 
-        FILE * fout = fopen(dst_file, "w");
+        FILE* fout = fopen(dst_file, "w");
         if (!fout) { fclose(fin); return false; }
 
         fprintf(fout, "%s", out_buff.str().c_str());
@@ -642,7 +642,7 @@ bool generate_sql_makefile()
     {
         buffer[strlen(buffer) - 1] = '\0';
         if (buffer[strlen(buffer) - 1] != '/' &&
-            strncmp(buffer, "Makefile.am", MAX_BUF) != 0)
+                strncmp(buffer, "Makefile.am", MAX_BUF) != 0)
         {
             if (new_sql_updates.find(buffer) != new_sql_updates.end())
             {
@@ -660,7 +660,7 @@ bool generate_sql_makefile()
     // write the makefile
     char file_name[MAX_PATH];
     snprintf(file_name, MAX_PATH, "%s%s/Makefile.am", path_prefix, sql_update_dir);
-    FILE *fout = fopen(file_name, "w");
+    FILE* fout = fopen(file_name, "w");
     if (!fout) { pclose(cmd_pipe); return false; }
 
     fprintf(fout,
@@ -739,9 +739,9 @@ bool change_sql_database()
 
         rename(old_file, tmp_file);
 
-        FILE *fin = fopen(tmp_file, "r");
+        FILE* fin = fopen(tmp_file, "r");
         if (!fin) return false;
-        FILE *fout = fopen(old_file, "w");
+        FILE* fout = fopen(old_file, "w");
         if (!fout) return false;
 
         snprintf(dummy, MAX_CMD, "CREATE TABLE `%s` (\n", db_version_table[i]);
@@ -857,7 +857,7 @@ bool prepare_new_index()
     // copy the existing index file to a new one
     char src_file[MAX_PATH], dst_file[MAX_PATH];
 
-    char *old_index = getenv("GIT_INDEX_FILE");
+    char* old_index = getenv("GIT_INDEX_FILE");
     if (old_index) strncpy(src_file, old_index, MAX_PATH);
     else snprintf(src_file, MAX_PATH, "%s.git/index", path_prefix);
     snprintf(dst_file, MAX_PATH, "%s%s", path_prefix, new_index_file);
@@ -889,7 +889,7 @@ bool cleanup_new_index()
 
 #define DO(cmd) if(!cmd) { printf("FAILED\n"); return 1; }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     for (int i = 1; i < argc; i++)
     {

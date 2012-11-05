@@ -44,7 +44,7 @@ WardenWin::~WardenWin()
 {
 }
 
-void WardenWin::Init(WorldSession *pClient, BigNumber *K)
+void WardenWin::Init(WorldSession* pClient, BigNumber* K)
 {
     Client = pClient;
     // Generate Warden Key
@@ -77,9 +77,9 @@ void WardenWin::Init(WorldSession *pClient, BigNumber *K)
     RequestModule();
 }
 
-ClientWardenModule *WardenWin::GetModuleForClient(WorldSession *session)
+ClientWardenModule* WardenWin::GetModuleForClient(WorldSession* session)
 {
-    ClientWardenModule *mod = new ClientWardenModule;
+    ClientWardenModule* mod = new ClientWardenModule;
 
     uint32 len = sizeof(Module_79C0768D657977D697E10BAD956CCED1_Data);
 
@@ -159,7 +159,7 @@ void WardenWin::RequestHash()
     Client->SendPacket(&pkt);
 }
 
-void WardenWin::HandleHashResult(ByteBuffer &buff)
+void WardenWin::HandleHashResult(ByteBuffer& buff)
 {
     buff.rpos(buff.wpos());
 
@@ -214,7 +214,7 @@ void WardenWin::RequestData()
 
     uint32 id;
     uint8 type;
-    WardenData *wd;
+    WardenData* wd;
 
     SendDataId.clear();
 
@@ -333,7 +333,7 @@ void WardenWin::RequestData()
     sLog.outDebug(stream.str().c_str());
 }
 
-void WardenWin::HandleData(ByteBuffer &buff)
+void WardenWin::HandleData(ByteBuffer& buff)
 {
     sLog.outDebug("Handle data");
 
@@ -387,8 +387,8 @@ void WardenWin::HandleData(ByteBuffer &buff)
         sLog.outDebug("Ticks diff %u", ourTicks - newClientTicks);
     }
 
-    WardenDataResult *rs;
-    WardenData *rd;
+    WardenDataResult* rs;
+    WardenData* rd;
     uint8 type;
 
     for (std::vector<uint32>::iterator itr = SendDataId.begin(); itr != SendDataId.end(); ++itr)
@@ -468,7 +468,7 @@ void WardenWin::HandleData(ByteBuffer &buff)
 
                 if (luaStrLen != 0)
                 {
-                    char *str = new char[luaStrLen + 1];
+                    char* str = new char[luaStrLen + 1];
                     memset(str, 0, luaStrLen + 1);
                     memcpy(str, buff.contents() + buff.rpos(), luaStrLen);
                     sLog.outDebug("Lua string: %s", str);

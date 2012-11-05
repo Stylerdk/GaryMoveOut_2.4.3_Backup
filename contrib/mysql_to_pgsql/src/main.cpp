@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
     ///////////////////////////////
     ///////PGSQL Connect///////////
     ///////////////////////////////
-    PGconn *mPGconn = NULL;
+    PGconn* mPGconn = NULL;
     mPGconn = PQsetdbLogin(sPGhost, sPGport, NULL, NULL, sPGdb, sPGuser, sPGpass);
 
     if (PQstatus(mPGconn) != CONNECTION_OK)
@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
     ///////////////////////////////
     ///////MySQL Connect///////////
     ///////////////////////////////
-    MYSQL *mysqlInit;
+    MYSQL* mysqlInit;
     mysqlInit = mysql_init(NULL);
     if (!mysqlInit)
     {
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 
     mysql_options(mysqlInit, MYSQL_SET_CHARSET_NAME, "utf8");
 
-    MYSQL *mMysql;
+    MYSQL* mMysql;
     mMysql = mysql_real_connect(mysqlInit, sMYhost, sMYuser,  sMYpass, sMYdb, iMYport, NULL, 0);
 
     if (mMysql)
@@ -97,9 +97,9 @@ int main(int argc, char* argv[])
 
     //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
-    MYSQL_RES *result = NULL;
+    MYSQL_RES* result = NULL;
     MYSQL_ROW row;
-    MYSQL_FIELD *fields = NULL;
+    MYSQL_FIELD* fields = NULL;
     uint64 rowCount = 0;
     uint32 fieldCount = 0;
     result = mysql_list_tables(mMysql , NULL);
@@ -176,8 +176,8 @@ int main(int argc, char* argv[])
         ostringstream prim_key_str;
         ostringstream index_str;
         for (v_iter = (*citr).second.begin();
-             v_iter != (*citr).second.end();
-             ++v_iter)
+                v_iter != (*citr).second.end();
+                ++v_iter)
         {
             sql_str << " " << (*v_iter).name;
             if (((*v_iter).flags & AUTO_INCREMENT_FLAG) != 0)

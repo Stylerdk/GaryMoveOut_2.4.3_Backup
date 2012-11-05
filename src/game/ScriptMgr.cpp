@@ -359,10 +359,10 @@ void ScriptMgr::LoadScripts(ScriptMapMapName& scripts, const char* tablename)
                 }
 
                 if (info->type == GAMEOBJECT_TYPE_FISHINGNODE ||
-                    info->type == GAMEOBJECT_TYPE_FISHINGHOLE ||
-                    info->type == GAMEOBJECT_TYPE_DOOR        ||
-                    info->type == GAMEOBJECT_TYPE_BUTTON      ||
-                    info->type == GAMEOBJECT_TYPE_TRAP)
+                        info->type == GAMEOBJECT_TYPE_FISHINGHOLE ||
+                        info->type == GAMEOBJECT_TYPE_DOOR        ||
+                        info->type == GAMEOBJECT_TYPE_BUTTON      ||
+                        info->type == GAMEOBJECT_TYPE_TRAP)
                 {
                     sLog.outErrorDb("Table `%s` have gameobject type (%u) unsupported by command SCRIPT_COMMAND_RESPAWN_GAMEOBJECT for script id %u", tablename, info->type, tmp.id);
                     continue;
@@ -1008,7 +1008,8 @@ void ScriptAction::HandleScriptStep()
     WorldObject* pTarget;
     Object* pSourceOrItem;                                  // Stores a provided pSource (if exists as WorldObject) or source-item
 
-    {                                                       // Add scope for source & target variables so that they are not used below
+    {
+        // Add scope for source & target variables so that they are not used below
         Object* source = NULL;
         Object* target = NULL;
         if (!GetScriptCommandObject(m_sourceGuid, true, source))
@@ -1122,8 +1123,8 @@ void ScriptAction::HandleScriptStep()
 
             // Just turn around
             if ((m_script->x == 0.0f && m_script->y == 0.0f && m_script->z == 0.0f) ||
-                // Check point-to-point distance, hence revert effect of bounding radius
-                ((Unit*)pSource)->IsWithinDist3d(m_script->x, m_script->y, m_script->z, 0.01f - ((Unit*)pSource)->GetObjectBoundingRadius()))
+                    // Check point-to-point distance, hence revert effect of bounding radius
+                    ((Unit*)pSource)->IsWithinDist3d(m_script->x, m_script->y, m_script->z, 0.01f - ((Unit*)pSource)->GetObjectBoundingRadius()))
             {
                 ((Unit*)pSource)->SetFacingTo(m_script->o);
                 break;
@@ -1279,9 +1280,9 @@ void ScriptAction::HandleScriptStep()
             }
 
             if (pGo->GetGoType() == GAMEOBJECT_TYPE_FISHINGNODE ||
-                pGo->GetGoType() == GAMEOBJECT_TYPE_DOOR        ||
-                pGo->GetGoType() == GAMEOBJECT_TYPE_BUTTON      ||
-                pGo->GetGoType() == GAMEOBJECT_TYPE_TRAP)
+                    pGo->GetGoType() == GAMEOBJECT_TYPE_DOOR        ||
+                    pGo->GetGoType() == GAMEOBJECT_TYPE_BUTTON      ||
+                    pGo->GetGoType() == GAMEOBJECT_TYPE_TRAP)
             {
                 sLog.outError(" DB-SCRIPTS: Process table `%s` id %u, command %u can not be used with gameobject of type %u (guid: %u, buddyEntry: %u).", m_table, m_script->id, m_script->command, uint32(pGo->GetGoType()), m_script->respawnGo.goGuid, m_script->buddyEntry);
                 break;
@@ -1353,7 +1354,7 @@ void ScriptAction::HandleScriptStep()
             }
 
             if ((m_script->command == SCRIPT_COMMAND_OPEN_DOOR && pDoor->GetGoState() != GO_STATE_READY) ||
-                (m_script->command == SCRIPT_COMMAND_CLOSE_DOOR && pDoor->GetGoState() == GO_STATE_READY))
+                    (m_script->command == SCRIPT_COMMAND_CLOSE_DOOR && pDoor->GetGoState() == GO_STATE_READY))
                 break;                                      // to be opened door already open, or to be closed door already closed
 
             pDoor->UseDoorOrButton(time_to_reset);

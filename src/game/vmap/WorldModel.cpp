@@ -85,20 +85,20 @@ namespace VMAP
 
     class TriBoundFunc
     {
-    public:
-        TriBoundFunc(std::vector<Vector3>& vert): vertices(vert.begin()) {}
-        void operator()(const MeshTriangle& tri, G3D::AABox& out) const
-        {
-            G3D::Vector3 lo = vertices[tri.idx0];
-            G3D::Vector3 hi = lo;
+        public:
+            TriBoundFunc(std::vector<Vector3>& vert): vertices(vert.begin()) {}
+            void operator()(const MeshTriangle& tri, G3D::AABox& out) const
+            {
+                G3D::Vector3 lo = vertices[tri.idx0];
+                G3D::Vector3 hi = lo;
 
-            lo = (lo.min(vertices[tri.idx1])).min(vertices[tri.idx2]);
-            hi = (hi.max(vertices[tri.idx1])).max(vertices[tri.idx2]);
+                lo = (lo.min(vertices[tri.idx1])).min(vertices[tri.idx2]);
+                hi = (hi.max(vertices[tri.idx1])).max(vertices[tri.idx2]);
 
-            out = G3D::AABox(lo, hi);
-        }
-    protected:
-        const std::vector<Vector3>::const_iterator vertices;
+                out = G3D::AABox(lo, hi);
+            }
+        protected:
+            const std::vector<Vector3>::const_iterator vertices;
     };
 
     // ===================== WmoLiquid ==================================
@@ -432,40 +432,40 @@ namespace VMAP
 
     class WModelAreaCallback
     {
-    public:
-        WModelAreaCallback(const std::vector<GroupModel>& vals, const Vector3& down):
-            prims(vals.begin()), hit(vals.end()), minVol(G3D::inf()), zDist(G3D::inf()), zVec(down) {}
-        std::vector<GroupModel>::const_iterator prims;
-        std::vector<GroupModel>::const_iterator hit;
-        float minVol;
-        float zDist;
-        Vector3 zVec;
-        void operator()(const Vector3& point, uint32 entry)
-        {
-            float group_Z;
-            // float pVol = prims[entry].GetBound().volume();
-            // if(pVol < minVol)
-            //{
-            /* if (prims[entry].iBound.contains(point)) */
-            if (prims[entry].IsInsideObject(point, zVec, group_Z))
+        public:
+            WModelAreaCallback(const std::vector<GroupModel>& vals, const Vector3& down):
+                prims(vals.begin()), hit(vals.end()), minVol(G3D::inf()), zDist(G3D::inf()), zVec(down) {}
+            std::vector<GroupModel>::const_iterator prims;
+            std::vector<GroupModel>::const_iterator hit;
+            float minVol;
+            float zDist;
+            Vector3 zVec;
+            void operator()(const Vector3& point, uint32 entry)
             {
-                // minVol = pVol;
-                // hit = prims + entry;
-                if (group_Z < zDist)
+                float group_Z;
+                // float pVol = prims[entry].GetBound().volume();
+                // if(pVol < minVol)
+                //{
+                /* if (prims[entry].iBound.contains(point)) */
+                if (prims[entry].IsInsideObject(point, zVec, group_Z))
                 {
-                    zDist = group_Z;
-                    hit = prims + entry;
-                }
+                    // minVol = pVol;
+                    // hit = prims + entry;
+                    if (group_Z < zDist)
+                    {
+                        zDist = group_Z;
+                        hit = prims + entry;
+                    }
 #ifdef VMAP_DEBUG
-                const GroupModel& gm = prims[entry];
-                printf("%10u %8X %7.3f,%7.3f,%7.3f | %7.3f,%7.3f,%7.3f | z=%f, p_z=%f\n", gm.GetWmoID(), gm.GetMogpFlags(),
-                       gm.GetBound().low().x, gm.GetBound().low().y, gm.GetBound().low().z,
-                       gm.GetBound().high().x, gm.GetBound().high().y, gm.GetBound().high().z, group_Z, point.z);
+                    const GroupModel& gm = prims[entry];
+                    printf("%10u %8X %7.3f,%7.3f,%7.3f | %7.3f,%7.3f,%7.3f | z=%f, p_z=%f\n", gm.GetWmoID(), gm.GetMogpFlags(),
+                           gm.GetBound().low().x, gm.GetBound().low().y, gm.GetBound().low().z,
+                           gm.GetBound().high().x, gm.GetBound().high().y, gm.GetBound().high().z, group_Z, point.z);
 #endif
+                }
+                //}
+                // std::cout << "trying to intersect '" << prims[entry].name << "'\n";
             }
-            //}
-            // std::cout << "trying to intersect '" << prims[entry].name << "'\n";
-        }
     };
 
     bool WorldModel::IntersectPoint(const G3D::Vector3& p, const G3D::Vector3& down, float& dist, AreaInfo& info) const

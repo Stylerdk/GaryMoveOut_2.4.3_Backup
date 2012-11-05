@@ -140,8 +140,8 @@ void MessageDistDeliverer::Visit(CameraMapType& m)
         Player* owner = iter->getSource()->GetOwner();
 
         if ((i_toSelf || owner != &i_player) &&
-            (!i_ownTeamOnly || owner->GetTeam() == i_player.GetTeam()) &&
-            (!i_dist || iter->getSource()->GetBody()->IsWithinDist(&i_player, i_dist)))
+                (!i_ownTeamOnly || owner->GetTeam() == i_player.GetTeam()) &&
+                (!i_dist || iter->getSource()->GetBody()->IsWithinDist(&i_player, i_dist)))
         {
             if (WorldSession* session = owner->GetSession())
                 session->SendPacket(i_message);
@@ -162,7 +162,7 @@ void ObjectMessageDistDeliverer::Visit(CameraMapType& m)
 }
 
 template<class T>
-void ObjectUpdater::Visit(GridRefManager<T> &m)
+void ObjectUpdater::Visit(GridRefManager<T>& m)
 {
     for (typename GridRefManager<T>::iterator iter = m.begin(); iter != m.end(); ++iter)
     {

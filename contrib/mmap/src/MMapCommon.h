@@ -76,7 +76,7 @@ namespace MMAP
         LISTFILE_OK = 1
     };
 
-    inline ListFilesResult getDirContents(vector<string> &fileList, string dirpath = ".", string filter = "*", bool includeSubDirs = false)
+    inline ListFilesResult getDirContents(vector<string>& fileList, string dirpath = ".", string filter = "*", bool includeSubDirs = false)
     {
 #ifdef WIN32
         HANDLE hFind;
@@ -100,9 +100,9 @@ namespace MMAP
         FindClose(hFind);
 
 #else
-        const char *p = dirpath.c_str();
-        DIR * dirp = opendir(p);
-        struct dirent * dp;
+        const char* p = dirpath.c_str();
+        DIR* dirp = opendir(p);
+        struct dirent* dp;
 
         while (dirp)
         {

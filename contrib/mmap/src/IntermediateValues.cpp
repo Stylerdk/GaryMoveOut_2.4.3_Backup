@@ -199,7 +199,7 @@ namespace MMAP
         fwrite(mesh->meshes, sizeof(int), mesh->nmeshes * 4, file);
     }
 
-    void IntermediateValues::generateObjFile(uint32 mapID, uint32 tileX, uint32 tileY, MeshData &meshData)
+    void IntermediateValues::generateObjFile(uint32 mapID, uint32 tileX, uint32 tileY, MeshData& meshData)
     {
         char objFileName[255];
         sprintf(objFileName, "meshes/map%03u%02u%02u.obj", mapID, tileY, tileX);

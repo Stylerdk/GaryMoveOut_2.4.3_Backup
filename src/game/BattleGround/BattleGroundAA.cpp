@@ -62,7 +62,7 @@ void BattleGroundAA::AddPlayer(Player* plr)
     m_PlayerScores[plr->GetObjectGuid()] = sc;
 }
 
-void BattleGroundAA::RemovePlayer(Player * /*plr*/, ObjectGuid /*guid*/)
+void BattleGroundAA::RemovePlayer(Player* /*plr*/, ObjectGuid /*guid*/)
 {
 }
 
@@ -71,7 +71,7 @@ void BattleGroundAA::HandleKillPlayer(Player* player, Player* killer)
     BattleGround::HandleKillPlayer(player, killer);
 }
 
-void BattleGroundAA::HandleAreaTrigger(Player * /*Source*/, uint32 /*Trigger*/)
+void BattleGroundAA::HandleAreaTrigger(Player* /*Source*/, uint32 /*Trigger*/)
 {
 }
 
