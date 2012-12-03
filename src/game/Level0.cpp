@@ -116,7 +116,7 @@ bool ChatHandler::HandleServerInfoCommand(char* /*args*/)
     PSendSysMessage(LANG_USING_WORLD_DB, sWorld.GetDBVersion());
     PSendSysMessage(LANG_USING_EVENT_AI, sWorld.GetCreatureEventAIVersion()); */
     PSendSysMessage("Core: GaryMoveOut 2.4.3");
-    PSendSysMessage("Rev: XX.11.2012");
+    PSendSysMessage("Rev: XX.12.2012");
     PSendSysMessage("Sponsors: BlizzNet.PL");
     PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
     PSendSysMessage(LANG_UPTIME, str.c_str());

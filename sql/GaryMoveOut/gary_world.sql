@@ -1,10 +1,7 @@
 -- Add AutoAnnounce System. 
-DROP TABLE IF EXISTS `autobroadcast`;
-CREATE TABLE `autobroadcast` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `text` longtext NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+DELETE FROM `mangos_string` WHERE `entry` = '11000';
+INSERT INTO `mangos_string` (`entry`, `content_default`, `content_loc1`, `content_loc2`, `content_loc3`, `content_loc4`, `content_loc5`, `content_loc6`, `content_loc7`, `content_loc8`) VALUES
+(11000, '|cf00FF000[|c100FFFF0Astranaar|cf00FF000]: |c1FFFF000%s', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- Add Name Admin, GameMaster and Guard Announces.
 REPLACE INTO `mangos_string` (`entry`, `content_default`, `content_loc1`, `content_loc2`, `content_loc3`, `content_loc4`, `content_loc5`, `content_loc6`, `content_loc7`, `content_loc8`) VALUES
