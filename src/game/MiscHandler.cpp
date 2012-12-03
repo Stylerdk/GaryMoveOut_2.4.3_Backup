@@ -293,7 +293,7 @@ void WorldSession::HandleLogoutRequestOpcode(WorldPacket& /*recv_data*/)
     // not set flags if player can't free move to prevent lost state at logout cancel
     if (GetPlayer()->CanFreeMove())
     {
-        float height = GetPlayer()->GetTerrain()->GetHeight(GetPlayer()->GetPositionX(), GetPlayer()->GetPositionY(), GetPlayer()->GetPositionZ());
+        float height = GetPlayer()->GetMap()->GetHeight(GetPlayer()->GetPositionX(), GetPlayer()->GetPositionY(), GetPlayer()->GetPositionZ());
         if ((GetPlayer()->GetPositionZ() < height + 0.1f) && !(GetPlayer()->IsInWater()))
             GetPlayer()->SetStandState(UNIT_STAND_STATE_SIT);
 
@@ -405,12 +405,12 @@ void WorldSession::HandleSetSelectionOpcode(WorldPacket& recv_data)
     ObjectGuid guid;
     recv_data >> guid;
 
+    _player->SetSelectionGuid(guid);
+
     // update reputation list if need
     Unit* unit = ObjectAccessor::GetUnit(*_player, guid);   // can select group members at diff maps
     if (!unit)
         return;
-
-    _player->SetSelectionGuid(guid);
 
     if (FactionTemplateEntry const* factionTemplateEntry = sFactionTemplateStore.LookupEntry(unit->getFaction()))
         _player->GetReputationMgr().SetVisible(factionTemplateEntry);

@@ -92,9 +92,9 @@ class MANGOS_DLL_SPEC ChatHandler
 
         virtual void SendSysMessage(const char* str);
 
-        void SendSysMessage(int32     entry);
+        void SendSysMessage(int32 entry);
         void PSendSysMessage(const char* format, ...) ATTR_PRINTF(2, 3);
-        void PSendSysMessage(int32     entry, ...);
+        void PSendSysMessage(int32 entry, ...);
 
         bool ParseCommands(const char* text);
         ChatCommand const* FindCommand(char const* text);
@@ -102,7 +102,7 @@ class MANGOS_DLL_SPEC ChatHandler
         bool isValidChatMessage(const char* msg);
         bool HasSentErrorMessage() { return sentErrorMessage;}
     protected:
-        explicit ChatHandler() : m_session(NULL) {}      // for CLI subclass
+        explicit ChatHandler() : m_session(NULL) {} // for CLI subclass
 
         bool hasStringAbbr(const char* name, const char* part);
 
@@ -572,6 +572,7 @@ class MANGOS_DLL_SPEC ChatHandler
         bool HandleRepairitemsCommand(char* args);
         bool HandleStableCommand(char* args);
         bool HandleWaterwalkCommand(char* args);
+        bool HandlePlayerbotCommand(char* args);
         bool HandleQuitCommand(char* args);
 
         bool HandleMmapPathCommand(char* args);
@@ -584,40 +585,40 @@ class MANGOS_DLL_SPEC ChatHandler
         //! Development Commands
         bool HandleSaveAllCommand(char* args);
 
-        Player*   getSelectedPlayer();
+        Player* getSelectedPlayer();
         Creature* getSelectedCreature();
-        Unit*     getSelectedUnit();
+        Unit* getSelectedUnit();
 
         // extraction different type params from args string, all functions update (char** args) to first unparsed tail symbol at return
-        void  SkipWhiteSpaces(char** args);
-        bool  ExtractInt32(char** args, int32& val);
-        bool  ExtractOptInt32(char** args, int32& val, int32 defVal);
-        bool  ExtractUInt32Base(char** args, uint32& val, uint32 base);
-        bool  ExtractUInt32(char** args, uint32& val) { return ExtractUInt32Base(args, val, 10); }
-        bool  ExtractOptUInt32(char** args, uint32& val, uint32 defVal);
-        bool  ExtractFloat(char** args, float& val);
-        bool  ExtractOptFloat(char** args, float& val, float defVal);
+        void SkipWhiteSpaces(char** args);
+        bool ExtractInt32(char** args, int32& val);
+        bool ExtractOptInt32(char** args, int32& val, int32 defVal);
+        bool ExtractUInt32Base(char** args, uint32& val, uint32 base);
+        bool ExtractUInt32(char** args, uint32& val) { return ExtractUInt32Base(args, val, 10); }
+        bool ExtractOptUInt32(char** args, uint32& val, uint32 defVal);
+        bool ExtractFloat(char** args, float& val);
+        bool ExtractOptFloat(char** args, float& val, float defVal);
         char* ExtractQuotedArg(char** args, bool asis = false);
         // string with " or [] or ' around
         char* ExtractLiteralArg(char** args, char const* lit = NULL);
         // literal string (until whitespace and not started from "['|), any or 'lit' if provided
         char* ExtractQuotedOrLiteralArg(char** args, bool asis = false);
-        bool  ExtractOnOff(char** args, bool& value);
+        bool ExtractOnOff(char** args, bool& value);
         char* ExtractLinkArg(char** args, char const* const* linkTypes = NULL, int* foundIdx = NULL, char** keyPair = NULL, char** somethingPair = NULL);
         // shift-link like arg (with aditional info if need)
-        char* ExtractArg(char** args, bool asis = false);   // any name/number/quote/shift-link strings
-        char* ExtractOptNotLastArg(char** args);            // extract name/number/quote/shift-link arg only if more data in args for parse
+        char* ExtractArg(char** args, bool asis = false); // any name/number/quote/shift-link strings
+        char* ExtractOptNotLastArg(char** args); // extract name/number/quote/shift-link arg only if more data in args for parse
 
         char* ExtractKeyFromLink(char** text, char const* linkType, char** something1 = NULL);
         char* ExtractKeyFromLink(char** text, char const* const* linkTypes, int* found_idx = NULL, char** something1 = NULL);
-        bool  ExtractUint32KeyFromLink(char** text, char const* linkType, uint32& value);
+        bool ExtractUint32KeyFromLink(char** text, char const* linkType, uint32& value);
 
         uint32 ExtractAccountId(char** args, std::string* accountName = NULL, Player** targetIfNullArg = NULL);
         uint32 ExtractSpellIdFromLink(char** text);
         ObjectGuid ExtractGuidFromLink(char** text);
         GameTele const* ExtractGameTeleFromLink(char** text);
-        bool   ExtractLocationFromLink(char** text, uint32& mapid, float& x, float& y, float& z);
-        bool   ExtractRaceMask(char** text, uint32& raceMask, char const** maskName = NULL);
+        bool ExtractLocationFromLink(char** text, uint32& mapid, float& x, float& y, float& z);
+        bool ExtractRaceMask(char** text, uint32& raceMask, char const** maskName = NULL);
         std::string ExtractPlayerNameFromLink(char** text);
         bool ExtractPlayerTarget(char** args, Player** player, ObjectGuid* player_guid = NULL, std::string* player_name = NULL);
         // select by arg (name/link) or in-game selection online/offline player
@@ -664,11 +665,11 @@ class MANGOS_DLL_SPEC ChatHandler
          */
         struct DeletedInfo
         {
-            uint32      lowguid;                            ///< the low GUID from the character
-            std::string name;                               ///< the character name
-            uint32      accountId;                          ///< the account id
-            std::string accountName;                        ///< the account name
-            time_t      deleteDate;                         ///< the date at which the character has been deleted
+            uint32 lowguid; ///< the low GUID from the character
+            std::string name; ///< the character name
+            uint32 accountId; ///< the account id
+            std::string accountName; ///< the account name
+            time_t deleteDate; ///< the date at which the character has been deleted
         };
 
         typedef std::list<DeletedInfo> DeletedInfoList;
@@ -679,7 +680,7 @@ class MANGOS_DLL_SPEC ChatHandler
 
         void SetSentErrorMessage(bool val) { sentErrorMessage = val;};
     private:
-        WorldSession* m_session;                            // != NULL for chat command call and NULL for CLI command
+        WorldSession* m_session; // != NULL for chat command call and NULL for CLI command
 
         // common global flag
         static bool load_command_table;
@@ -710,8 +711,5 @@ class CliHandler : public ChatHandler
         void* m_callbackArg;
         Print* m_print;
 };
-
-
-
 
 #endif

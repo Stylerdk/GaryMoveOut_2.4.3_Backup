@@ -1,0 +1,54 @@
+diff --git a/src/realmd/AuthSocket.cpp b/src/realmd/AuthSocket.cpp
+index 66171f1..de911fc 100644
+--- a/src/realmd/AuthSocket.cpp
++++ b/src/realmd/AuthSocket.cpp
+@@ -360,6 +360,13 @@ bool AuthSocket::_HandleLogonChallenge()
+     _login = (const char*)ch->I;
+     _build = ch->build;
+ 
++    _os = (const char*)ch->os;
++
++    if (_os.size() > 4)
++        return false;
++    // Restore string order as its byte order is reversed
++    std::reverse(_os.begin(), _os.end());
++
+     ///- Normalize account name
+     // utf8ToUpperOnlyLatin(_login); -- client already send account in expected form
+ 
+@@ -672,7 +679,7 @@ bool AuthSocket::_HandleLogonProof()
+         ///- Update the sessionkey, last_ip, last login time and reset number of failed logins in the account table for this account
+         // No SQL injection (escaped user name) and IP address as received by socket
+         const char* K_hex = K.AsHexStr();
+-        LoginDatabase.PExecute("UPDATE account SET sessionkey = '%s', last_ip = '%s', last_login = NOW(), locale = '%u', failed_logins = 0 WHERE username = '%s'", K_hex, get_remote_address().c_str(), GetLocaleByName(_localizationName), _safelogin.c_str());
++        LoginDatabase.PExecute("UPDATE account SET sessionkey = '%s', last_ip = '%s', last_login = NOW(), locale = '%u', os = '%s', failed_logins = 0 WHERE username = '%s'", K_hex, get_remote_address().c_str(), GetLocaleByName(_localizationName), _os.c_str(), _safelogin.c_str());
+         OPENSSL_free((void*)K_hex);
+ 
+         ///- Finish SRP6 and send the final result to the client
+@@ -781,6 +788,14 @@ bool AuthSocket::_HandleReconnectChallenge()
+ 
+     QueryResult* result = LoginDatabase.PQuery("SELECT sessionkey FROM account WHERE username = '%s'", _safelogin.c_str());
+ 
++    _os = (const char*)ch->os;
++
++    if(_os.size() > 4)
++        return false;
++
++    // Restore string order as its byte order is reversed
++    std::reverse(_os.begin(), _os.end());
++
+     // Stop if the account is not found
+     if (!result)
+     {
+diff --git a/src/realmd/AuthSocket.h b/src/realmd/AuthSocket.h
+index 3bdd186..c3c6893 100644
+--- a/src/realmd/AuthSocket.h
++++ b/src/realmd/AuthSocket.h
+@@ -72,6 +72,7 @@ class AuthSocket: public BufferedSocket
+         // Since GetLocaleByName() is _NOT_ bijective, we have to store the locale as a string. Otherwise we can't differ
+         // between enUS and enGB, which is important for the patch system
+         std::string _localizationName;
++        std::string _os;
+         uint16 _build;
+         AccountTypes _accountSecurityLevel;
+ 

@@ -569,6 +569,7 @@ enum CapturePointSlider
 };
 
 class Unit;
+class GameObjectModel;
 struct GameObjectDisplayInfoEntry;
 
 // 5 sec for bobber catch
@@ -638,8 +639,8 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
         bool isSpawned() const
         {
             return m_respawnDelayTime == 0 ||
-                   (m_respawnTime > 0 && !m_spawnedByDefault) ||
-                   (m_respawnTime == 0 && m_spawnedByDefault);
+                  (m_respawnTime > 0 && !m_spawnedByDefault) ||
+                  (m_respawnTime == 0 && m_spawnedByDefault);
         }
         bool isSpawnedByDefault() const { return m_spawnedByDefault; }
         uint32 GetRespawnDelay() const { return m_respawnDelayTime; }
@@ -653,7 +654,7 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
         GameobjectTypes GetGoType() const { return GameobjectTypes(GetUInt32Value(GAMEOBJECT_TYPE_ID)); }
         void SetGoType(GameobjectTypes type) { SetUInt32Value(GAMEOBJECT_TYPE_ID, type); }
         GOState GetGoState() const { return GOState(GetUInt32Value(GAMEOBJECT_STATE)); }
-        void SetGoState(GOState state) { SetUInt32Value(GAMEOBJECT_STATE, state); }
+        void SetGoState(GOState state);
         uint32 GetGoArtKit() const { return GetUInt32Value(GAMEOBJECT_ARTKIT); }
         void SetGoArtKit(uint32 artkit) { SetUInt32Value(GAMEOBJECT_ARTKIT, artkit); }
         uint32 GetGoAnimProgress() const { return GetUInt32Value(GAMEOBJECT_ANIMPROGRESS); }
@@ -661,12 +662,12 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
         uint32 GetDisplayId() const { return GetUInt32Value(GAMEOBJECT_DISPLAYID); }
         void SetDisplayId(uint32 modelId);
 
-        float GetObjectBoundingRadius() const override;     // overwrite WorldObject version
+        float GetObjectBoundingRadius() const override; // overwrite WorldObject version
 
         void Use(Unit* user);
 
         LootState getLootState() const { return m_lootState; }
-        void SetLootState(LootState s) { m_lootState = s; }
+        void SetLootState(LootState s);
 
         void AddToSkillupList(Player* player);
         bool IsInSkillupList(Player* player) const;
@@ -716,47 +717,54 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
 
         bool isVisibleForInState(Player const* u, WorldObject const* viewPoint, bool inVisibleList) const override;
 
+        bool IsCollisionEnabled() const; // Check if a go should collide. Like if a door is closed
+
         GameObject* LookupFishingHoleAround(float range);
 
         void SetCapturePointSlider(int8 value);
 
-        GridReference<GameObject>& GetGridRef() { return m_gridRef; }
+        GridReference<GameObject> &GetGridRef() { return m_gridRef; }
+
+        GameObjectModel* m_model;
 
     protected:
         uint32      m_spellId;
-        time_t      m_respawnTime;                          // (secs) time of next respawn (or despawn if GO have owner()),
-        uint32      m_respawnDelayTime;                     // (secs) if 0 then current GO state no dependent from timer
+        time_t      m_respawnTime; // (secs) time of next respawn (or despawn if GO have owner()),
+        uint32      m_respawnDelayTime; // (secs) if 0 then current GO state no dependent from timer
         LootState   m_lootState;
         bool        m_spawnedByDefault;
-        time_t      m_cooldownTime;                         // used as internal reaction delay time store (not state change reaction).
+        time_t      m_cooldownTime; // used as internal reaction delay time store (not state change reaction).
         // For traps/goober this: spell casting cooldown, for doors/buttons: reset time.
 
-        uint32      m_captureTimer;                         // (msecs) timer used for capture points
-        float       m_captureSlider;
+        uint32      m_captureTimer; // (msecs) timer used for capture points
+        float       m_captureSlider; // capture point slider value in range of [0..100]
         CapturePointState m_captureState;
 
-        GuidSet m_SkillupSet;                               // players that already have skill-up at GO use
+        GuidSet m_SkillupSet; // players that already have skill-up at GO use
 
-        uint32 m_useTimes;                                  // amount uses/charges triggered
+        uint32 m_useTimes; // amount uses/charges triggered
 
         // collected only for GAMEOBJECT_TYPE_SUMMONING_RITUAL
-        ObjectGuid m_firstUser;                             // first GO user, in most used cases owner, but in some cases no, for example non-summoned multi-use GAMEOBJECT_TYPE_SUMMONING_RITUAL
-        GuidSet m_UniqueUsers;                              // all players who use item, some items activated after specific amount unique uses
+        ObjectGuid m_firstUser; // first GO user, in most used cases owner, but in some cases no, for example non-summoned multi-use GAMEOBJECT_TYPE_SUMMONING_RITUAL
+        GuidSet m_UniqueUsers; // all players who use item, some items activated after specific amount unique uses
 
         GameObjectInfo const* m_goInfo;
         GameObjectDisplayInfoEntry const* m_displayInfo;
 
         // Loot System
-        uint32 m_groupLootTimer;                            // (msecs)timer used for group loot
-        uint32 m_groupLootId;                               // used to find group which is looting
+        uint32 m_groupLootTimer; // (msecs)timer used for group loot
+        uint32 m_groupLootId; // used to find group which is looting
         void StopGroupLoot() override;
-        ObjectGuid m_lootRecipientGuid;                     // player who will have rights for looting if m_lootGroupRecipient==0 or group disbanded
-        uint32 m_lootGroupRecipientId;                      // group who will have rights for looting if set and exist
+        ObjectGuid m_lootRecipientGuid; // player who will have rights for looting if m_lootGroupRecipient==0 or group disbanded
+        uint32 m_lootGroupRecipientId; // group who will have rights for looting if set and exist
 
     private:
         void SwitchDoorOrButton(bool activate, bool alternative = false);
         void TickCapturePoint();
+        void UpdateModel(); // updates model in case displayId were changed
+        void UpdateCollisionState() const; // updates state in Map's dynamic collision tree
 
         GridReference<GameObject> m_gridRef;
 };
+
 #endif

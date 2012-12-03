@@ -1281,6 +1281,102 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotMgr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotAI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotClassAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotClassAI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotDruidAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotDruidAI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotHunterAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotHunterAI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotMageAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotMageAI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotPaladinAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotPaladinAI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotPriestAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotPriestAI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotRogueAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotRogueAI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotShamanAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotShamanAI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotWarlockAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotWarlockAI.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotWarriorAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\playerbot\PlayerbotWarriorAI.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\ReactorAI.cpp"
 				>
 			</File>
@@ -1541,6 +1637,26 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\game\vmap\BIHWrap.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\vmap\DynamicTree.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\vmap\DynamicTree.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\vmap\GameObjectModel.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\vmap\GameObjectModel.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\vmap\IVMapManager.h"
 				>
 			</File>
@@ -1558,6 +1674,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\vmap\ModelInstance.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\vmap\RegularGrid.h"
 				>
 			</File>
 			<File

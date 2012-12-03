@@ -203,6 +203,9 @@ typedef std::vector<ObjectGuid> GuidVector;
 // minimum buffer size for packed guid is 9 bytes
 #define PACKED_GUID_MIN_BUFFER_SIZE 9
 
+//minimum buffer size for packed guid is 9 bytes
+#define PACKED_GUID_MIN_BUFFER_SIZE 9
+
 class PackedGuid
 {
         friend ByteBuffer& operator<< (ByteBuffer& buf, PackedGuid const& guid);

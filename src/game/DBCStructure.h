@@ -54,7 +54,8 @@ struct AreaTableEntry
     char*   area_name[16];                                  // 11-26    m_AreaName_lang
     // 27 string flags
     uint32  team;                                           // 28       m_factionGroupMask
-    // 29-32    m_liquidTypeID[4]
+    uint32  LiquidTypeOverride;                             // 29       m_liquidTypeID override for water type
+    // 30-32    uknown/unused
     // 33       m_minElevation
     // 34       m_ambient_multiplier
 };
@@ -394,15 +395,15 @@ struct FactionTemplateEntry
 
 struct GameObjectDisplayInfoEntry
 {
-    uint32      Displayid;                                  // 0        m_ID
-    // char* filename;                                      // 1        m_modelName
-    // 2-11     m_Sound
-    float  unknown12;                                       // 12       m_geoBoxMinX (use first value as interact dist, mostly in hacks way)
-    // 13       m_geoBoxMinY
-    // 14       m_geoBoxMinZ
-    // 15       m_geoBoxMaxX
-    // 16       m_geoBoxMaxY
-    // 17       m_geoBoxMaxZ
+    uint32 Displayid;                                       // 0 m_ID
+    char* filename;                                         // 1 m_modelName
+    // uint32 unknown2[10];                                 // 2-11 m_Sound
+    float geoBoxMinX;                                       // 12 m_geoBoxMinX (use first value as interact dist, mostly in hacks way)
+    float geoBoxMinY;                                       // 13 m_geoBoxMinY
+    float geoBoxMinZ;                                       // 14 m_geoBoxMinZ
+    float geoBoxMaxX;                                       // 15 m_geoBoxMaxX
+    float geoBoxMaxY;                                       // 16 m_geoBoxMaxY
+    float geoBoxMaxZ;                                       // 17 m_geoBoxMaxZ
 };
 
 struct GemPropertiesEntry
@@ -542,6 +543,14 @@ struct ItemSetEntry
     uint32    items_to_triggerspell[8];                     // 43-50    m_setThreshold
     uint32    required_skill_id;                            // 51       m_requiredSkill
     uint32    required_skill_value;                         // 52       m_requiredSkillRank
+};
+
+struct LiquidTypeEntry
+{
+    uint32 Id;                                              // 0
+    uint32 LiquidId;                                        // 1        1: Coilfang Raid - Water; 23: Water; 29: Ocean; 35: Magma; 41: Slime; 47: Naxxramas - Slime; 65: Hyjal Past - Water.
+    uint32 Type;                                            // 2        0: Magma; 2: Slime; 3: Water.
+    uint32 SpellId;                                         // 3        Reference to Spell.dbc
 };
 
 #define MAX_LOCK_CASE 8

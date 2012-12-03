@@ -51,6 +51,7 @@
 #include "BattleGround/BattleGroundMgr.h"
 #include "OutdoorPvP/OutdoorPvP.h"
 #include "TemporarySummon.h"
+#include "Language.h"
 #include "VMapFactory.h"
 #include "MoveMap.h"
 #include "GameEventMgr.h"
@@ -68,6 +69,8 @@
 #include "Warden/WardenDataStorage.h"
 
 INSTANTIATE_SINGLETON_1(World);
+
+extern void LoadGameObjectModelList();
 
 volatile bool World::m_stopEvent = false;
 uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
@@ -997,6 +1000,9 @@ void World::SetInitialWorldSettings()
     sLog.outString("Loading Game Object Templates...");     // must be after LoadPageTexts
     sObjectMgr.LoadGameobjectInfo();
 
+    sLog.outString("Loading GameObject models...");
+    LoadGameObjectModelList();
+
     sLog.outString("Loading Spell Chain Data...");
     sSpellMgr.LoadSpellChains();
 
@@ -1321,6 +1327,9 @@ void World::SetInitialWorldSettings()
     LoginDatabase.PExecute("INSERT INTO uptime (realmid, starttime, startstring, uptime) VALUES('%u', " UI64FMTD ", '%s', 0)",
                            realmID, uint64(m_startTime), isoDate);
 
+    static uint32 abtimer = 0;
+    abtimer = sConfig.GetIntDefault("AutoBroadcast.Timer", 60000);
+
     m_timers[WUPDATE_WEATHERS].SetInterval(1 * IN_MILLISECONDS);
     m_timers[WUPDATE_AUCTIONS].SetInterval(MINUTE * IN_MILLISECONDS);
     m_timers[WUPDATE_UPTIME].SetInterval(getConfig(CONFIG_UINT32_UPTIME_UPDATE)*MINUTE * IN_MILLISECONDS);
@@ -1332,7 +1341,7 @@ void World::SetInitialWorldSettings()
     m_timers[WUPDATE_AHBOT].SetInterval(20 * IN_MILLISECONDS); // every 20 sec
 
     // AutoAnnounce System
-    m_timers[WUPDATE_AUTOBROADCAST].SetInterval(sConfig.GetIntDefault("AutoBroadcast.Timer", 60000));
+    m_timers[WUPDATE_AUTOBROADCAST].SetInterval(abtimer);
 
     // External Mail
     extmail_timer.SetInterval(getConfig(CONFIG_UINT32_EXTERNAL_MAIL_INTERVAL) * MINUTE * IN_MILLISECONDS);
@@ -1382,6 +1391,10 @@ void World::SetInitialWorldSettings()
 
     // Delete all characters which have been deleted X days before
     Player::DeleteOldCharacters();
+
+    sLog.outString("Auto Announcer Loaded...");
+
+    PlayerbotMgr::SetInitialWorldSettings();
 
     sLog.outString("Initialize AuctionHouseBot...");
     sAuctionBot.Initialize();
@@ -1561,7 +1574,9 @@ void World::Update(uint32 diff)
     }
 
     // AutoAnnounce System
-    if(getConfig(CONFIG_BOOL_AUTOBROADCAST_ENABLE))
+    static uint32 autobroadcaston = 0;
+    autobroadcaston = sConfig.GetIntDefault("AutoBroadcast.On", 0);
+    if(autobroadcaston == 1)
     {
         if (m_timers[WUPDATE_AUTOBROADCAST].Passed())
         {
@@ -1979,20 +1994,56 @@ void World::ProcessCliCommands()
 void World::SendBroadcast()
 {
     std::string msg;
-    msg.reserve(2048);
-    msg = "|cf00FF000[|c100FFFF0Astranaar|cf00FF000]: ";
-    QueryResult *result = WorldDatabase.PQuery("SELECT text FROM autobroadcast ORDER BY RAND() LIMIT 1");
-    if (result)
-    {
-        msg = ""+msg+""+result->Fetch()[0].GetString()+"";
-        delete result;
+    static int nextid;
 
-        SendServerMessage(SERVER_MSG_CUSTOM,msg.c_str(),NULL);
+    QueryResult *result;
+
+    if (nextid != 0)
+    {
+        result = LoginDatabase.PQuery("SELECT `text`, `next` FROM `autobroadcast` WHERE `id` = %u", nextid);
+    }
+    else
+    {
+        result = LoginDatabase.PQuery("SELECT `text`, `next` FROM `autobroadcast` ORDER BY RAND() LIMIT 1");
+    }
+
+    if (!result)
+        return;
+
+    Field *fields = result->Fetch();
+    nextid = fields[1].GetUInt32();
+    msg = fields[0].GetString();
+    delete result;
+
+    static uint32 abcenter = 0;
+    abcenter = sConfig.GetIntDefault("AutoBroadcast.Center", 0);
+
+    if (abcenter == 0)
+    {
+        sWorld.SendWorldText(LANG_AUTO_BROADCAST, msg.c_str());
 
         sLog.outString("AutoBroadcast: '%s'",msg.c_str());
     }
-    else
-        sLog.outError("AutoBroadcast enabled, but no broadcast texts was found");
+
+    if (abcenter == 1)
+    {
+        WorldPacket data(SMSG_NOTIFICATION, (msg.size()+1));
+        data << msg;
+        sWorld.SendGlobalMessage(&data);
+
+        sLog.outString("AutoBroadcast: '%s'",msg.c_str());
+    }
+
+    if (abcenter == 2)
+    {
+        sWorld.SendWorldText(LANG_AUTO_BROADCAST, msg.c_str());
+
+        WorldPacket data(SMSG_NOTIFICATION, (msg.size()+1));
+        data << msg;
+        sWorld.SendGlobalMessage(&data);
+
+        sLog.outString("AutoBroadcast: '%s'",msg.c_str());
+    }
 }
 
 void World::InitResultQueue()

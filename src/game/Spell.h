@@ -365,6 +365,9 @@ class Spell
         void FillAreaTargets(UnitList& targetUnitMap, float radius, SpellNotifyPushType pushType, SpellTargets spellTargets, WorldObject* originalCaster = NULL);
         void FillRaidOrPartyTargets(UnitList& targetUnitMap, Unit* member, float radius, bool raid, bool withPets, bool withcaster);
 
+        // Returns a target that was filled by SPELL_SCRIPT_TARGET (or selected victim) Can return NULL
+        Unit* GetPrefilledUnitTargetOrUnitTarget(SpellEffectIndex effIndex) const;
+
         template<typename T> WorldObject* FindCorpseUsing();
 
         bool CheckTarget(Unit* target, SpellEffectIndex eff);
@@ -387,7 +390,7 @@ class Spell
 
         SpellEntry const* m_spellInfo;
         SpellEntry const* m_triggeredBySpellInfo;
-        int32 m_currentBasePoints[MAX_EFFECT_INDEX];        // cache SpellEntry::CalculateSimpleValue and use for set custom base points
+        int32 m_currentBasePoints[MAX_EFFECT_INDEX];            // cache SpellEntry::CalculateSimpleValue and use for set custom base points
         Item* m_CastItem;
         uint8 m_cast_count;
         SpellCastTargets m_targets;
@@ -416,8 +419,8 @@ class Spell
         void SetDelayStart(uint64 m_time) { m_delayStart = m_time; }
         uint64 GetDelayMoment() const { return m_delayMoment; }
 
-        bool IsNeedSendToClient() const;                    // use for hide spell cast for client in case when cast not have client side affect (animation or log entries)
-        bool IsTriggeredSpellWithRedundentData() const;     // use for ignore some spell data for triggered spells like cast time, some triggered spells have redundent copy data from main spell for client use purpose
+        bool IsNeedSendToClient() const;                                // use for hide spell cast for client in case when cast not have client side affect (animation or log entries)
+        bool IsTriggeredSpellWithRedundentData() const;         // use for ignore some spell data for triggered spells like cast time, some triggered spells have redundent copy data from main spell for client use purpose
 
         CurrentSpellTypes GetCurrentContainer();
 
@@ -433,7 +436,7 @@ class Spell
 
         uint32 GetPowerCost() const { return m_powerCost; }
 
-        void UpdatePointers();                              // must be used at call Spell code after time delay (non triggered spell cast/update spell call/etc)
+        void UpdatePointers();                                              // must be used at call Spell code after time delay (non triggered spell cast/update spell call/etc)
 
         bool CheckTargetCreatureType(Unit* target) const;
 
@@ -455,46 +458,46 @@ class Spell
         void CancelGlobalCooldown();
 
         void SendLoot(ObjectGuid guid, LootType loottype, LockType lockType);
-        bool IgnoreItemRequirements() const;                // some item use spells have unexpected reagent data
+        bool IgnoreItemRequirements() const;                        // some item use spells have unexpected reagent data
         void UpdateOriginalCasterPointer();
 
         Unit* m_caster;
 
-        ObjectGuid m_originalCasterGUID;                    // real source of cast (aura caster/etc), used for spell targets selection
+        ObjectGuid m_originalCasterGUID;                                // real source of cast (aura caster/etc), used for spell targets selection
         // e.g. damage around area spell trigered by victim aura and da,age emeies of aura caster
-        Unit* m_originalCaster;                             // cached pointer for m_originalCaster, updated at Spell::UpdatePointers()
+        Unit* m_originalCaster;                                             // cached pointer for m_originalCaster, updated at Spell::UpdatePointers()
 
-        Spell** m_selfContainer;                            // pointer to our spell container (if applicable)
+        Spell** m_selfContainer;                                            // pointer to our spell container (if applicable)
 
         // Spell data
-        SpellSchoolMask m_spellSchoolMask;                  // Spell school (can be overwrite for some spells (wand shoot for example)
-        WeaponAttackType m_attackType;                      // For weapon based attack
-        uint32 m_powerCost;                                 // Calculated spell cost     initialized only in Spell::prepare
-        int32 m_casttime;                                   // Calculated spell cast time initialized only in Spell::prepare
+        SpellSchoolMask m_spellSchoolMask;                          // Spell school (can be overwrite for some spells (wand shoot for example)
+        WeaponAttackType m_attackType;                                  // For weapon based attack
+        uint32 m_powerCost;                                                 // Calculated spell cost         initialized only in Spell::prepare
+        int32 m_casttime;                                                   // Calculated spell cast time initialized only in Spell::prepare
         int32 m_duration;
-        bool m_canReflect;                                  // can reflect this spell?
+        bool m_canReflect;                                                  // can reflect this spell?
         bool m_autoRepeat;
 
         uint8 m_delayAtDamageCount;
         int32 GetNextDelayAtDamageMsTime() { return m_delayAtDamageCount < 5 ? 1000 - (m_delayAtDamageCount++) * 200 : 200; }
 
         // Delayed spells system
-        uint64 m_delayStart;                                // time of spell delay start, filled by event handler, zero = just started
-        uint64 m_delayMoment;                               // moment of next delay call, used internally
-        bool m_immediateHandled;                            // were immediate actions handled? (used by delayed spells only)
+        uint64 m_delayStart;                                                // time of spell delay start, filled by event handler, zero = just started
+        uint64 m_delayMoment;                                               // moment of next delay call, used internally
+        bool m_immediateHandled;                                            // were immediate actions handled? (used by delayed spells only)
 
         // These vars are used in both delayed spell system and modified immediate spell system
-        bool m_referencedFromCurrentSpell;                  // mark as references to prevent deleted and access by dead pointers
-        bool m_executedCurrently;                           // mark as executed to prevent deleted and access by dead pointers
-        bool m_needSpellLog;                                // need to send spell log?
-        uint8 m_applyMultiplierMask;                        // by effect: damage multiplier needed?
-        float m_damageMultipliers[3];                       // by effect: damage multiplier
+        bool m_referencedFromCurrentSpell;                          // mark as references to prevent deleted and access by dead pointers
+        bool m_executedCurrently;                                       // mark as executed to prevent deleted and access by dead pointers
+        bool m_needSpellLog;                                                // need to send spell log?
+        uint8 m_applyMultiplierMask;                                    // by effect: damage multiplier needed?
+        float m_damageMultipliers[3];                                   // by effect: damage multiplier
 
         // Current targets, to be used in SpellEffects (MUST BE USED ONLY IN SPELL EFFECTS)
         Unit* unitTarget;
         Item* itemTarget;
         GameObject* gameObjTarget;
-        SpellAuraHolder* m_spellAuraHolder;                 // spell aura holder for current target, created only if spell has aura applying effect
+        SpellAuraHolder* m_spellAuraHolder;                         // spell aura holder for current target, created only if spell has aura applying effect
         int32 damage;
 
         // this is set in Spell Hit, but used in Apply Aura handler
@@ -505,17 +508,17 @@ class Spell
         GameObject* focusObject;
 
         // Damage and healing in effects need just calculate
-        int32 m_damage;                                     // Damage   in effects count here
-        int32 m_healing;                                    // Healing in effects count here
-        int32 m_healthLeech;                                // Health leech in effects for all targets count here
+        int32 m_damage;                                                         // Damage   in effects count here
+        int32 m_healing;                                                        // Healing in effects count here
+        int32 m_healthLeech;                                                // Health leech in effects for all targets count here
 
         //******************************************
         // Spell trigger system
         //******************************************
-        bool   m_canTrigger;                                // Can start trigger (m_IsTriggeredSpell can`t use for this)
-        uint8  m_negativeEffectMask;                        // Use for avoid sent negative spell procs for additional positive effects only targets
-        uint32 m_procAttacker;                              // Attacker trigger flags
-        uint32 m_procVictim;                                // Victim   trigger flags
+        bool   m_canTrigger;                                                // Can start trigger (m_IsTriggeredSpell can`t use for this)
+        uint8  m_negativeEffectMask;                                    // Use for avoid sent negative spell procs for additional positive effects only targets
+        uint32 m_procAttacker;                                              // Attacker trigger flags
+        uint32 m_procVictim;                                                // Victim   trigger flags
         void   prepareDataForTriggerSystem();
 
         //*****************************************
@@ -533,7 +536,7 @@ class Spell
             uint8  effectMask: 8;
             bool   processed: 1;
         };
-        uint8 m_needAliveTargetMask;                        // Mask req. alive targets
+        uint8 m_needAliveTargetMask;                                    // Mask req. alive targets
 
         struct GOTargetInfo
         {

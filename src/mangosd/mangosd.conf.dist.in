@@ -1027,6 +1027,30 @@ Channel.RestrictedLfg = 1
 Channel.SilentlyGMJoin = 0
 
 ###################################################################################################################
+# AUTO BROADCAST
+#
+# AutoBroadcast.On
+# Enable auto broadcast
+# Default: 1 - on
+#          0 - off (disable)
+#
+# AutoBroadcast.Center
+# Display method
+# Default: 2 - both
+#          0 - announce
+#          1 - notify
+#
+# AutoBroadcast.Timer
+# Timer for auto broadcast
+# Default: 600000
+#
+###################################################################################################################
+
+AutoBroadcast.On = 1
+AutoBroadcast.Center = 2
+AutoBroadcast.Timer = 300000
+
+###################################################################################################################
 # GAME MASTER SETTINGS
 #
 #    GM.LoginState

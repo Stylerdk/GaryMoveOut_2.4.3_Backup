@@ -79,13 +79,26 @@ struct AABound
 
 class BIH
 {
+    private:
+        void init_empty()
+        {
+            tree.clear();
+            objects.clear();
+            // create space for the first node
+            tree.push_back(3 << 30); // dummy leaf
+            tree.insert(tree.end(), 2, 0);
+        }
+
     public:
-        BIH() {};
-        template< class T, class BoundsFunc >
-        void build(const std::vector<T>& primitives, BoundsFunc& getBounds, uint32 leafSize = 3, bool printStats = false)
+        BIH() {init_empty();}
+        template< class BoundsFunc, class PrimArray >
+        void build(const PrimArray& primitives, BoundsFunc& getBounds, uint32 leafSize = 3, bool printStats = false)
         {
             if (primitives.size() == 0)
+            {
+                init_empty();
                 return;
+            }
             buildData dat;
             dat.maxPrims = leafSize;
             dat.numPrims = primitives.size();
@@ -94,10 +107,10 @@ class BIH
             getBounds(primitives[0], bounds);
             for (uint32 i = 0; i < dat.numPrims; ++i)
             {
-                dat.indices[i] = i;
-                AABox tb;
-                getBounds(primitives[i], dat.primBound[i]);
-                bounds.merge(dat.primBound[i]);
+                 dat.indices[i] = i;
+                 AABox tb;
+                 getBounds(primitives[i], dat.primBound[i]);
+                 bounds.merge(dat.primBound[i]);
             }
             std::vector<uint32> tempTree;
             BuildStats stats;
@@ -107,7 +120,7 @@ class BIH
 
             objects.resize(dat.numPrims);
             for (uint32 i = 0; i < dat.numPrims; ++i)
-                objects[i] = dat.indices[i];
+                 objects[i] = dat.indices[i];
             // nObjects = dat.numPrims;
             tree = tempTree;
             delete[] dat.primBound;

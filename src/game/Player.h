@@ -54,6 +54,10 @@ class DungeonPersistentState;
 class Spell;
 class Item;
 
+// Playerbot mod
+#include "playerbot/PlayerbotMgr.h"
+#include "playerbot/PlayerbotAI.h"
+
 typedef std::deque<Mail*> PlayerMails;
 
 #define PLAYER_MAX_SKILLS           127
@@ -1263,7 +1267,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         void PrepareQuestMenu(ObjectGuid guid);
         void SendPreparedQuest(ObjectGuid guid);
-        bool IsActiveQuest(uint32 quest_id) const;          // can be taken or taken
+        bool IsActiveQuest(uint32 quest_id) const; // can be taken or taken
 
         // Quest is taken and not yet rewarded
         // if completed_or_not = 0 (or any other value except 1 or 2) - returns true, if quest is taken and doesn't depend if quest is completed or not
@@ -1326,7 +1330,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SetQuestSlotTimer(uint16 slot, uint32 timer) { SetUInt32Value(PLAYER_QUEST_LOG_1_1 + slot * MAX_QUEST_OFFSET + QUEST_TIME_OFFSET, timer); }
         void SwapQuestSlot(uint16 slot1, uint16 slot2)
         {
-            for (int i = 0; i < MAX_QUEST_OFFSET; ++i)
+            for(int i = 0; i < MAX_QUEST_OFFSET; ++i)
             {
                 uint32 temp1 = GetUInt32Value(PLAYER_QUEST_LOG_1_1 + MAX_QUEST_OFFSET * slot1 + i);
                 uint32 temp2 = GetUInt32Value(PLAYER_QUEST_LOG_1_1 + MAX_QUEST_OFFSET * slot2 + i);
@@ -1373,6 +1377,18 @@ class MANGOS_DLL_SPEC Player : public Unit
         void RemoveTimedQuest(uint32 quest_id) { m_timedquests.erase(quest_id); }
 
         /*********************************************************/
+        /***  PLAYERBOT SYSTEM                                 ***/
+        /*********************************************************/
+
+        void chompAndTrim(std::string& str);
+        bool getNextQuestId(const std::string& pString, unsigned int& pStartPos, unsigned int& pId);
+        void skill(std::list<uint32>& m_spellsToLearn);
+        bool requiredQuests(const char* pQuestIdString);
+        PlayerMails::reverse_iterator GetMailRBegin() { return m_mail.rbegin();}
+        PlayerMails::reverse_iterator GetMailREnd() { return m_mail.rend();}
+        void UpdateMail();
+
+        /*********************************************************/
         /***                   LOAD SYSTEM                     ***/
         /*********************************************************/
 
@@ -1380,14 +1396,14 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         static uint32 GetZoneIdFromDB(ObjectGuid guid);
         static uint32 GetLevelFromDB(ObjectGuid guid);
-        static bool   LoadPositionFromDB(ObjectGuid guid, uint32& mapid, float& x, float& y, float& z, float& o, bool& in_flight);
+        static bool LoadPositionFromDB(ObjectGuid guid, uint32& mapid, float& x, float& y, float& z, float& o, bool& in_flight);
 
         /*********************************************************/
         /***                   SAVE SYSTEM                     ***/
         /*********************************************************/
 
         void SaveToDB();
-        void SaveInventoryAndGoldToDB();                    // fast save function for item/money cheating preventing
+        void SaveInventoryAndGoldToDB(); // fast save function for item/money cheating preventing
         void SaveGoldToDB();
         static void SetUInt32ValueInArray(Tokens& data, uint16 index, uint32 value);
         static void SetFloatValueInArray(Tokens& data, uint16 index, float value);
@@ -2205,7 +2221,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint8 GetOriginalSubGroup() const { return m_originalGroup.getSubGroup(); }
         void SetOriginalGroup(Group* group, int8 subgroup = -1);
 
-        GridReference<Player>& GetGridRef() { return m_gridRef; }
+        GridReference<Player> &GetGridRef() { return m_gridRef; }
         MapReference& GetMapRef() { return m_mapRef; }
 
         bool isAllowedToLoot(Creature* creature);
@@ -2215,6 +2231,15 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool HasTitle(CharTitlesEntry const* title) const { return HasTitle(title->bit_index); }
         void SetTitle(CharTitlesEntry const* title, bool lost = false);
 
+        // Playerbot mod:
+        // A Player can either have a playerbotMgr (to manage its bots), or have playerbotAI (if it is a bot), or
+        // neither. Code that enables bots must create the playerbotMgr and set it using SetPlayerbotMgr.
+        void SetPlayerbotAI(PlayerbotAI* ai) { assert(!m_playerbotAI && !m_playerbotMgr); m_playerbotAI=ai; }
+        PlayerbotAI* GetPlayerbotAI() { return m_playerbotAI; }
+        void SetPlayerbotMgr(PlayerbotMgr* mgr) { assert(!m_playerbotAI && !m_playerbotMgr); m_playerbotMgr=mgr; }
+        PlayerbotMgr* GetPlayerbotMgr() { return m_playerbotMgr; }
+        void SetBotDeathTimer() { m_deathTimer = 0; }
+                
     protected:
 
         uint32 m_contestedPvPTimer;
@@ -2461,6 +2486,10 @@ class MANGOS_DLL_SPEC Player : public Unit
         GridReference<Player> m_gridRef;
         MapReference m_mapRef;
 
+        // Playerbot mod:
+        PlayerbotAI* m_playerbotAI;
+        PlayerbotMgr* m_playerbotMgr;
+
         // Homebind coordinates
         uint32 m_homebindMapId;
         uint16 m_homebindAreaId;
@@ -2469,7 +2498,9 @@ class MANGOS_DLL_SPEC Player : public Unit
         float m_homebindZ;
 
         uint32 m_lastFallTime;
-        float  m_lastFallZ;
+        float m_lastFallZ;
+
+        LiquidTypeEntry const* m_lastLiquid;
 
         int32 m_MirrorTimer[MAX_TIMERS];
         uint8 m_MirrorTimerFlags;
@@ -2492,7 +2523,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         // Temporary removed pet cache
         uint32 m_temporaryUnsummonedPetNumber;
 
-        ReputationMgr  m_reputationMgr;
+        ReputationMgr m_reputationMgr;
 
         uint32 m_timeSyncCounter;
         uint32 m_timeSyncTimer;

@@ -31,7 +31,7 @@
 #include "Util.h"
 
 char const* MAP_MAGIC         = "MAPS";
-char const* MAP_VERSION_MAGIC = "w0.6";
+char const* MAP_VERSION_MAGIC = "v1.3";
 char const* MAP_AREA_MAGIC    = "AREA";
 char const* MAP_HEIGHT_MAGIC  = "MHGT";
 char const* MAP_LIQUID_MAGIC  = "MLIQ";
@@ -57,7 +57,8 @@ GridMap::GridMap()
     m_liquid_width  = 0;
     m_liquid_height = 0;
     m_liquidLevel = INVALID_HEIGHT_VALUE;
-    m_liquid_type = NULL;
+    m_liquidFlags = NULL;
+    m_liquidEntry = NULL;
     m_liquid_map  = NULL;
 }
 
@@ -119,13 +120,15 @@ void GridMap::unloadData()
     delete[] m_area_map;
     delete[] m_V9;
     delete[] m_V8;
-    delete[] m_liquid_type;
+    delete[] m_liquidEntry;
+    delete[] m_liquidFlags;
     delete[] m_liquid_map;
 
     m_area_map = NULL;
     m_V9 = NULL;
     m_V8 = NULL;
-    m_liquid_type = NULL;
+    m_liquidEntry = NULL;
+    m_liquidFlags = NULL;
     m_liquid_map  = NULL;
     m_gridGetHeight = &GridMap::getHeightFromFlat;
 }
@@ -209,8 +212,11 @@ bool GridMap::loadGridMapLiquidData(FILE* in, uint32 offset, uint32 /*size*/)
 
     if (!(header.flags & MAP_LIQUID_NO_TYPE))
     {
-        m_liquid_type = new uint8 [16 * 16];
-        fread(m_liquid_type, sizeof(uint8), 16 * 16, in);
+        m_liquidEntry = new uint16[16 * 16];
+        fread(m_liquidEntry, sizeof(uint16), 16 * 16, in);
+
+        m_liquidFlags = new uint8[16 * 16];
+        fread(m_liquidFlags, sizeof(uint8), 16 * 16, in);
     }
 
     if (!(header.flags & MAP_LIQUID_NO_HEIGHT))
@@ -479,21 +485,21 @@ float GridMap::getLiquidLevel(float x, float y)
 
 uint8 GridMap::getTerrainType(float x, float y)
 {
-    if (!m_liquid_type)
+    if (!m_liquidFlags)
         return (uint8)m_liquidType;
 
     x = 16 * (32 - x / SIZE_OF_GRIDS);
     y = 16 * (32 - y / SIZE_OF_GRIDS);
     int lx = (int)x & 15;
     int ly = (int)y & 15;
-    return m_liquid_type[lx * 16 + ly];
+    return m_liquidFlags[lx * 16 + ly];
 }
 
 // Get water state on map
 GridMapLiquidStatus GridMap::getLiquidStatus(float x, float y, float z, uint8 ReqLiquidType, GridMapLiquidData* data)
 {
     // Check water type (if no water return)
-    if (!m_liquid_type && !m_liquidType)
+    if (!m_liquidFlags && !m_liquidType)
         return LIQUID_MAP_NO_WATER;
 
     // Get cell
@@ -504,7 +510,41 @@ GridMapLiquidStatus GridMap::getLiquidStatus(float x, float y, float z, uint8 Re
     int y_int = (int)cy & (MAP_RESOLUTION - 1);
 
     // Check water type in cell
-    uint8 type = m_liquid_type ? m_liquid_type[(x_int >> 3) * 16 + (y_int >> 3)] : m_liquidType;
+    int idx = (x_int >> 3) * 16 + (y_int >> 3);
+    uint8 type = m_liquidFlags ? m_liquidFlags[idx] : 1 << m_liquidType;
+    uint32 entry = 0;
+    if (m_liquidEntry)
+    {
+        if (LiquidTypeEntry const* liquidEntry = sLiquidTypeStore.LookupEntry(m_liquidEntry[idx]))
+        {
+            entry = liquidEntry->Id;
+            uint32 liqTypeIdx = liquidEntry->Type;
+            if ((entry < 21) && (type & MAP_LIQUID_TYPE_WATER))
+            {
+                // only basic liquid stored in maps actualy so in some case we need to override type depend on area
+                // actualy only Hyjal Mount and Coilfang raid be overrided here
+                if (AreaTableEntry const* area = sAreaStore.LookupEntry(getArea(x, y)))
+                {
+                    uint32 overrideLiquid = area->LiquidTypeOverride;
+                    if (!overrideLiquid && area->zone)
+                    {
+                        area = GetAreaEntryByAreaID(area->zone);
+                        if (area)
+                            overrideLiquid = area->LiquidTypeOverride;
+                    }
+
+                    if (LiquidTypeEntry const* liq = sLiquidTypeStore.LookupEntry(overrideLiquid))
+                    {
+                        entry = overrideLiquid;
+                        liqTypeIdx = liq->Type;
+                    }
+                }
+            }
+
+            type |= (1 << liqTypeIdx) | (type & MAP_LIQUID_TYPE_DARK_WATER);
+        }
+    }
+
     if (type == 0)
         return LIQUID_MAP_NO_WATER;
 
@@ -535,7 +575,8 @@ GridMapLiquidStatus GridMap::getLiquidStatus(float x, float y, float z, uint8 Re
     // All ok in water -> store data
     if (data)
     {
-        data->type  = type;
+        data->entry = entry;
+        data->type_flags = type;
         data->level = liquid_level;
         data->depth_level = ground_level;
     }
@@ -729,7 +770,7 @@ int TerrainInfo::UnrefGrid(const uint32& x, const uint32& y)
     return 0;
 }
 
-float TerrainInfo::GetHeight(float x, float y, float z, bool pUseVmaps, float maxSearchDist) const
+float TerrainInfo::GetHeightStatic(float x, float y, float z, bool pUseVmaps, float maxSearchDist) const
 {
     // find raw .map surface under Z coordinates
     float mapHeight;
@@ -893,25 +934,37 @@ void TerrainInfo::GetZoneAndAreaId(uint32& zoneid, uint32& areaid, float x, floa
     TerrainManager::GetZoneAndAreaIdByAreaFlag(zoneid, areaid, GetAreaFlag(x, y, z), m_mapId);
 }
 
-
 GridMapLiquidStatus TerrainInfo::getLiquidStatus(float x, float y, float z, uint8 ReqLiquidType, GridMapLiquidData* data) const
 {
     GridMapLiquidStatus result = LIQUID_MAP_NO_WATER;
     VMAP::IVMapManager* vmgr = VMAP::VMapFactory::createOrGetVMapManager();
-    float liquid_level, ground_level = INVALID_HEIGHT_VALUE;
-    uint32 liquid_type;
+    float liquid_level = INVALID_HEIGHT_VALUE;
+    float ground_level = INVALID_HEIGHT_VALUE;
+    uint32 liquid_type = 0;
+    ground_level = GetHeightStatic(x, y, z, true, DEFAULT_WATER_SEARCH);
+
     if (vmgr->GetLiquidLevel(GetMapId(), x, y, z, ReqLiquidType, liquid_level, ground_level, liquid_type))
     {
-        DEBUG_LOG("getLiquidStatus(): vmap liquid level: %f ground: %f type: %u", liquid_level, ground_level, liquid_type);
+        //DEBUG_LOG("getLiquidStatus(): vmap liquid level: %f ground: %f type: %u", liquid_level, ground_level, liquid_type);
         // Check water level and ground level
         if (liquid_level > ground_level && z > ground_level - 2)
         {
             // All ok in water -> store data
             if (data)
             {
-                data->type  = liquid_type;
+                // hardcoded in client like this convert ocean to lava
+                if (GetMapId() == 530 && liquid_type == 2)
+                    liquid_type = 3;
+
+                uint32 liquidFlagType = 0;
+                if (LiquidTypeEntry const* liq = sLiquidTypeStore.LookupEntry(liquid_type))
+                    liquidFlagType = 1 << liq->Type;
+
                 data->level = liquid_level;
                 data->depth_level = ground_level;
+
+                data->entry = liquid_type;
+                data->type_flags = liquidFlagType;
             }
 
             // For speed check as int values
@@ -927,7 +980,7 @@ GridMapLiquidStatus TerrainInfo::getLiquidStatus(float x, float y, float z, uint
             result = LIQUID_MAP_ABOVE_WATER;
         }
     }
-    if (GridMap* gmap = const_cast<TerrainInfo*>(this)->GetGrid(x, y))
+    else if (GridMap* gmap = const_cast<TerrainInfo*>(this)->GetGrid(x, y))
     {
         GridMapLiquidData map_data;
         GridMapLiquidStatus map_result = gmap->getLiquidStatus(x, y, z, ReqLiquidType, &map_data);
@@ -935,7 +988,15 @@ GridMapLiquidStatus TerrainInfo::getLiquidStatus(float x, float y, float z, uint
         if (map_result != LIQUID_MAP_NO_WATER && (map_data.level > ground_level))
         {
             if (data)
+            {
+                // hardcoded in client like this
+                if (GetMapId() == 530 && map_data.entry == 2)
+                {
+                    map_data.entry = 3;
+                    map_data.type_flags = MAP_LIQUID_TYPE_MAGMA;
+                }
                 *data = map_data;
+            }
             return map_result;
         }
     }
@@ -985,7 +1046,7 @@ float TerrainInfo::GetWaterOrGroundLevel(float x, float y, float z, float* pGrou
     if (const_cast<TerrainInfo*>(this)->GetGrid(x, y))
     {
         // we need ground level (including grid height version) for proper return water level in point
-        float ground_z = GetHeight(x, y, z, true, DEFAULT_WATER_SEARCH);
+        float ground_z = GetHeightStatic(x, y, z, true, DEFAULT_WATER_SEARCH);
         if (pGround)
             *pGround = ground_z;
 
@@ -1070,7 +1131,7 @@ float TerrainInfo::GetWaterLevel(float x, float y, float z, float* pGround /*= N
     if (const_cast<TerrainInfo*>(this)->GetGrid(x, y))
     {
         // we need ground level (including grid height version) for proper return water level in point
-        float ground_z = GetHeight(x, y, z, true, DEFAULT_WATER_SEARCH);
+        float ground_z = GetHeightStatic(x, y, z, true, DEFAULT_WATER_SEARCH);
         if (pGround)
             *pGround = ground_z;
 

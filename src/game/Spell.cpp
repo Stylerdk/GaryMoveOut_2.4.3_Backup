@@ -1505,6 +1505,7 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 case 28542:                                 // Life Drain (Naxx, Sapphiron)
                     unMaxTargets = 2;
                     break;
+                case 29213:                                 // Curse of the Plaguebringer (Naxx, Noth the Plaguebringer)
                 case 30004:                                 // Flame Wreath (Karazhan, Shade of Aran)
                 case 31298:                                 // Sleep (Hyjal Summit, Anetheron)
                 case 39992:                                 // Needle Spine Targeting (BT, Warlord Najentus)
@@ -1853,12 +1854,12 @@ void Spell::SetTargetMap(SpellEffectIndex effIndex, uint32 targetMode, UnitList&
                 // Do not target current victim
                 switch (m_spellInfo->Id)
                 {
-                    case 30843:                                             // Enfeeble
-                    case 31347:                                             // Doom
-                    case 37676:                                             // Insidious Whisper
-                    case 38028:                                             // Watery Grave
-                    case 40618:                                             // Insignificance
-                    case 41376:                                             // Spite
+                    case 30843:                             // Enfeeble
+                    case 31347:                             // Doom
+                    case 37676:                             // Insidious Whisper
+                    case 38028:                             // Watery Grave
+                    case 40618:                             // Insignificance
+                    case 41376:                             // Spite
                         if (Unit* pVictim = m_caster->getVictim())
                             targetUnitMap.remove(pVictim);
                         break;
@@ -4130,6 +4131,15 @@ void Spell::CastPreCastSpells(Unit* target)
         m_caster->CastSpell(target, (*si), true, m_CastItem);
 }
 
+Unit* Spell::GetPrefilledUnitTargetOrUnitTarget(SpellEffectIndex effIndex) const
+{
+    for (TargetList::const_iterator itr = m_UniqueTargetInfo.begin(); itr != m_UniqueTargetInfo.end(); ++itr)
+        if (itr->effectMask & (1 << effIndex))
+            return m_caster->GetMap()->GetUnit(itr->targetGUID);
+
+    return m_targets.getUnitTarget();
+}
+
 SpellCastResult Spell::CheckCast(bool strict)
 {
     // check cooldowns to prevent cheating (ignore passive spells, that client side visual only)
@@ -4236,7 +4246,18 @@ SpellCastResult Spell::CheckCast(bool strict)
 
             // Not allow casting on flying player
             if (target->IsTaxiFlying())
-                return SPELL_FAILED_BAD_TARGETS;
+            {
+                switch (m_spellInfo->Id)
+                {
+                    // Except some spells from Taxi Flying cast
+                    case 36573:                             // Vision Guide
+                    case 42316:                             // Alcaz Survey Credit
+                    case 42385:                             // Alcaz Survey Aura
+                        break;
+                    default:
+                        return SPELL_FAILED_BAD_TARGETS;
+                }
+            }
 
             if (!m_IsTriggeredSpell && VMAP::VMapFactory::checkSpellForLoS(m_spellInfo->Id) && !m_caster->IsWithinLOSInMap(target))
                 return SPELL_FAILED_LINE_OF_SIGHT;
@@ -5018,7 +5039,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                 float fx = m_caster->GetPositionX() + dis * cos(m_caster->GetOrientation());
                 float fy = m_caster->GetPositionY() + dis * sin(m_caster->GetOrientation());
                 // teleport a bit above terrain level to avoid falling below it
-                float fz = m_caster->GetTerrain()->GetHeight(fx, fy, m_caster->GetPositionZ(), true);
+                float fz = m_caster->GetMap()->GetHeight(fx, fy, m_caster->GetPositionZ(), true);
                 if (fz <= INVALID_HEIGHT)                   // note: this also will prevent use effect in instances without vmaps height enabled
                     return SPELL_FAILED_TRY_AGAIN;
 
@@ -5046,6 +5067,13 @@ SpellCastResult Spell::CheckCast(bool strict)
 
     for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
+        // Do not check in case of junk in DBC
+        if (!IsAuraApplyEffect(m_spellInfo, SpellEffectIndex(i)))
+            continue;
+
+        // Possible Unit-target for the spell
+        Unit* expectedTarget = GetPrefilledUnitTargetOrUnitTarget(SpellEffectIndex(i));
+
         switch (m_spellInfo->EffectApplyAuraName[i])
         {
             case SPELL_AURA_MOD_POSSESS:
@@ -5053,7 +5081,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if (m_caster->GetTypeId() != TYPEID_PLAYER)
                     return SPELL_FAILED_UNKNOWN;
 
-                if (m_targets.getUnitTarget() == m_caster)
+                if (expectedTarget == m_caster)
                     return SPELL_FAILED_BAD_TARGETS;
 
                 if (m_caster->GetPetGuid())
@@ -5065,20 +5093,20 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if (m_caster->GetCharmerGuid())
                     return SPELL_FAILED_CHARMED;
 
-                if (!m_targets.getUnitTarget())
+                if (!expectedTarget)
                     return SPELL_FAILED_BAD_IMPLICIT_TARGETS;
 
-                if (m_targets.getUnitTarget()->GetCharmerGuid())
+                if (expectedTarget->GetCharmerGuid())
                     return SPELL_FAILED_CHARMED;
 
-                if (int32(m_targets.getUnitTarget()->getLevel()) > CalculateDamage(SpellEffectIndex(i), m_targets.getUnitTarget()))
+                if (int32(expectedTarget->getLevel()) > CalculateDamage(SpellEffectIndex(i), expectedTarget))
                     return SPELL_FAILED_HIGHLEVEL;
 
                 break;
             }
             case SPELL_AURA_MOD_CHARM:
             {
-                if (m_targets.getUnitTarget() == m_caster)
+                if (expectedTarget == m_caster)
                     return SPELL_FAILED_BAD_TARGETS;
 
                 if (m_caster->GetPetGuid())
@@ -5090,13 +5118,13 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if (m_caster->GetCharmerGuid())
                     return SPELL_FAILED_CHARMED;
 
-                if (!m_targets.getUnitTarget())
+                if (!expectedTarget)
                     return SPELL_FAILED_BAD_IMPLICIT_TARGETS;
 
-                if (m_targets.getUnitTarget()->GetCharmerGuid())
+                if (expectedTarget->GetCharmerGuid())
                     return SPELL_FAILED_CHARMED;
 
-                if (int32(m_targets.getUnitTarget()->getLevel()) > CalculateDamage(SpellEffectIndex(i), m_targets.getUnitTarget()))
+                if (int32(expectedTarget->getLevel()) > CalculateDamage(SpellEffectIndex(i), expectedTarget))
                     return SPELL_FAILED_HIGHLEVEL;
 
                 break;
@@ -5143,47 +5171,42 @@ SpellCastResult Spell::CheckCast(bool strict)
             }
             case SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS:
             {
-                if (!m_targets.getUnitTarget())
+                if (!expectedTarget)
                     return SPELL_FAILED_BAD_IMPLICIT_TARGETS;
 
                 // can be casted at non-friendly unit or own pet/charm
-                if (m_caster->IsFriendlyTo(m_targets.getUnitTarget()))
+                if (m_caster->IsFriendlyTo(expectedTarget))
                     return SPELL_FAILED_TARGET_FRIENDLY;
 
                 break;
             }
             case SPELL_AURA_PERIODIC_MANA_LEECH:
             {
-                if (!m_targets.getUnitTarget())
+                if (!expectedTarget)
                     return SPELL_FAILED_BAD_IMPLICIT_TARGETS;
 
                 if (m_caster->GetTypeId() != TYPEID_PLAYER || m_CastItem)
                     break;
 
-                if (m_targets.getUnitTarget()->getPowerType() != POWER_MANA)
+                if (expectedTarget->getPowerType() != POWER_MANA)
                     return SPELL_FAILED_BAD_TARGETS;
 
                 break;
             }
             case SPELL_AURA_MIRROR_IMAGE:
             {
-                Unit* pTarget = m_targets.getUnitTarget();
-
-                // In case of TARGET_SCRIPT, we have already added a target. Use it here (and find a better solution)
-                if (m_UniqueTargetInfo.size() == 1)
-                    pTarget = m_caster->GetMap()->GetAnyTypeCreature(m_UniqueTargetInfo.front().targetGUID);
-
-                if (!pTarget)
+                if (!expectedTarget)
                     return SPELL_FAILED_BAD_TARGETS;
 
-                if (pTarget->GetTypeId() != TYPEID_UNIT)    // Target must be creature. TODO: Check if target can also be player
+                // Target must be creature. TODO: Check if target can also be player
+                if (expectedTarget->GetTypeId() != TYPEID_UNIT)
                     return SPELL_FAILED_BAD_TARGETS;
 
-                if (pTarget == m_caster)                    // Clone self can't be accepted
+                if (expectedTarget == m_caster)             // Clone self can't be accepted
                     return SPELL_FAILED_BAD_TARGETS;
 
                 // It is assumed that target can not be cloned if already cloned by same or other clone auras
-                if (pTarget->HasAuraType(SPELL_AURA_MIRROR_IMAGE))
+                if (expectedTarget->HasAuraType(SPELL_AURA_MIRROR_IMAGE))
                     return SPELL_FAILED_BAD_TARGETS;
 
                 break;

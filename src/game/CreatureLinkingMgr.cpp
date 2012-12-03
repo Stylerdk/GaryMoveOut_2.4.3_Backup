@@ -84,6 +84,7 @@ void CreatureLinkingMgr::LoadFromDB()
     }
 
     BarGoLink bar((int)result->GetRowCount());
+
     do
     {
         bar.step();

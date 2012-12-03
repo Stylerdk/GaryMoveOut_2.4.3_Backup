@@ -11,6 +11,7 @@
 #                                                                                          #
 ############################################################################################
 
+[9] --> Merge remote-tracking branch 'aLight42/master'.
 [8] --> Update scripts ([s2655] ScriptDev2 Milestone 0.6).
 [7] --> Update scripts ([s2649] Replace some movement parts with GetNearPoint in Illidan's script).
 [6] --> Project Astranaar + Reset Duel Cooldowns, Hp, Mana and Rage.

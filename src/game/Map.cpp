@@ -436,6 +436,8 @@ bool Map::loaded(const GridPair& p) const
 
 void Map::Update(const uint32& t_diff)
 {
+    m_dyn_tree.update(t_diff);
+
     /// update worldsessions for existing players
     for (m_mapRefIter = m_mapRefManager.begin(); m_mapRefIter != m_mapRefManager.end(); ++m_mapRefIter)
     {
@@ -1927,18 +1929,57 @@ void Map::PlayDirectSoundToMap(uint32 soundId, uint32 zoneId /*=0*/)
 /**
  * Function to check if a point is in line of sight from an other point
  */
-bool Map::IsInLineOfSight(float srcX, float srcY, float srcZ, float destX, float destY, float destZ)
+bool Map::IsInLineOfSight(float srcX, float srcY, float srcZ, float destX, float destY, float destZ) const
 {
-    VMAP::IVMapManager* vMapManager = VMAP::VMapFactory::createOrGetVMapManager();
-    return vMapManager->isInLineOfSight(GetId(), srcX, srcY, srcZ, destX, destY, destZ);
+    return VMAP::VMapFactory::createOrGetVMapManager()->isInLineOfSight(GetId(), srcX, srcY, srcZ, destX, destY, destZ)
+           && m_dyn_tree.isInLineOfSight(srcX, srcY, srcZ, destX, destY, destZ);
 }
 
 /**
- * get the hit position and return true if we hit something
+ * get the hit position and return true if we hit something (in this case the dest position will hold the hit-position)
  * otherwise the result pos will be the dest pos
  */
-bool Map::GetObjectHitPos(float srcX, float srcY, float srcZ, float destX, float destY, float destZ, float& resX, float& resY, float& resZ, float pModifyDist)
+bool Map::GetHitPosition(float srcX, float srcY, float srcZ, float& destX, float& destY, float& destZ, float modifyDist) const
 {
-    VMAP::IVMapManager* vMapManager = VMAP::VMapFactory::createOrGetVMapManager();
-    return vMapManager->getObjectHitPos(GetId(), srcX, srcY, srcZ, destX, destY, destZ, resX, resY, resZ, pModifyDist);
+    // at first check all static objects
+    float tempX, tempY, tempZ = 0.0f;
+    bool result0 = VMAP::VMapFactory::createOrGetVMapManager()->getObjectHitPos(GetId(), srcX, srcY, srcZ, destX, destY, destZ, tempX, tempY, tempZ, modifyDist);
+    if (result0)
+    {
+        DEBUG_LOG("Map::GetHitPosition vmaps corrects gained with static objects! new dest coords are X:%f Y:%f Z:%f", destX, destY, destZ);
+        destX = tempX;
+        destY = tempY;
+        destZ = tempZ;
+    }
+    // at second all dynamic objects, if static check has an hit, then we can calculate only to this closer point
+    bool result1 = m_dyn_tree.getObjectHitPos(srcX, srcY, srcZ, destX, destY, destZ, tempX, tempY, tempZ, modifyDist);
+    if (result1)
+    {
+        DEBUG_LOG("Map::GetHitPosition vmaps corrects gained with dynamic objects! new dest coords are X:%f Y:%f Z:%f", destX, destY, destZ);
+        destX = tempX;
+        destY = tempY;
+        destZ = tempZ;
+    }
+    return result0 || result1;
+}
+
+float Map::GetHeight(float x, float y, float z, bool pCheckVMap/*=true*/, float maxSearchDist/*=DEFAULT_HEIGHT_SEARCH*/) const
+{
+    return std::max<float>(m_TerrainData->GetHeightStatic(x, y, z, pCheckVMap, maxSearchDist),
+                           m_dyn_tree.getHeight(x, y, z, maxSearchDist));
+}
+
+void Map::InsertGameObjectModel(const GameObjectModel& mdl)
+{
+    m_dyn_tree.insert(mdl);
+}
+
+void Map::RemoveGameObjectModel(const GameObjectModel& mdl)
+{
+    m_dyn_tree.remove(mdl);
+}
+
+bool Map::ContainsGameObjectModel(const GameObjectModel& mdl) const
+{
+    return m_dyn_tree.contains(mdl);
 }

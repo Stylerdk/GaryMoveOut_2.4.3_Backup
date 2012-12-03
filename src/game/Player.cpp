@@ -64,6 +64,11 @@
 #include "SQLStorages.h"
 #include "AccountMgr.h"
 
+// Playerbot mod:
+#include "playerbot/PlayerbotAI.h"
+#include "playerbot/PlayerbotMgr.h"
+#include "Config/Config.h"
+
 #include <cmath>
 
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
@@ -79,6 +84,8 @@
 #define SKILL_TEMP_BONUS(x)    int16(PAIR32_LOPART(x))
 #define SKILL_PERM_BONUS(x)    int16(PAIR32_HIPART(x))
 #define MAKE_SKILL_BONUS(t, p) MAKE_PAIR32(t,p)
+
+extern Config botConfig;
 
 enum CharacterFlags
 {
@@ -382,6 +389,10 @@ Player::Player(WorldSession* session): Unit(), m_mover(this), m_camera(this), m_
 {
     m_transport = 0;
 
+    // Playerbot mod:
+    m_playerbotAI = 0;
+    m_playerbotMgr = 0;
+
     m_speakTime = 0;
     m_speakCount = 0;
 
@@ -457,6 +468,8 @@ Player::Player(WorldSession* session): Unit(), m_mover(this), m_camera(this), m_
     m_currentBuybackSlot = BUYBACK_SLOT_START;
 
     m_DailyQuestChanged = false;
+
+    m_lastLiquid = NULL;
 
     for (int i = 0; i < MAX_TIMERS; ++i)
         m_MirrorTimer[i] = DISABLED_MIRROR_TIMER;
@@ -584,6 +597,16 @@ Player::~Player()
     for (uint8 i = 0; i < MAX_DIFFICULTY; ++i)
         for (BoundInstancesMap::iterator itr = m_boundInstances[i].begin(); itr != m_boundInstances[i].end(); ++itr)
             itr->second.state->RemovePlayer(this);
+
+    // Playerbot mod
+    if (m_playerbotAI) {
+        delete m_playerbotAI;
+        m_playerbotAI = 0;
+    }
+    if (m_playerbotMgr) {
+        delete m_playerbotMgr;
+        m_playerbotMgr = 0;
+    }
 
     delete m_declinedname;
 }
@@ -1050,7 +1073,7 @@ void Player::HandleDrowning(uint32 time_diff)
             SendMirrorTimer(FATIGUE_TIMER, DarkWaterTime, m_MirrorTimer[FATIGUE_TIMER], 10);
     }
 
-    if (m_MirrorTimerFlags & (UNDERWATER_INLAVA | UNDERWATER_INSLIME))
+    if (m_MirrorTimerFlags & (UNDERWATER_INLAVA /*| UNDERWATER_INSLIME*/) && !(m_lastLiquid && m_lastLiquid->SpellId))
     {
         // Breath timer not activated - activate it
         if (m_MirrorTimer[FIRE_TIMER] == DISABLED_MIRROR_TIMER)
@@ -1066,8 +1089,10 @@ void Player::HandleDrowning(uint32 time_diff)
                 uint32 damage = urand(600, 700);
                 if (m_MirrorTimerFlags & UNDERWATER_INLAVA)
                     EnvironmentalDamage(DAMAGE_LAVA, damage);
-                else
-                    EnvironmentalDamage(DAMAGE_SLIME, damage);
+                // need to skip Slime damage in Undercity,
+                // maybe someone can find better way to handle environmental damage
+                //else if (m_zoneUpdateId != 1497)
+                //    EnvironmentalDamage(DAMAGE_SLIME, damage);
             }
         }
     }
@@ -1347,6 +1372,12 @@ void Player::Update(uint32 update_diff, uint32 p_time)
 
     if (IsHasDelayedTeleport())
         TeleportTo(m_teleport_dest, m_teleport_options);
+
+    // Playerbot mod
+    if (m_playerbotAI)
+        m_playerbotAI->UpdateAI(p_time);
+    else if (m_playerbotMgr)
+        m_playerbotMgr->UpdateAI(p_time);
 }
 
 void Player::SetDeathState(DeathState s)
@@ -1575,6 +1606,11 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
 
     // preparing unsummon pet if lost (we must get pet before teleportation or will not find it later)
     Pet* pet = GetPet();
+
+    // Playerbot mod: if this user has bots, tell them to stop following master
+    // so they don't try to follow the master after the master teleports
+    if (GetPlayerbotMgr())
+        GetPlayerbotMgr()->Stay();
 
     MapEntry const* mEntry = sMapStore.LookupEntry(mapid);
 
@@ -12380,6 +12416,22 @@ void Player::PrepareGossipMenu(WorldObject* pSource, uint32 menuId)
                 case GOSSIP_OPTION_TABARDDESIGNER:
                 case GOSSIP_OPTION_AUCTIONEER:
                     break;                                  // no checks
+                case GOSSIP_OPTION_BOT:
+                {
+                    if(botConfig.GetBoolDefault("PlayerbotAI.DisableBots", false) && !pCreature->isInnkeeper())
+                    {
+                        ChatHandler(this).PSendSysMessage("|cffff0000Playerbot system is currently disabled!");
+                        hasMenuItem = false;
+                        break;
+                    }
+
+                    std::string reqQuestIds = botConfig.GetStringDefault("PlayerbotAI.BotguyQuests","");
+                    uint32 cost = botConfig.GetIntDefault("PlayerbotAI.BotguyCost",0);
+                    if((reqQuestIds == "" || requiredQuests(reqQuestIds.c_str())) && !pCreature->isInnkeeper() && this->GetMoney() >= cost)
+                        pCreature->LoadBotMenu(this);
+                    hasMenuItem = false;
+                    break;
+                }
                 default:
                     sLog.outErrorDb("Creature entry %u have unknown gossip option %u for menu %u", pCreature->GetEntry(), itr->second.option_id, itr->second.menu_id);
                     hasMenuItem = false;
@@ -12533,6 +12585,8 @@ void Player::OnGossipSelect(WorldObject* pSource, uint32 gossipListId, uint32 me
     {
         case GOSSIP_OPTION_GOSSIP:
         {
+            GossipMenuItemData pMenuData = gossipmenu.GetItemData(gossipListId);
+
             if (pMenuData.m_gAction_poi)
                 PlayerTalkClass->SendPointOfInterest(pMenuData.m_gAction_poi);
 
@@ -12547,7 +12601,6 @@ void Player::OnGossipSelect(WorldObject* pSource, uint32 gossipListId, uint32 me
                 PlayerTalkClass->CloseGossip();
                 TalkedToCreature(pSource->GetEntry(), pSource->GetObjectGuid());
             }
-
             break;
         }
         case GOSSIP_OPTION_SPIRITHEALER:
@@ -12612,6 +12665,59 @@ void Player::OnGossipSelect(WorldObject* pSource, uint32 gossipListId, uint32 me
             }
 
             GetSession()->SendBattlegGroundList(guid, bgTypeId);
+            break;
+        }
+        case GOSSIP_OPTION_BOT:
+        {
+            // DEBUG_LOG("GOSSIP_OPTION_BOT");
+            PlayerTalkClass->CloseGossip();
+            uint32 guidlo = PlayerTalkClass->GossipOptionSender(gossipListId);
+            uint32 cost = botConfig.GetIntDefault("PlayerbotAI.BotguyCost",0);
+
+            if (!GetPlayerbotMgr())
+                SetPlayerbotMgr(new PlayerbotMgr(this));
+
+            if(GetPlayerbotMgr()->GetPlayerBot(ObjectGuid(HIGHGUID_PLAYER,guidlo)) != NULL)
+            {
+                GetPlayerbotMgr()->LogoutPlayerBot(ObjectGuid(HIGHGUID_PLAYER,guidlo));
+            }
+            else if(GetPlayerbotMgr()->GetPlayerBot(ObjectGuid(HIGHGUID_PLAYER,guidlo)) == NULL)
+            {
+                QueryResult *resultchar = CharacterDatabase.PQuery("SELECT COUNT(*) FROM characters WHERE online = '1' AND account = '%u'", m_session->GetAccountId());
+                if(resultchar)
+                {
+                    Field *fields = resultchar->Fetch();
+                    int maxnum = botConfig.GetIntDefault("PlayerbotAI.MaxNumBots", 9);
+                    int acctcharcount = fields[0].GetUInt32();
+                    if(!(m_session->GetSecurity() > SEC_PLAYER))
+                        if(acctcharcount > maxnum)
+                        {
+                            ChatHandler(this).PSendSysMessage("|cffff0000You cannot summon anymore bots.(Current Max: |cffffffff%u)",maxnum);
+                            delete resultchar;
+                            break;
+                        }
+                }
+                delete resultchar;
+
+                QueryResult *resultlvl = CharacterDatabase.PQuery("SELECT level,name FROM characters WHERE guid = '%u'", guidlo);
+                if(resultlvl)
+                {
+                    Field *fields=resultlvl->Fetch();
+                    int maxlvl = botConfig.GetIntDefault("PlayerbotAI.RestrictBotLevel", 80);
+                    int charlvl = fields[0].GetUInt32();
+                    if(!(m_session->GetSecurity() > SEC_PLAYER))
+                        if(charlvl > maxlvl)
+                        {
+                            ChatHandler(this).PSendSysMessage("|cffff0000You cannot summon |cffffffff[%s]|cffff0000, it's level is too high.(Current Max:lvl |cffffffff%u)",fields[1].GetString(),maxlvl);
+                            delete resultlvl;
+                            break;
+                        }
+                }
+                delete resultlvl;
+
+                GetPlayerbotMgr()->AddPlayerBot(ObjectGuid(HIGHGUID_PLAYER,guidlo));
+                this->ModifyMoney(-(int32)cost);
+            }
             break;
         }
     }
@@ -20088,14 +20194,39 @@ void Player::UpdateUnderwaterState(Map* m, float x, float y, float z)
     if (!res)
     {
         m_MirrorTimerFlags &= ~(UNDERWATER_INWATER | UNDERWATER_INLAVA | UNDERWATER_INSLIME | UNDERWATER_INDARKWATER);
-        // Small hack for enable breath in WMO
-        /* if (IsInWater())
-            m_MirrorTimerFlags|=UNDERWATER_INWATER; */
+        if (m_lastLiquid && m_lastLiquid->SpellId)
+            RemoveAurasDueToSpell(m_lastLiquid->SpellId);
+        m_lastLiquid = NULL;
         return;
     }
 
+    if (uint32 liqEntry = liquid_status.entry)
+    {
+        LiquidTypeEntry const* liquid = sLiquidTypeStore.LookupEntry(liqEntry);
+        if (m_lastLiquid && m_lastLiquid->SpellId && m_lastLiquid->Id != liqEntry)
+            RemoveAurasDueToSpell(m_lastLiquid->SpellId);
+
+        if (liquid && liquid->SpellId)
+        {
+            if (res & (LIQUID_MAP_UNDER_WATER | LIQUID_MAP_IN_WATER))
+            {
+                if (!HasAura(liquid->SpellId))
+                    CastSpell(this, liquid->SpellId, true);
+            }
+            else
+                RemoveAurasDueToSpell(liquid->SpellId);
+        }
+
+        m_lastLiquid = liquid;
+    }
+    else if (m_lastLiquid && m_lastLiquid->SpellId)
+    {
+        RemoveAurasDueToSpell(m_lastLiquid->SpellId);
+        m_lastLiquid = NULL;
+    }
+
     // All liquids type - check under water position
-    if (liquid_status.type & (MAP_LIQUID_TYPE_WATER | MAP_LIQUID_TYPE_OCEAN | MAP_LIQUID_TYPE_MAGMA | MAP_LIQUID_TYPE_SLIME))
+    if (liquid_status.type_flags & (MAP_LIQUID_TYPE_WATER | MAP_LIQUID_TYPE_OCEAN | MAP_LIQUID_TYPE_MAGMA | MAP_LIQUID_TYPE_SLIME))
     {
         if (res & LIQUID_MAP_UNDER_WATER)
             m_MirrorTimerFlags |= UNDERWATER_INWATER;
@@ -20104,13 +20235,13 @@ void Player::UpdateUnderwaterState(Map* m, float x, float y, float z)
     }
 
     // Allow travel in dark water on taxi or transport
-    if ((liquid_status.type & MAP_LIQUID_TYPE_DARK_WATER) && !IsTaxiFlying() && !GetTransport())
+    if ((liquid_status.type_flags & MAP_LIQUID_TYPE_DARK_WATER) && !IsTaxiFlying() && !GetTransport())
         m_MirrorTimerFlags |= UNDERWATER_INDARKWATER;
     else
         m_MirrorTimerFlags &= ~UNDERWATER_INDARKWATER;
 
     // in lava check, anywhere in lava level
-    if (liquid_status.type & MAP_LIQUID_TYPE_MAGMA)
+    if (liquid_status.type_flags & MAP_LIQUID_TYPE_MAGMA)
     {
         if (res & (LIQUID_MAP_UNDER_WATER | LIQUID_MAP_IN_WATER | LIQUID_MAP_WATER_WALK))
             m_MirrorTimerFlags |= UNDERWATER_INLAVA;
@@ -20118,7 +20249,7 @@ void Player::UpdateUnderwaterState(Map* m, float x, float y, float z)
             m_MirrorTimerFlags &= ~UNDERWATER_INLAVA;
     }
     // in slime check, anywhere in slime level
-    if (liquid_status.type & MAP_LIQUID_TYPE_SLIME)
+    if (liquid_status.type_flags & MAP_LIQUID_TYPE_SLIME)
     {
         if (res & (LIQUID_MAP_UNDER_WATER | LIQUID_MAP_IN_WATER | LIQUID_MAP_WATER_WALK))
             m_MirrorTimerFlags |= UNDERWATER_INSLIME;

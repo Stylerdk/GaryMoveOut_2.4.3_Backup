@@ -470,8 +470,8 @@ class World
 
         WorldSession* FindSession(uint32 id) const;
         void AddSession(WorldSession* s);
-        bool RemoveSession(uint32 id);
         void SendBroadcast();
+        bool RemoveSession(uint32 id);
         /// Get the number of current active sessions
         void UpdateMaxSessionCounters();
         uint32 GetActiveAndQueuedSessionCount() const { return m_sessions.size(); }
@@ -585,16 +585,16 @@ class World
         bool RemoveBanAccount(BanMode mode, std::string nameOrIP);
 
         // for max speed access
-        static float GetMaxVisibleDistanceOnContinents()    { return m_MaxVisibleDistanceOnContinents; }
-        static float GetMaxVisibleDistanceInInstances()     { return m_MaxVisibleDistanceInInstances;  }
-        static float GetMaxVisibleDistanceInBGArenas()      { return m_MaxVisibleDistanceInBGArenas;   }
+        static float GetMaxVisibleDistanceOnContinents()        { return m_MaxVisibleDistanceOnContinents; }
+        static float GetMaxVisibleDistanceInInstances()         { return m_MaxVisibleDistanceInInstances;  }
+        static float GetMaxVisibleDistanceInBGArenas()          { return m_MaxVisibleDistanceInBGArenas;   }
 
-        static float GetMaxVisibleDistanceInFlight()        { return m_MaxVisibleDistanceInFlight;    }
-        static float GetVisibleUnitGreyDistance()           { return m_VisibleUnitGreyDistance;       }
-        static float GetVisibleObjectGreyDistance()         { return m_VisibleObjectGreyDistance;     }
+        static float GetMaxVisibleDistanceInFlight()                { return m_MaxVisibleDistanceInFlight;        }
+        static float GetVisibleUnitGreyDistance()                   { return m_VisibleUnitGreyDistance;           }
+        static float GetVisibleObjectGreyDistance()                 { return m_VisibleObjectGreyDistance;         }
 
-        static float GetRelocationLowerLimitSq()            { return m_relocation_lower_limit_sq; }
-        static uint32 GetRelocationAINotifyDelay()          { return m_relocation_ai_notify_delay; }
+        static float GetRelocationLowerLimitSq()                        { return m_relocation_lower_limit_sq; }
+        static uint32 GetRelocationAINotifyDelay()                  { return m_relocation_ai_notify_delay; }
 
         void ProcessCliCommands();
         void QueueCliCommand(CliCommandHolder* commandHolder) { cliCmdQueue.add(commandHolder); }
@@ -661,8 +661,8 @@ class World
         bool m_configBoolValues[CONFIG_BOOL_VALUE_COUNT];
 
         int32 m_playerLimit;
-        LocaleConstant m_defaultDbcLocale;                  // from config for one from loaded DBC locales
-        uint32 m_availableDbcLocaleMask;                    // by loaded DBC
+        LocaleConstant m_defaultDbcLocale;                                  // from config for one from loaded DBC locales
+        uint32 m_availableDbcLocaleMask;                                        // by loaded DBC
         void DetectDBCLang();
         bool m_allowMovement;
         std::string m_motd;
