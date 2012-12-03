@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -238,14 +236,14 @@ struct MANGOS_DLL_DECL npc_anachronos_the_ancientAI : public ScriptedAI, private
 
     GuidList m_lQirajiWarriorsList;
 
-    void Reset()
+    void Reset() override
     {
         // We summon the rest of the dragons on timer
         m_uiEventTimer  = 100;
         m_uiEventStage  = 0;
     }
 
-    void JustDidDialogueStep(int32 iEntry)
+    void JustDidDialogueStep(int32 iEntry) override
     {
         switch (iEntry)
         {
@@ -432,7 +430,7 @@ struct MANGOS_DLL_DECL npc_anachronos_the_ancientAI : public ScriptedAI, private
         }
     }
 
-    Creature* GetSpeakerByEntry(uint32 uiEntry)
+    Creature* GetSpeakerByEntry(uint32 uiEntry) override
     {
         switch (uiEntry)
         {
@@ -494,7 +492,7 @@ struct MANGOS_DLL_DECL npc_anachronos_the_ancientAI : public ScriptedAI, private
         }
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         // Also remove npc flags where needed
         switch (pSummoned->GetEntry())
@@ -524,7 +522,7 @@ struct MANGOS_DLL_DECL npc_anachronos_the_ancientAI : public ScriptedAI, private
         }
     }
 
-    void MovementInform(uint32 uiType, uint32 uiPointId)
+    void MovementInform(uint32 uiType, uint32 uiPointId) override
     {
         if (uiType != POINT_MOTION_TYPE)
             return;
@@ -557,7 +555,7 @@ struct MANGOS_DLL_DECL npc_anachronos_the_ancientAI : public ScriptedAI, private
         }
     }
 
-    void SummonedMovementInform(Creature* pSummoned, uint32 uiType, uint32 uiPointId)
+    void SummonedMovementInform(Creature* pSummoned, uint32 uiType, uint32 uiPointId) override
     {
         if (uiType != POINT_MOTION_TYPE)
             return;
@@ -594,7 +592,7 @@ struct MANGOS_DLL_DECL npc_anachronos_the_ancientAI : public ScriptedAI, private
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         DialogueUpdate(uiDiff);
 

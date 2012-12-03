@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -53,6 +51,7 @@ enum
     // Phase switch spells
     SPELL_HALAZZI_TRANSFORM_SUMMON  = 43143,            // summons 24143
     SPELL_TRANSFIGURE_TO_TROLL      = 43142,            // triggers 43573
+    SPELL_TRANSFIGURE_TRANSFORM     = 43573,
 
     SPELL_TRANSFORM_TO_LYNX_75      = 43145,
     SPELL_TRANSFORM_TO_LYNX_50      = 43271,
@@ -95,9 +94,11 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
     uint32 m_uiTotemTimer;
     uint32 m_uiBerserkTimer;
 
+    bool m_bHasTransformed;
+
     ObjectGuid m_spiritLynxGuid;
 
-    void Reset()
+    void Reset() override
     {
         m_uiPhase           = PHASE_SINGLE;
         m_uiPhaseCounter    = 3;
@@ -107,9 +108,11 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         m_uiShockTimer      = 10000;
         m_uiTotemTimer      = 12000;
         m_uiBerserkTimer    = 10 * MINUTE * IN_MILLISECONDS;
+
+        m_bHasTransformed   = false;
     }
 
-    void EnterEvadeMode()
+    void EnterEvadeMode() override
     {
         // Transform back on evade
         if (DoCastSpellIfCan(m_creature, SPELL_TRANSFORM_TO_ORIGINAL) == CAST_OK)
@@ -118,13 +121,13 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         ScriptedAI::EnterEvadeMode();
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_HALAZZI, FAIL);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
 
@@ -132,7 +135,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
             m_pInstance->SetData(TYPE_HALAZZI, IN_PROGRESS);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() != TYPEID_PLAYER)
             return;
@@ -140,7 +143,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         DoScriptText(urand(0, 1) ? SAY_KILL1 : SAY_KILL2, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -148,13 +151,26 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
             m_pInstance->SetData(TYPE_HALAZZI, DONE);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_SPIRIT_LYNX)
         {
             m_spiritLynxGuid = pSummoned->GetObjectGuid();
             pSummoned->SetInCombatWithZone();
             pSummoned->CastSpell(m_creature, SPELL_HALAZZI_TRANSFORM_DUMMY, true);
+        }
+    }
+
+    void SpellHit(Unit* pCaster, const SpellEntry* pSpell) override
+    {
+        if (pSpell->Id == SPELL_TRANSFIGURE_TRANSFORM)
+        {
+            DoCastSpellIfCan(m_creature, SPELL_HALAZZI_TRANSFORM_SUMMON, CAST_TRIGGERED);
+            m_creature->UpdateEntry(NPC_HALAZZI_TROLL);
+
+            m_uiPhase      = PHASE_TOTEM;
+            m_uiShockTimer = 10000;
+            m_uiTotemTimer = 12000;
         }
     }
 
@@ -188,10 +204,11 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
             m_uiPhase           = m_uiPhaseCounter > 0 ? PHASE_SINGLE : PHASE_FINAL;
             m_uiFrenzyTimer     = 16000;
             m_uiSaberLashTimer  = 20000;
+            m_bHasTransformed   = false;
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -214,17 +231,12 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         if (m_uiPhase == PHASE_SINGLE || m_uiPhase == PHASE_FINAL)
         {
             // Split boss at 75%, 50% and 25%
-            if (m_creature->GetHealthPercent() <= float(25 * m_uiPhaseCounter))
+            if (!m_bHasTransformed && m_creature->GetHealthPercent() <= float(25 * m_uiPhaseCounter))
             {
                 if (DoCastSpellIfCan(m_creature, SPELL_TRANSFIGURE_TO_TROLL) == CAST_OK)
                 {
-                    DoCastSpellIfCan(m_creature, SPELL_HALAZZI_TRANSFORM_SUMMON, CAST_TRIGGERED);
                     DoScriptText(SAY_SPLIT, m_creature);
-                    m_creature->UpdateEntry(NPC_HALAZZI_TROLL);
-
-                    m_uiPhase      = PHASE_TOTEM;
-                    m_uiShockTimer = 10000;
-                    m_uiTotemTimer = 12000;
+                    m_bHasTransformed = true;
                 }
             }
 
@@ -304,14 +316,14 @@ struct MANGOS_DLL_DECL boss_spirit_lynxAI : public ScriptedAI
     uint32 m_uiShredArmorTimer;
     bool m_bHasUnited;
 
-    void Reset()
+    void Reset() override
     {
         m_uiFrenzyTimer     = urand(10000, 20000);          // first frenzy after 10-20 seconds
         m_uiShredArmorTimer = 4000;
         m_bHasUnited        = false;
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         if (!m_pInstance)
             return;
@@ -320,7 +332,7 @@ struct MANGOS_DLL_DECL boss_spirit_lynxAI : public ScriptedAI
             pHalazzi->AI()->KilledUnit(pVictim);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -343,7 +355,7 @@ struct MANGOS_DLL_DECL boss_spirit_lynxAI : public ScriptedAI
 
         // Unite spirits at 10% health
         // Note: maybe there is some spell related to this - needs research
-        if (!m_bHasUnited && m_creature->GetHealthPercent() < 20.0f && m_pInstance)
+        if (!m_bHasUnited && m_creature->GetHealthPercent() < 10.0f && m_pInstance)
         {
             if (Creature* pHalazzi = m_pInstance->GetSingleCreatureFromStorage(NPC_HALAZZI))
             {

@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -161,7 +159,7 @@ struct MANGOS_DLL_DECL npc_ranshallaAI : public npc_escortAI, private DialogueHe
     ObjectGuid m_voiceEluneGuid;
     ObjectGuid m_altarGuid;
 
-    void Reset()
+    void Reset() override
     {
         m_uiDelayTimer = 0;
     }
@@ -231,7 +229,7 @@ struct MANGOS_DLL_DECL npc_ranshallaAI : public npc_escortAI, private DialogueHe
         }
     }
 
-    void SummonedMovementInform(Creature* pSummoned, uint32 uiType, uint32 uiPointId)
+    void SummonedMovementInform(Creature* pSummoned, uint32 uiType, uint32 uiPointId) override
     {
         if (uiType != POINT_MOTION_TYPE || pSummoned->GetEntry() != NPC_PRIESTESS_ELUNE || uiPointId != 1)
             return;
@@ -240,7 +238,7 @@ struct MANGOS_DLL_DECL npc_ranshallaAI : public npc_escortAI, private DialogueHe
         StartNextDialogueText(SAY_PRIESTESS_ALTAR_3);
     }
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         switch (uiPointId)
         {
@@ -291,7 +289,7 @@ struct MANGOS_DLL_DECL npc_ranshallaAI : public npc_escortAI, private DialogueHe
         }
     }
 
-    void JustDidDialogueStep(int32 iEntry)
+    void JustDidDialogueStep(int32 iEntry) override
     {
         switch (iEntry)
         {
@@ -383,7 +381,7 @@ struct MANGOS_DLL_DECL npc_ranshallaAI : public npc_escortAI, private DialogueHe
         }
     }
 
-    Creature* GetSpeakerByEntry(uint32 uiEntry)
+    Creature* GetSpeakerByEntry(uint32 uiEntry) override
     {
         switch (uiEntry)
         {
@@ -398,7 +396,7 @@ struct MANGOS_DLL_DECL npc_ranshallaAI : public npc_escortAI, private DialogueHe
 
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 uiDiff) override
     {
         DialogueUpdate(uiDiff);
 

@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -64,7 +62,7 @@ struct MANGOS_DLL_DECL boss_emerald_dragonAI : public ScriptedAI
     uint32 m_uiNoxiousBreathTimer;
     uint32 m_uiTailsweepTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiEventCounter = 1;
 
@@ -73,21 +71,21 @@ struct MANGOS_DLL_DECL boss_emerald_dragonAI : public ScriptedAI
         m_uiTailsweepTimer = 4000;
     }
 
-    void EnterCombat(Unit* pEnemy)
+    void EnterCombat(Unit* pEnemy) override
     {
         DoCastSpellIfCan(m_creature, SPELL_MARK_OF_NATURE_AURA, CAST_TRIGGERED);
 
         ScriptedAI::EnterCombat(pEnemy);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         // Mark killed players with Mark of Nature
         if (pVictim->GetTypeId() == TYPEID_PLAYER)
             pVictim->CastSpell(pVictim, SPELL_MARK_OF_NATURE_PLAYER, true, NULL, NULL, m_creature->GetObjectGuid());
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (Unit* pTarget = m_creature->SelectAttackingTarget(ATTACKING_TARGET_RANDOM, 0))
             pSummoned->AI()->AttackStart(pTarget);
@@ -102,7 +100,7 @@ struct MANGOS_DLL_DECL boss_emerald_dragonAI : public ScriptedAI
     // Return true to handle shared timers and MeleeAttack
     virtual bool UpdateDragonAI(const uint32 uiDiff) { return true; }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
@@ -165,19 +163,19 @@ struct MANGOS_DLL_DECL boss_emerissAI : public boss_emerald_dragonAI
 
     uint32 m_uiVolatileInfectionTimer;
 
-    void Reset()
+    void Reset() override
     {
         boss_emerald_dragonAI::Reset();
 
         m_uiVolatileInfectionTimer = 12000;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_EMERISS_AGGRO, m_creature);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         // summon a mushroom on the spot the player dies
         if (pVictim->GetTypeId() == TYPEID_PLAYER)
@@ -244,7 +242,7 @@ struct MANGOS_DLL_DECL boss_lethonAI : public boss_emerald_dragonAI
 {
     boss_lethonAI(Creature* pCreature) : boss_emerald_dragonAI(pCreature) {}
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_LETHON_AGGRO, m_creature);
         // Shadow bolt wirl is a periodic aura which triggers a set of shadowbolts every 2 secs; may need some core tunning
@@ -264,7 +262,7 @@ struct MANGOS_DLL_DECL boss_lethonAI : public boss_emerald_dragonAI
     }
 
     // Need this code here, as SPELL_DRAW_SPIRIT has no Script- or Dummyeffect
-    void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell)
+    void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell) override
     {
         // Summon a shade for each player hit
         if (pTarget->GetTypeId() == TYPEID_PLAYER && pSpell->Id == SPELL_DRAW_SPIRIT)
@@ -277,7 +275,7 @@ struct MANGOS_DLL_DECL boss_lethonAI : public boss_emerald_dragonAI
         }
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         // Move the shade to lethon
         if (pSummoned->GetEntry() == NPC_SPIRIT_SHADE)
@@ -293,12 +291,12 @@ struct MANGOS_DLL_DECL npc_spirit_shadeAI : public ScriptedAI
 
     bool m_bHasHealed;
 
-    void Reset()
+    void Reset() override
     {
         m_bHasHealed = false;
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         if (!m_bHasHealed && pWho->GetEntry() == NPC_LETHON && pWho->IsWithinDistInMap(m_creature, 3.0f))
         {
@@ -310,9 +308,9 @@ struct MANGOS_DLL_DECL npc_spirit_shadeAI : public ScriptedAI
         }
     }
 
-    void AttackStart(Unit* pWho) { }
+    void AttackStart(Unit* pWho) override { }
 
-    void UpdateAI(const uint32 uiDiff) { }
+    void UpdateAI(const uint32 uiDiff) override { }
 };
 
 CreatureAI* GetAI_boss_lethon(Creature* pCreature)
@@ -356,7 +354,7 @@ struct MANGOS_DLL_DECL boss_taerarAI : public boss_emerald_dragonAI
     uint32 m_uiShadesTimeoutTimer;
     uint8 m_uiShadesDead;
 
-    void Reset()
+    void Reset() override
     {
         boss_emerald_dragonAI::Reset();
 
@@ -370,7 +368,7 @@ struct MANGOS_DLL_DECL boss_taerarAI : public boss_emerald_dragonAI
             m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_TAERAR_AGGRO, m_creature);
     }
@@ -397,7 +395,7 @@ struct MANGOS_DLL_DECL boss_taerarAI : public boss_emerald_dragonAI
         return false;
     }
 
-    void SummonedCreatureJustDied(Creature* pSummoned)
+    void SummonedCreatureJustDied(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_SHADE_OF_TAERAR)
         {
@@ -463,13 +461,13 @@ struct MANGOS_DLL_DECL boss_shadeoftaerarAI : public ScriptedAI
     uint32 m_uiPoisonCloud_Timer;
     uint32 m_uiPosionBreath_Timer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiPoisonCloud_Timer = 8000;
         m_uiPosionBreath_Timer = 12000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -529,14 +527,14 @@ struct MANGOS_DLL_DECL boss_ysondreAI : public boss_emerald_dragonAI
 
     uint32 m_uiLightningWaveTimer;
 
-    void Reset()
+    void Reset() override
     {
         boss_emerald_dragonAI::Reset();
 
         m_uiLightningWaveTimer = 12000;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_YSONDRE_AGGRO, m_creature);
     }
@@ -575,12 +573,12 @@ struct MANGOS_DLL_DECL mob_dementeddruidsAI : public ScriptedAI
 
     uint32 m_uiMoonFire_Timer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiMoonFire_Timer = 3000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

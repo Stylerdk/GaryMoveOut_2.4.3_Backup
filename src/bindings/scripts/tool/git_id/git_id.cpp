@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
+ * Copyright (C) 2005-2012 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2012 ScriptDev2 <http://www.scriptdev2.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -54,8 +55,8 @@
 
 char remotes[NUM_REMOTES][MAX_REMOTE] =
 {
-    "git@github.com:mangosone/scripts.git",
-    "git://github.com/mangosone/scripts.git"        // used for fetch if present
+    "git@github.com:scriptdev2/scriptdev2-tbc.git",
+    "git://github.com/scriptdev2/scriptdev2-tbc.git"        // used for fetch if present
 };
 
 char remote_branch[MAX_REMOTE] = "master";

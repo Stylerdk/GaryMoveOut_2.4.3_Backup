@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -111,7 +109,7 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
 
     ObjectGuid m_lastEventInvokerGuid;
 
-    void Reset()
+    void Reset() override
     {
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
@@ -160,7 +158,6 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
 
             if (pKiller)
                 AttackStart(pKiller);
-
         }
     }
 
@@ -188,7 +185,7 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
             AttackStart(pEnemy);
     }
 
-    void AttackStart(Unit* pWho)
+    void AttackStart(Unit* pWho) override
     {
         if (m_bIsIntroEvent || !m_bIsMainEvent)
             return;
@@ -206,7 +203,7 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
         }
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         if (!m_bIntroOnce && pWho->GetTypeId() == TYPEID_PLAYER && !((Player*)pWho)->isGameMaster() && m_creature->IsWithinDistInMap(pWho, 50.0f) && m_creature->IsWithinLOSInMap(pWho))
         {
@@ -226,7 +223,7 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
         ScriptedAI::MoveInLineOfSight(pWho);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         switch (urand(0, 2))
         {
@@ -236,7 +233,7 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
         }
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         // ToDo: this should be done in DB
         pSummoned->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -245,12 +242,12 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
         pSummoned->CastSpell(pSummoned, SPELL_CONSUMPTION, false, NULL, NULL, m_creature->GetObjectGuid());
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         DoScriptText(urand(0, 1) ? SAY_SLAY_1 : SAY_SLAY_2, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DIE, m_creature);
 
@@ -260,7 +257,7 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
         m_pInstance->SetData(TYPE_NETHEKURSE, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_NETHEKURSE, FAIL);
@@ -274,7 +271,7 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_bIsIntroEvent)
         {
@@ -351,18 +348,18 @@ struct MANGOS_DLL_DECL mob_fel_orc_convertAI : public ScriptedAI
     ScriptedInstance* m_pInstance;
     uint32 m_uiHemorrhageTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_creature->SetNoCallAssistance(true);              // we don't want any assistance (WE R HEROZ!)
         m_uiHemorrhageTimer = 3000;
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         return;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (m_pInstance)
         {
@@ -380,7 +377,7 @@ struct MANGOS_DLL_DECL mob_fel_orc_convertAI : public ScriptedAI
         }
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
         {
@@ -395,7 +392,7 @@ struct MANGOS_DLL_DECL mob_fel_orc_convertAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -417,9 +414,9 @@ struct MANGOS_DLL_DECL mob_lesser_shadow_fissureAI : public Scripted_NoMovementA
 {
     mob_lesser_shadow_fissureAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature) { Reset(); }
 
-    void Reset() { }
-    void MoveInLineOfSight(Unit* pWho) { }
-    void AttackStart(Unit* pWho) { }
+    void Reset() override { }
+    void MoveInLineOfSight(Unit* pWho) override { }
+    void AttackStart(Unit* pWho) override { }
 };
 
 CreatureAI* GetAI_boss_grand_warlock_nethekurse(Creature* pCreature)

@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -83,13 +81,13 @@ struct MANGOS_DLL_DECL boss_vazrudenAI : public ScriptedAI
     uint32 m_uiRevengeTimer;
     bool m_bHealthBelow;
 
-    void Reset()
+    void Reset() override
     {
         m_bHealthBelow = false;
         m_uiRevengeTimer = urand(5500, 8400);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         switch (urand(0, 2))
         {
@@ -99,7 +97,7 @@ struct MANGOS_DLL_DECL boss_vazrudenAI : public ScriptedAI
         }
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -107,13 +105,13 @@ struct MANGOS_DLL_DECL boss_vazrudenAI : public ScriptedAI
             m_pInstance->SetData(TYPE_VAZRUDEN, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_VAZRUDEN, FAIL);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         DoScriptText(urand(0, 1) ? SAY_KILL1 : SAY_KILL2, m_creature);
     }
@@ -128,7 +126,7 @@ struct MANGOS_DLL_DECL boss_vazrudenAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -184,7 +182,7 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
     ObjectGuid m_lastSeenPlayerGuid;
     ObjectGuid m_vazrudenGuid;
 
-    void Reset()
+    void Reset() override
     {
         if (m_creature->GetEntry() != NPC_VAZRUDEN_HERALD)
             m_creature->UpdateEntry(NPC_VAZRUDEN_HERALD);
@@ -206,7 +204,7 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
         m_creature->SetLevitate(true);
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         if (m_bIsEventInProgress && !m_lastSeenPlayerGuid && pWho->GetTypeId() == TYPEID_PLAYER && pWho->isAlive() && !((Player*)pWho)->isGameMaster())
         {
@@ -220,7 +218,7 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
         ScriptedAI::MoveInLineOfSight(pWho);
     }
 
-    void MovementInform(uint32 uiType, uint32 uiPointId)
+    void MovementInform(uint32 uiType, uint32 uiPointId) override
     {
         if (!m_pInstance)
             return;
@@ -302,7 +300,7 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
         m_creature->GetMotionMaster()->MoveIdle();
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() != NPC_VAZRUDEN)
             return;
@@ -316,19 +314,19 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
             m_pInstance->SetData(TYPE_VAZRUDEN, IN_PROGRESS);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_NAZAN, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_NAZAN, FAIL);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
         {

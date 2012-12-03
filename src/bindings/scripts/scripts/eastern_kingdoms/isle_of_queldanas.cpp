@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -48,14 +46,14 @@ struct MANGOS_DLL_DECL npc_converted_sentryAI : public ScriptedAI
 
     uint32 m_uiCreditTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiCreditTimer = 2500;
     }
 
-    void MoveInLineOfSight(Unit* pWho) {}
+    void MoveInLineOfSight(Unit* pWho) override {}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_uiCreditTimer)
         {

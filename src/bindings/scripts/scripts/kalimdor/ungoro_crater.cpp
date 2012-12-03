@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -51,9 +49,9 @@ struct MANGOS_DLL_DECL npc_ame01AI : public npc_escortAI
 {
     npc_ame01AI(Creature* pCreature) : npc_escortAI(pCreature) { Reset(); }
 
-    void Reset() {}
+    void Reset() override {}
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         switch (uiPointId)
         {
@@ -71,7 +69,7 @@ struct MANGOS_DLL_DECL npc_ame01AI : public npc_escortAI
         }
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (pWho->GetTypeId() == TYPEID_PLAYER)
             return;
@@ -158,7 +156,7 @@ struct MANGOS_DLL_DECL npc_ringoAI : public FollowerAI
 
     Unit* pSpraggle;
 
-    void Reset()
+    void Reset() override
     {
         m_uiFaintTimer = urand(30000, 60000);
         m_uiEndEventProgress = 0;
@@ -166,7 +164,7 @@ struct MANGOS_DLL_DECL npc_ringoAI : public FollowerAI
         pSpraggle = NULL;
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         FollowerAI::MoveInLineOfSight(pWho);
 
@@ -186,7 +184,7 @@ struct MANGOS_DLL_DECL npc_ringoAI : public FollowerAI
         }
     }
 
-    void SpellHit(Unit* pCaster, const SpellEntry* pSpell)
+    void SpellHit(Unit* pCaster, const SpellEntry* pSpell) override
     {
         if (HasFollowState(STATE_FOLLOW_INPROGRESS | STATE_FOLLOW_PAUSED) && pSpell->Id == SPELL_REVIVE_RINGO)
             ClearFaint();
@@ -229,7 +227,7 @@ struct MANGOS_DLL_DECL npc_ringoAI : public FollowerAI
         SetFollowPaused(false);
     }
 
-    void UpdateFollowerAI(const uint32 uiDiff)
+    void UpdateFollowerAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
         {

@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -70,7 +68,7 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
 
     GuidList m_lBirdsGuidList;
 
-    void Reset()
+    void Reset() override
     {
         m_uiFleshRipTimer   = urand(9000, 10000);
         m_uiScreechTimer    = 23000;
@@ -79,7 +77,7 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
         m_fHealthCheck      = 75.0f;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         // Note: this should be moved to the intro event when implemented!
         DoSummonBirdHelpers();
@@ -88,7 +86,7 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
             m_pInstance->SetData(TYPE_ANZU, IN_PROGRESS);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DespawnBirdHelpers();
 
@@ -96,7 +94,7 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
             m_pInstance->SetData(TYPE_ANZU, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         DespawnBirdHelpers();
         m_creature->ForcedDespawn();
@@ -105,7 +103,7 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
             m_pInstance->SetData(TYPE_ANZU, FAIL);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_BROOD_OF_ANZU)
         {
@@ -156,7 +154,7 @@ struct MANGOS_DLL_DECL boss_anzuAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -51,13 +49,13 @@ struct MANGOS_DLL_DECL npc_tapoke_slim_jahnAI : public npc_escortAI
 
     bool m_bFriendSummoned;
 
-    void Reset()
+    void Reset() override
     {
         if (!HasEscortState(STATE_ESCORT_ESCORTING))
             m_bFriendSummoned = false;
     }
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         switch (uiPointId)
         {
@@ -71,7 +69,7 @@ struct MANGOS_DLL_DECL npc_tapoke_slim_jahnAI : public npc_escortAI
         }
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         Player* pPlayer = GetPlayerForEscort();
 
@@ -84,13 +82,13 @@ struct MANGOS_DLL_DECL npc_tapoke_slim_jahnAI : public npc_escortAI
         }
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (Player* pPlayer = GetPlayerForEscort())
             pSummoned->AI()->AttackStart(pPlayer);
     }
 
-    void AttackedBy(Unit* pAttacker)
+    void AttackedBy(Unit* pAttacker) override
     {
         if (m_creature->getVictim())
             return;
@@ -101,7 +99,7 @@ struct MANGOS_DLL_DECL npc_tapoke_slim_jahnAI : public npc_escortAI
         AttackStart(pAttacker);
     }
 
-    void DamageTaken(Unit* pDoneBy, uint32& uiDamage)
+    void DamageTaken(Unit* pDoneBy, uint32& uiDamage) override
     {
         if (m_creature->GetHealthPercent() < 20.0f)
         {

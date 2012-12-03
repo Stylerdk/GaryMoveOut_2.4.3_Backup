@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -35,14 +33,14 @@ struct MANGOS_DLL_DECL generic_creatureAI : public ScriptedAI
     uint32 BuffTimer;           // This variable keeps track of buffs
     bool IsSelfRooted;
 
-    void Reset()
+    void Reset() override
     {
         GlobalCooldown = 0;
         BuffTimer = 0;          // Rebuff as soon as we can
         IsSelfRooted = false;
     }
 
-    void Aggro(Unit* who)
+    void Aggro(Unit* who) override
     {
         if (!m_creature->CanReachWithMeleeAttack(who))
         {
@@ -50,7 +48,7 @@ struct MANGOS_DLL_DECL generic_creatureAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 diff)
+    void UpdateAI(const uint32 diff) override
     {
         // Always decrease our global cooldown first
         if (GlobalCooldown > diff)

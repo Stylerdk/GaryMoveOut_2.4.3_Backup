@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -56,7 +54,7 @@ struct MANGOS_DLL_DECL boss_high_botanist_freywinnAI : public ScriptedAI
     uint8 m_uiFrayerAddsCount;
     bool m_bCanMoveFree;
 
-    void Reset()
+    void Reset() override
     {
         m_uiSummonSeedlingTimer = 6000;
         m_uiTreeFormTimer       = 30000;
@@ -66,12 +64,12 @@ struct MANGOS_DLL_DECL boss_high_botanist_freywinnAI : public ScriptedAI
         m_bCanMoveFree          = true;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_FRAYER_PROTECTOR)
             ++m_uiFrayerAddsCount;
@@ -81,7 +79,7 @@ struct MANGOS_DLL_DECL boss_high_botanist_freywinnAI : public ScriptedAI
             pSummoned->AI()->AttackStart(m_creature->getVictim());
     }
 
-    void SummonedCreatureJustDied(Creature* pSummoned)
+    void SummonedCreatureJustDied(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_FRAYER_PROTECTOR)
         {
@@ -115,17 +113,17 @@ struct MANGOS_DLL_DECL boss_high_botanist_freywinnAI : public ScriptedAI
         }
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         DoScriptText(urand(0, 1) ? SAY_KILL_1 : SAY_KILL_2, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -122,7 +120,7 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI, private Dia
     bool m_bFirstGravityLapse;
     bool m_bHasTaunted;
 
-    void Reset()
+    void Reset() override
     {
         m_uiFireballTimer       = 0;
         m_uiPhoenixTimer        = 10000;
@@ -141,26 +139,26 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI, private Dia
         SetCombatMovement(true);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_KAELTHAS, DONE);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_KAELTHAS, IN_PROGRESS);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_KAELTHAS, FAIL);
     }
 
     // Boss has an interesting speech before killed, so we need to fake death (without stand state) and allow him to finish his theatre
-    void DamageTaken(Unit* pKiller, uint32& uiDamage)
+    void DamageTaken(Unit* pKiller, uint32& uiDamage) override
     {
         if (uiDamage < m_creature->GetHealth())
             return;
@@ -190,7 +188,7 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI, private Dia
         m_creature->GetMotionMaster()->MoveIdle();
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         if (!m_bHasTaunted && pWho->GetTypeId() == TYPEID_PLAYER && !((Player*)pWho)->isGameMaster() &&
                 m_creature->IsWithinDistInMap(pWho, 40.0) && m_creature->IsWithinLOSInMap(pWho))
@@ -208,7 +206,7 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI, private Dia
         ScriptedAI::MoveInLineOfSight(pWho);
     }
 
-    void JustDidDialogueStep(int32 iEntry)
+    void JustDidDialogueStep(int32 iEntry) override
     {
         switch (iEntry)
         {
@@ -235,7 +233,7 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI, private Dia
         }
     }
 
-    void AttackStart(Unit* pWho)
+    void AttackStart(Unit* pWho) override
     {
         if (m_creature->Attack(pWho, true))
         {
@@ -246,7 +244,7 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI, private Dia
         }
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_FLAME_STRIKE_TRIGGER)
             pSummoned->CastSpell(pSummoned, SPELL_FLAME_STRIKE_DUMMY, false, NULL, NULL, m_creature->GetObjectGuid());
@@ -263,7 +261,7 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI, private Dia
         }
     }
 
-    void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell)
+    void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell) override
     {
         // Handle Gravity Lapse on targets
         if (pSpell->Id == SPELL_GRAVITY_LAPSE && pTarget->GetTypeId() == TYPEID_PLAYER)
@@ -293,7 +291,7 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI, private Dia
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         DialogueUpdate(uiDiff);
 
@@ -447,18 +445,18 @@ struct MANGOS_DLL_DECL mob_felkael_phoenixAI : public ScriptedAI
 
     bool m_bFakeDeath;
 
-    void Reset()
+    void Reset() override
     {
         m_uiBurnTimer = 2000;
         m_bFakeDeath = false;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoCastSpellIfCan(m_creature, SPELL_PHOENIX_BURN);
     }
 
-    void EnterEvadeMode()
+    void EnterEvadeMode() override
     {
         // Don't evade during ember blast
         if (m_bFakeDeath)
@@ -467,7 +465,7 @@ struct MANGOS_DLL_DECL mob_felkael_phoenixAI : public ScriptedAI
         ScriptedAI::EnterEvadeMode();
     }
 
-    void DamageTaken(Unit* pKiller, uint32& uiDamage)
+    void DamageTaken(Unit* pKiller, uint32& uiDamage) override
     {
         if (uiDamage < m_creature->GetHealth())
             return;
@@ -507,7 +505,7 @@ struct MANGOS_DLL_DECL mob_felkael_phoenixAI : public ScriptedAI
         m_creature->SummonCreature(NPC_PHOENIX_EGG, 0, 0, 0, 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 10000);
     }
 
-    void SummonedCreatureDespawn(Creature* pSummoned)
+    void SummonedCreatureDespawn(Creature* pSummoned) override
     {
         m_creature->RemoveAurasDueToSpell(SPELL_EMBER_BLAST);
         m_creature->SetStandState(UNIT_STAND_STATE_STAND);
@@ -525,14 +523,14 @@ struct MANGOS_DLL_DECL mob_felkael_phoenixAI : public ScriptedAI
         }
     }
 
-    void SummonedCreatureJustDied(Creature* pSummoned)
+    void SummonedCreatureJustDied(Creature* pSummoned) override
     {
         // Self kill if the egg is killed
         if (m_bFakeDeath)
             m_creature->DealDamage(m_creature, m_creature->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -568,10 +566,10 @@ struct MANGOS_DLL_DECL mob_felkael_phoenix_eggAI : public Scripted_NoMovementAI
 {
     mob_felkael_phoenix_eggAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature) { Reset(); }
 
-    void Reset() {}
-    void MoveInLineOfSight(Unit* pWho) {}
-    void AttackStart(Unit* pWho) {}
-    void UpdateAI(const uint32 uiDiff) {}
+    void Reset() override {}
+    void MoveInLineOfSight(Unit* pWho) override {}
+    void AttackStart(Unit* pWho) override {}
+    void UpdateAI(const uint32 uiDiff) override {}
 };
 
 /*######
@@ -591,7 +589,7 @@ struct MANGOS_DLL_DECL mob_arcane_sphereAI : public ScriptedAI
     uint32 m_uiDespawnTimer;
     uint32 m_uiChangeTargetTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiDespawnTimer      = 30000;
         m_uiChangeTargetTimer = urand(6000, 12000);
@@ -599,10 +597,10 @@ struct MANGOS_DLL_DECL mob_arcane_sphereAI : public ScriptedAI
         DoCastSpellIfCan(m_creature, SPELL_ARCANE_SPHERE_PASSIVE);
     }
 
-    void AttackStart(Unit* pWho) { }
-    void MoveInLineOfSight(Unit* pWho) { }
+    void AttackStart(Unit* pWho) override { }
+    void MoveInLineOfSight(Unit* pWho) override { }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Should despawn when aura 44251 expires
         if (m_uiDespawnTimer < uiDiff)

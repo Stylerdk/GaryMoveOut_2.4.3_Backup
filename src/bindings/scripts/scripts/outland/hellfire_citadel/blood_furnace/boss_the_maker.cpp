@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -59,7 +57,7 @@ struct MANGOS_DLL_DECL boss_the_makerAI : public ScriptedAI
     uint32 m_uiDominationTimer;
     uint32 m_uiKnockdownTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiAcidSprayTimer          = 15000;
         m_uiExplodingBreakerTimer   = 6000;
@@ -67,7 +65,7 @@ struct MANGOS_DLL_DECL boss_the_makerAI : public ScriptedAI
         m_uiKnockdownTimer          = 10000;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         switch (urand(0, 2))
         {
@@ -80,18 +78,18 @@ struct MANGOS_DLL_DECL boss_the_makerAI : public ScriptedAI
             m_pInstance->SetData(TYPE_THE_MAKER_EVENT, IN_PROGRESS);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_THE_MAKER_EVENT, FAIL);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         DoScriptText(urand(0, 1) ? SAY_KILL_1 : SAY_KILL_2, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DIE, m_creature);
 
@@ -99,7 +97,7 @@ struct MANGOS_DLL_DECL boss_the_makerAI : public ScriptedAI
             m_pInstance->SetData(TYPE_THE_MAKER_EVENT, DONE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

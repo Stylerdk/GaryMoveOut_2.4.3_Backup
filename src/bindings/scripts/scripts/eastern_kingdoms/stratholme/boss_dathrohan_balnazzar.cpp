@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -89,7 +87,7 @@ struct MANGOS_DLL_DECL boss_dathrohan_balnazzarAI : public ScriptedAI
     uint32 m_uiMindControl_Timer;
     bool m_bTransformed;
 
-    void Reset()
+    void Reset() override
     {
         m_uiCrusadersHammer_Timer = 8000;
         m_uiCrusaderStrike_Timer = 12000;
@@ -106,12 +104,12 @@ struct MANGOS_DLL_DECL boss_dathrohan_balnazzarAI : public ScriptedAI
 
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
     }
 
-    void JustDied(Unit* Victim)
+    void JustDied(Unit* Victim) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -121,7 +119,7 @@ struct MANGOS_DLL_DECL boss_dathrohan_balnazzarAI : public ScriptedAI
                                        TEMPSUMMON_TIMED_DESPAWN, HOUR * IN_MILLISECONDS);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

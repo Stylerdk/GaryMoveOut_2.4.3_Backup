@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -68,13 +66,13 @@ struct MANGOS_DLL_DECL boss_viscidusAI : public ScriptedAI
     uint32 m_uiPoisonShockTimer;
     uint32 m_uiPoisonBoltVolleyTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiPoisonShockTimer      = urand(7000, 12000);
         m_uiPoisonBoltVolleyTimer = urand(10000, 15000);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoCastSpellIfCan(m_creature, SPELL_TOXIN);
 
@@ -82,19 +80,19 @@ struct MANGOS_DLL_DECL boss_viscidusAI : public ScriptedAI
             m_pInstance->SetData(TYPE_VISCIDUS, IN_PROGRESS);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_VISCIDUS, FAIL);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_VISCIDUS, DONE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

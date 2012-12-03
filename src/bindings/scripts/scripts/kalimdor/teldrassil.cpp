@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -47,9 +45,9 @@ struct MANGOS_DLL_DECL npc_mistAI : public FollowerAI
 {
     npc_mistAI(Creature* pCreature) : FollowerAI(pCreature) { Reset(); }
 
-    void Reset() { }
+    void Reset() override { }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         FollowerAI::MoveInLineOfSight(pWho);
 
@@ -78,7 +76,7 @@ struct MANGOS_DLL_DECL npc_mistAI : public FollowerAI
     }
 
     // call not needed here, no known abilities
-    /*void UpdateFollowerAI(const uint32 uiDiff)
+    /*void UpdateFollowerAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

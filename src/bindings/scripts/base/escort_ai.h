@@ -1,20 +1,6 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
+ * This program is free software licensed under GPL version 2
+ * Please see the included DOCS/LICENSE.TXT for more information */
 
 #ifndef SC_ESCORTAI_H
 #define SC_ESCORTAI_H
@@ -50,31 +36,31 @@ struct MANGOS_DLL_DECL npc_escortAI : public ScriptedAI
         explicit npc_escortAI(Creature* pCreature);
         ~npc_escortAI() {}
 
-        void GetAIInformation(ChatHandler& reader);
+        void GetAIInformation(ChatHandler& reader) override;
 
-        virtual void Aggro(Unit*);
+        virtual void Aggro(Unit*) override;
 
-        virtual void Reset() = 0;
+        virtual void Reset() override = 0;
 
         // CreatureAI functions
-        bool IsVisible(Unit*) const;
+        bool IsVisible(Unit*) const override;
 
-        void AttackStart(Unit*);
+        void AttackStart(Unit*) override;
 
-        void EnterCombat(Unit*);
+        void EnterCombat(Unit*) override;
 
-        void MoveInLineOfSight(Unit*);
+        void MoveInLineOfSight(Unit*) override;
 
-        void JustDied(Unit*);
+        void JustDied(Unit*) override;
 
-        void JustRespawned();
+        void JustRespawned() override;
 
-        void EnterEvadeMode();
+        void EnterEvadeMode() override;
 
-        void UpdateAI(const uint32);                        // the "internal" update, calls UpdateEscortAI()
+        void UpdateAI(const uint32) override;               // the "internal" update, calls UpdateEscortAI()
         virtual void UpdateEscortAI(const uint32);          // used when it's needed to add code in update (abilities, scripted events, etc)
 
-        void MovementInform(uint32, uint32);
+        void MovementInform(uint32, uint32) override;
 
         // EscortAI functions
         // void AddWaypoint(uint32 id, float x, float y, float z, uint32 WaitTimeMs = 0);

@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -89,7 +87,7 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
 
     bool m_bPhase2;
 
-    void Reset()
+    void Reset() override
     {
         m_uiArcingSmashTimer    = urand(8000, 14000);
         m_uiMightyBlowTimer     = urand(15000, 25000);
@@ -100,13 +98,13 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
         m_bPhase2               = false;
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_MAULGAR_EVENT, FAIL);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         switch (urand(0, 2))
         {
@@ -116,7 +114,7 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
         }
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -125,7 +123,7 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
             m_pInstance->SetData(TYPE_MAULGAR_EVENT, SPECIAL);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
 
@@ -144,7 +142,7 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -218,7 +216,7 @@ struct MANGOS_DLL_DECL Council_Base_AI : public ScriptedAI
 
     ScriptedInstance* m_pInstance;
 
-    void JustDied(Unit* pVictim)
+    void JustDied(Unit* pVictim) override
     {
         if (!m_pInstance)
             return;
@@ -244,14 +242,14 @@ struct MANGOS_DLL_DECL boss_olm_the_summonerAI : public Council_Base_AI
     uint32 m_uiDeathCoilTimer;
     uint32 m_uiSummonTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiDarkDecayTimer = 18000;
         m_uiDeathCoilTimer = 14000;
         m_uiSummonTimer    = 10000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -294,7 +292,7 @@ struct MANGOS_DLL_DECL boss_kiggler_the_crazedAI : public Council_Base_AI
     uint32 m_uiArcaneShockTimer;
     uint32 m_uiArcaneExplosionTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiGreatherPolymorphTimer  = 15000;
         m_uiLightningBoltTimer      = 10000;
@@ -302,7 +300,7 @@ struct MANGOS_DLL_DECL boss_kiggler_the_crazedAI : public Council_Base_AI
         m_uiArcaneExplosionTimer    = 30000;
     }
 
-    void SpellHitTarget(Unit* pVictim, const SpellEntry* pSpell)
+    void SpellHitTarget(Unit* pVictim, const SpellEntry* pSpell) override
     {
         // Spell currently not supported by core. Knock back effect should lower threat
         // Workaround in script:
@@ -315,7 +313,7 @@ struct MANGOS_DLL_DECL boss_kiggler_the_crazedAI : public Council_Base_AI
         }
     }
 
-    void AttackStart(Unit* pWho)
+    void AttackStart(Unit* pWho) override
     {
         if (!pWho)
             return;
@@ -330,7 +328,7 @@ struct MANGOS_DLL_DECL boss_kiggler_the_crazedAI : public Council_Base_AI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -383,14 +381,14 @@ struct MANGOS_DLL_DECL boss_blindeye_the_seerAI : public Council_Base_AI
     uint32 m_uiHealTimer;
     uint32 m_uiPrayerofHealingTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiGreaterPowerWordShieldTimer    = 5000;
         m_uiHealTimer                      = urand(25000, 40000);
         m_uiPrayerofHealingTimer           = urand(45000, 55000);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -435,14 +433,14 @@ struct MANGOS_DLL_DECL boss_krosh_firehandAI : public Council_Base_AI
     uint32 m_uiSpellShieldTimer;
     uint32 m_uiBlastWaveTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiGreaterFireballTimer = 4000;
         m_uiSpellShieldTimer     = 1000;
         m_uiBlastWaveTimer       = 12000;
     }
 
-    void AttackStart(Unit* pWho)
+    void AttackStart(Unit* pWho) override
     {
         if (!pWho)
             return;
@@ -457,7 +455,7 @@ struct MANGOS_DLL_DECL boss_krosh_firehandAI : public Council_Base_AI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -8,12 +6,12 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA02111-1307USA
  */
 
 /* ScriptData
@@ -134,7 +132,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
 
     bool m_bEntangle;
 
-    void Reset()
+    void Reset() override
     {
         SetCombatMovement(true);
 
@@ -157,7 +155,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
         m_uiSummonSporebatStaticTimer = 30000;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         switch (urand(0, 3))
         {
@@ -171,7 +169,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
             m_pInstance->SetData(TYPE_LADYVASHJ_EVENT, IN_PROGRESS);
     }
 
-    void MovementInform(uint32 uiType, uint32 uiPointId)
+    void MovementInform(uint32 uiType, uint32 uiPointId) override
     {
         if (uiType != POINT_MOTION_TYPE)
             return;
@@ -195,7 +193,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
         }
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         switch (pSummoned->GetEntry())
         {
@@ -211,14 +209,14 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
         }
     }
 
-    void SummonedCreatureJustDied(Creature* pSummoned)
+    void SummonedCreatureJustDied(Creature* pSummoned) override
     {
         // Set the timer when summoned killed
         if (pSummoned->GetEntry() == NPC_TAINTED_ELEMENTAL)
             m_uiTaintedElementalTimer = 50000;
     }
 
-    void SummonedCreatureDespawn(Creature* pSummoned)
+    void SummonedCreatureDespawn(Creature* pSummoned) override
     {
         // Set the timer when summoned despawned, if not already killed
         if (pSummoned->GetEntry() == NPC_TAINTED_ELEMENTAL)
@@ -228,7 +226,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
         }
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         switch (urand(0, 2))
         {
@@ -238,7 +236,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
         }
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -246,7 +244,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
             m_pInstance->SetData(TYPE_LADYVASHJ_EVENT, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_LADYVASHJ_EVENT, FAIL);
@@ -289,7 +287,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -456,17 +454,17 @@ struct MANGOS_DLL_DECL mob_enchanted_elementalAI : public ScriptedAI
         Reset();
     }
 
-    void Reset() { }
+    void Reset() override { }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         // Buff Lady Vashj on range check - spell has script target
         if (pWho->GetEntry() == NPC_LADYVASHJ && pWho->IsWithinDistInMap(m_creature, INTERACTION_DISTANCE) && pWho->IsWithinLOSInMap(m_creature))
             DoCastSpellIfCan(m_creature, SPELL_SURGE, CAST_TRIGGERED);
     }
 
-    void AttackStart(Unit* pWho) { }
-    void UpdateAI(const uint32 uiDiff) { }
+    void AttackStart(Unit* pWho) override { }
+    void UpdateAI(const uint32 uiDiff) override { }
 };
 
 bool GOUse_go_shield_generator(Player* pPlayer, GameObject* pGo)

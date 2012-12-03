@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -52,9 +50,9 @@ struct MANGOS_DLL_DECL npc_kanatiAI : public npc_escortAI
 {
     npc_kanatiAI(Creature* pCreature) : npc_escortAI(pCreature) { Reset(); }
 
-    void Reset() { }
+    void Reset() override { }
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         switch (uiPointId)
         {
@@ -77,7 +75,7 @@ struct MANGOS_DLL_DECL npc_kanatiAI : public npc_escortAI
                                        TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 25000);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         pSummoned->AI()->AttackStart(m_creature);
     }
@@ -132,9 +130,9 @@ struct MANGOS_DLL_DECL npc_lakota_windsongAI : public npc_escortAI
 {
     npc_lakota_windsongAI(Creature* pCreature) : npc_escortAI(pCreature) { Reset(); }
 
-    void Reset() { }
+    void Reset() override { }
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         switch (uiPointId)
         {
@@ -209,9 +207,9 @@ struct MANGOS_DLL_DECL npc_paoka_swiftmountainAI : public npc_escortAI
 {
     npc_paoka_swiftmountainAI(Creature* pCreature) : npc_escortAI(pCreature) { Reset(); }
 
-    void Reset() { }
+    void Reset() override { }
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         switch (uiPointId)
         {
@@ -281,7 +279,7 @@ struct MANGOS_DLL_DECL npc_plucky_johnsonAI : public ScriptedAI
     uint32 m_uiNormFaction;
     uint32 m_uiResetTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiResetTimer = 120000;
 
@@ -294,7 +292,7 @@ struct MANGOS_DLL_DECL npc_plucky_johnsonAI : public ScriptedAI
         m_creature->CastSpell(m_creature, SPELL_PLUCKY_CHICKEN, false);
     }
 
-    void ReceiveEmote(Player* pPlayer, uint32 uiTextEmote)
+    void ReceiveEmote(Player* pPlayer, uint32 uiTextEmote) override
     {
         if (pPlayer->GetQuestStatus(QUEST_SCOOP) == QUEST_STATUS_INCOMPLETE)
         {
@@ -320,7 +318,7 @@ struct MANGOS_DLL_DECL npc_plucky_johnsonAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_creature->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
         {

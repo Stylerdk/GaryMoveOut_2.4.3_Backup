@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -59,7 +57,7 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
     uint32 m_uiKnockAwayTimer;
     uint32 m_uiBerserkTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiPoundingTimer   = 13000;
         m_uiArcaneOrbTimer  = 3000;
@@ -67,7 +65,7 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
         m_uiBerserkTimer    = 10 * MINUTE * IN_MILLISECONDS;
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() != TYPEID_PLAYER)
             return;
@@ -80,7 +78,7 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
         }
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -88,7 +86,7 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
             m_pInstance->SetData(TYPE_VOIDREAVER, DONE);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
 
@@ -96,19 +94,19 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
             m_pInstance->SetData(TYPE_VOIDREAVER, IN_PROGRESS);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_VOIDREAVER, NOT_STARTED);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         // Cast the Arcane Orb missile on the npc, not on player
         DoCastSpellIfCan(pSummoned, SPELL_ARCANE_ORB_MISSILE, CAST_TRIGGERED);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

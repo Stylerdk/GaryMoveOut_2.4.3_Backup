@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -66,13 +64,13 @@ struct MANGOS_DLL_DECL npc_lady_sylvanas_windrunnerAI : public ScriptedAI
     uint32 m_uiLamentEventTimer;
     uint32 m_uiSummonTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiLamentEventTimer = 0;
         m_uiSummonTimer = 0;
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_HIGHBORNE_BUNNY)
             pSummoned->CastSpell(pSummoned, SPELL_RIBBON_OF_SOULS, false);
@@ -92,7 +90,7 @@ struct MANGOS_DLL_DECL npc_lady_sylvanas_windrunnerAI : public ScriptedAI
         m_uiSummonTimer = 13000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_uiLamentEventTimer)
         {

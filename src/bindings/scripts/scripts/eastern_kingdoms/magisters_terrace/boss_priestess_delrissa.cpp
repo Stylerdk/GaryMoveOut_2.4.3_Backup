@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -84,7 +82,7 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
     uint32 m_uiMedallionTimer;
     uint8 m_uiPlayersKilled;
 
-    void Reset()
+    void Reset() override
     {
         m_uiHealTimer       = 15000;
         m_uiRenewTimer      = 10000;
@@ -98,13 +96,13 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
         DoInitializeCompanions();
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_DELRISSA, FAIL);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (pWho->GetTypeId() != TYPEID_PLAYER)
             return;
@@ -155,7 +153,7 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
         }
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() != TYPEID_PLAYER)
             return;
@@ -168,7 +166,7 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
             m_uiPlayersKilled = 0;
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -182,7 +180,7 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
             m_creature->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -299,7 +297,7 @@ struct MANGOS_DLL_DECL priestess_companion_commonAI : public ScriptedAI
     uint32 m_uiMedallionTimer;
     bool m_bUsedPotion;
 
-    void Reset()
+    void Reset() override
     {
         m_bUsedPotion = false;
 
@@ -311,7 +309,7 @@ struct MANGOS_DLL_DECL priestess_companion_commonAI : public ScriptedAI
         m_uiMedallionTimer   = urand(1000, 2000);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         if (!m_pInstance)
             return;
@@ -323,7 +321,7 @@ struct MANGOS_DLL_DECL priestess_companion_commonAI : public ScriptedAI
     // Return true to handle shared timers and MeleeAttack
     virtual bool UpdateCompanionAI(const uint32 uiDiff) { return true; }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
@@ -397,7 +395,7 @@ struct MANGOS_DLL_DECL npc_kagani_nightstrikeAI : public priestess_companion_com
     uint32 m_uiEviscerateTimer;
     uint32 m_uiVanishEndTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiGougeTimer      = 5500;
         m_uiKickTimer       = 7000;
@@ -408,7 +406,7 @@ struct MANGOS_DLL_DECL npc_kagani_nightstrikeAI : public priestess_companion_com
         priestess_companion_commonAI::Reset();
     }
 
-    void EnterEvadeMode()
+    void EnterEvadeMode() override
     {
         if (m_uiVanishEndTimer)
             return;
@@ -514,7 +512,7 @@ struct MANGOS_DLL_DECL npc_ellris_duskhallowAI : public priestess_companion_comm
     uint32 m_uiFearTimer;
     uint32 m_uiDeathCoilTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiImmolateTimer       = 6000;
         m_uiShadowBoltTimer     = 3000;
@@ -530,7 +528,7 @@ struct MANGOS_DLL_DECL npc_ellris_duskhallowAI : public priestess_companion_comm
             DoCastSpellIfCan(m_creature, SPELL_SUMMON_IMP);
     }
 
-    void AttackStart(Unit* pWho)
+    void AttackStart(Unit* pWho) override
     {
         if (m_creature->Attack(pWho, true))
         {
@@ -636,7 +634,7 @@ struct MANGOS_DLL_DECL npc_eramas_brightblazeAI : public priestess_companion_com
     uint32 m_uiKnockdownTimer;
     uint32 m_uiSnapKickTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiKnockdownTimer = 6000;
         m_uiSnapKickTimer  = 4500;
@@ -705,7 +703,7 @@ struct MANGOS_DLL_DECL npc_yazzaiAI : public priestess_companion_commonAI
     uint32 m_uiFrostboltTimer;
     uint32 m_uiBlinkTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_bHasIceBlocked    = false;
 
@@ -721,7 +719,7 @@ struct MANGOS_DLL_DECL npc_yazzaiAI : public priestess_companion_commonAI
         priestess_companion_commonAI::Reset();
     }
 
-    void AttackStart(Unit* pWho)
+    void AttackStart(Unit* pWho) override
     {
         if (m_creature->Attack(pWho, true))
         {
@@ -841,7 +839,7 @@ struct MANGOS_DLL_DECL npc_warlord_salarisAI : public priestess_companion_common
     uint32 m_uiHamstringTimer;
     uint32 m_uiMortalStrikeTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiInterceptStunTimer      = 500;
         m_uiDisarmTimer             = 6000;
@@ -853,7 +851,7 @@ struct MANGOS_DLL_DECL npc_warlord_salarisAI : public priestess_companion_common
         priestess_companion_commonAI::Reset();
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoCastSpellIfCan(m_creature, SPELL_BATTLE_SHOUT);
     }
@@ -955,7 +953,7 @@ struct MANGOS_DLL_DECL npc_garaxxasAI : public priestess_companion_commonAI
     uint32 m_uiWingClipTimer;
     uint32 m_uiFreezingTrapTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiAimedShotTimer      = 6000;
         m_uiShootTimer          = 2500;
@@ -971,7 +969,7 @@ struct MANGOS_DLL_DECL npc_garaxxasAI : public priestess_companion_commonAI
             m_creature->SummonCreature(NPC_SLIVER, 0, 0, 0, 0, TEMPSUMMON_CORPSE_DESPAWN, 0);
     }
 
-    void AttackStart(Unit* pWho)
+    void AttackStart(Unit* pWho) override
     {
         if (m_creature->Attack(pWho, true))
         {
@@ -1085,7 +1083,7 @@ struct MANGOS_DLL_DECL npc_apokoAI : public priestess_companion_commonAI
     uint32 m_uiHealingWaveTimer;
     uint32 m_uiFrostShockTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiTotemTimer       = 0;
         m_uiWarStompTimer    = 10000;
@@ -1185,7 +1183,7 @@ struct MANGOS_DLL_DECL npc_zelfanAI : public priestess_companion_commonAI
     uint32 m_uiHighExplosiveSheepTimer;
     uint32 m_uiFelIronBombTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiGoblinDragonGunTimer    = 20000;
         m_uiRocketLaunchTimer       = 7000;
@@ -1196,7 +1194,7 @@ struct MANGOS_DLL_DECL npc_zelfanAI : public priestess_companion_commonAI
         priestess_companion_commonAI::Reset();
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (m_creature->getVictim())
             pSummoned->AI()->AttackStart(m_creature->getVictim());

@@ -1,20 +1,6 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
+ * This program is free software licensed under GPL version 2
+ * Please see the included DOCS/LICENSE.TXT for more information */
 
 #ifndef DEF_RUINS_OF_AHNQIRAJ_H
 #define DEF_RUINS_OF_AHNQIRAJ_H
@@ -117,26 +103,26 @@ class MANGOS_DLL_DECL instance_ruins_of_ahnqiraj : public ScriptedInstance
         instance_ruins_of_ahnqiraj(Map* pMap);
         ~instance_ruins_of_ahnqiraj() {}
 
-        void Initialize();
+        void Initialize() override;
 
-        // bool IsEncounterInProgress() const;              // not active in AQ20
+        // bool IsEncounterInProgress() const override;              // not active in AQ20
 
-        void OnCreatureCreate(Creature* pCreature);
-        void OnPlayerEnter(Player* pPlayer);
+        void OnCreatureCreate(Creature* pCreature) override;
+        void OnPlayerEnter(Player* pPlayer) override;
 
-        void OnCreatureEnterCombat(Creature* pCreature);
+        void OnCreatureEnterCombat(Creature* pCreature) override;
         void OnCreatureEvade(Creature* pCreature);
-        void OnCreatureDeath(Creature* pCreature);
+        void OnCreatureDeath(Creature* pCreature) override;
 
-        void SetData(uint32 uiType, uint32 uiData);
-        uint32 GetData(uint32 uiType);
+        void SetData(uint32 uiType, uint32 uiData) override;
+        uint32 GetData(uint32 uiType) override;
 
         void GetKaldoreiGuidList(GuidList& lList) { lList = m_lKaldoreiGuidList; }
 
-        void Update(uint32 uiDiff);
+        void Update(uint32 uiDiff) override;
 
-        const char* Save() { return m_strInstData.c_str(); }
-        void Load(const char* chrIn);
+        const char* Save() override { return m_strInstData.c_str(); }
+        void Load(const char* chrIn) override;
 
     private:
         void DoSapwnAndorovIfCan();

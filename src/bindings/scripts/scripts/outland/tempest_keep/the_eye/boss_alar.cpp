@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -102,7 +100,7 @@ struct MANGOS_DLL_DECL boss_alarAI : public ScriptedAI
 
     bool m_bCanSummonEmber;
 
-    void Reset()
+    void Reset() override
     {
         // Start phase one and move to the closest platform
         m_uiPhase = PHASE_ONE;
@@ -121,7 +119,7 @@ struct MANGOS_DLL_DECL boss_alarAI : public ScriptedAI
         m_bCanSummonEmber       = true;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ALAR, IN_PROGRESS);
@@ -131,19 +129,19 @@ struct MANGOS_DLL_DECL boss_alarAI : public ScriptedAI
         m_creature->GetMotionMaster()->MovePoint(POINT_ID_PLATFORM, aPlatformLocation[m_uiCurrentPlatformId].m_fX, aPlatformLocation[m_uiCurrentPlatformId].m_fY, aPlatformLocation[m_uiCurrentPlatformId].m_fZ);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ALAR, FAIL);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ALAR, DONE);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_FLAME_PATCH)
             pSummoned->CastSpell(pSummoned, SPELL_FLAME_PATCH, true);
@@ -154,7 +152,7 @@ struct MANGOS_DLL_DECL boss_alarAI : public ScriptedAI
         }
     }
 
-    void SummonedCreatureJustDied(Creature* pSummoned)
+    void SummonedCreatureJustDied(Creature* pSummoned) override
     {
         // drain 3% of boss health when the ember dies
         if (pSummoned->GetEntry() == NPC_EMBER_OF_ALAR)
@@ -165,7 +163,7 @@ struct MANGOS_DLL_DECL boss_alarAI : public ScriptedAI
         }
     }
 
-    void EnterEvadeMode()
+    void EnterEvadeMode() override
     {
         // Don't evade if the boss has the ember blast invisibility aura
         if (m_creature->HasAura(SPELL_EMBER_BLAST))
@@ -174,7 +172,7 @@ struct MANGOS_DLL_DECL boss_alarAI : public ScriptedAI
         ScriptedAI::EnterEvadeMode();
     }
 
-    void MovementInform(uint32 uiMotionType, uint32 uiPointId)
+    void MovementInform(uint32 uiMotionType, uint32 uiPointId) override
     {
         if (uiMotionType != POINT_MOTION_TYPE)
             return;
@@ -218,7 +216,7 @@ struct MANGOS_DLL_DECL boss_alarAI : public ScriptedAI
         }
     }
 
-    void DamageTaken(Unit* pKiller, uint32& uiDamage)
+    void DamageTaken(Unit* pKiller, uint32& uiDamage) override
     {
         // Only init fake in phase one
         if (m_uiPhase != PHASE_ONE)
@@ -253,7 +251,7 @@ struct MANGOS_DLL_DECL boss_alarAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

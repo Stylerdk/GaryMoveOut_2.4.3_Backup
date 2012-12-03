@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -52,7 +50,7 @@ struct MANGOS_DLL_DECL npc_cooshcooshAI : public ScriptedAI
     uint32 m_uiNormFaction;
     uint32 m_uiLightningBolt_Timer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiLightningBolt_Timer = 2000;
 
@@ -60,7 +58,7 @@ struct MANGOS_DLL_DECL npc_cooshcooshAI : public ScriptedAI
             m_creature->setFaction(m_uiNormFaction);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -101,7 +99,7 @@ struct MANGOS_DLL_DECL npc_kayra_longmaneAI : public npc_escortAI
 {
     npc_kayra_longmaneAI(Creature* pCreature) : npc_escortAI(pCreature) { Reset(); }
 
-    void WaypointReached(uint32 i)
+    void WaypointReached(uint32 i) override
     {
         Player* pPlayer = GetPlayerForEscort();
 
@@ -133,7 +131,7 @@ struct MANGOS_DLL_DECL npc_kayra_longmaneAI : public npc_escortAI
         }
     }
 
-    void Reset() { }
+    void Reset() override { }
 };
 
 bool QuestAccept_npc_kayra_longmane(Player* pPlayer, Creature* pCreature, const Quest* pQuest)

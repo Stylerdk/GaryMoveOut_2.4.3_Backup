@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -54,7 +52,7 @@ struct MANGOS_DLL_DECL boss_herodAI : public ScriptedAI
     uint32 m_uiCleaveTimer;
     uint32 m_uiWhirlwindTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_bTraineeSay = false;
         m_bEnrage     = false;
@@ -63,7 +61,7 @@ struct MANGOS_DLL_DECL boss_herodAI : public ScriptedAI
         m_uiWhirlwindTimer = 14500;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
         DoCastSpellIfCan(m_creature, SPELL_RUSHINGCHARGE);
@@ -79,18 +77,18 @@ struct MANGOS_DLL_DECL boss_herodAI : public ScriptedAI
         }
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         DoScriptText(SAY_KILL, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         for (uint8 i = 0; i < 20; ++i)
             m_creature->SummonCreature(NPC_SCARLET_TRAINEE, 1939.18f, -431.58f, 17.09f, 6.22f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 600000);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -145,10 +143,10 @@ struct MANGOS_DLL_DECL mob_scarlet_traineeAI : public npc_escortAI
 
     uint32 m_uiStartTimer;
 
-    void Reset() { }
-    void WaypointReached(uint32 /*uiPointId*/) {}
+    void Reset() override { }
+    void WaypointReached(uint32 /*uiPointId*/) override {}
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 uiDiff) override
     {
         if (m_uiStartTimer)
         {

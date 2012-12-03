@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -58,7 +56,7 @@ struct MANGOS_DLL_DECL boss_patchwerkAI : public ScriptedAI
     bool   m_bEnraged;
     bool   m_bBerserk;
 
-    void Reset()
+    void Reset() override
     {
         m_uiHatefulStrikeTimer = 1000;                      // 1 second
         m_uiBerserkTimer = MINUTE * 6 * IN_MILLISECONDS;    // 6 minutes
@@ -67,7 +65,7 @@ struct MANGOS_DLL_DECL boss_patchwerkAI : public ScriptedAI
         m_bBerserk = false;
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         if (urand(0, 4))
             return;
@@ -75,7 +73,7 @@ struct MANGOS_DLL_DECL boss_patchwerkAI : public ScriptedAI
         DoScriptText(SAY_SLAY, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -83,7 +81,7 @@ struct MANGOS_DLL_DECL boss_patchwerkAI : public ScriptedAI
             m_pInstance->SetData(TYPE_PATCHWERK, DONE);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(urand(0, 1) ? SAY_AGGRO1 : SAY_AGGRO2, m_creature);
 
@@ -91,7 +89,7 @@ struct MANGOS_DLL_DECL boss_patchwerkAI : public ScriptedAI
             m_pInstance->SetData(TYPE_PATCHWERK, IN_PROGRESS);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_PATCHWERK, FAIL);
@@ -135,7 +133,7 @@ struct MANGOS_DLL_DECL boss_patchwerkAI : public ScriptedAI
         DoCastSpellIfCan(pTarget, SPELL_HATEFULSTRIKE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

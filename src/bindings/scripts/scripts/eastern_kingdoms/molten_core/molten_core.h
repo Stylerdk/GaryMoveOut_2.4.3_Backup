@@ -1,20 +1,6 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
+ * This program is free software licensed under GPL version 2
+ * Please see the included DOCS/LICENSE.TXT for more information */
 
 #ifndef DEF_MOLTEN_CORE_H
 #define DEF_MOLTEN_CORE_H
@@ -118,18 +104,18 @@ class MANGOS_DLL_DECL instance_molten_core : public ScriptedInstance
         instance_molten_core(Map* pMap);
         ~instance_molten_core() {}
 
-        void Initialize();
-        bool IsEncounterInProgress() const;
+        void Initialize() override;
+        bool IsEncounterInProgress() const override;
 
-        void OnCreatureCreate(Creature* pCreature);
-        void OnObjectCreate(GameObject* pGo);
-        void OnPlayerEnter(Player* pPlayer);
+        void OnCreatureCreate(Creature* pCreature) override;
+        void OnObjectCreate(GameObject* pGo) override;
+        void OnPlayerEnter(Player* pPlayer) override;
 
-        void SetData(uint32 uiType, uint32 uiData);
-        uint32 GetData(uint32 uiType);
+        void SetData(uint32 uiType, uint32 uiData) override;
+        uint32 GetData(uint32 uiType) override;
 
-        const char* Save() { return m_strInstData.c_str(); }
-        void Load(const char* chrIn);
+        const char* Save() override { return m_strInstData.c_str(); }
+        void Load(const char* chrIn) override;
 
     protected:
         void DoSpawnMajordomoIfCan(bool bByPlayerEnter);

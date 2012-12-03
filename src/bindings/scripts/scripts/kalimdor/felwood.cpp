@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -72,9 +70,9 @@ struct MANGOS_DLL_DECL npc_kittenAI : public FollowerAI
 
     uint32 m_uiMoonwellCooldown;
 
-    void Reset() { }
+    void Reset() override { }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         // should not have npcflag by default, so set when expected
         if (!m_creature->getVictim() && !m_creature->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP) && HasFollowState(STATE_FOLLOW_INPROGRESS) && pWho->GetEntry() == NPC_WINNA)
@@ -84,7 +82,7 @@ struct MANGOS_DLL_DECL npc_kittenAI : public FollowerAI
         }
     }
 
-    void UpdateFollowerAI(const uint32 uiDiff)
+    void UpdateFollowerAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
         {
@@ -189,7 +187,7 @@ struct MANGOS_DLL_DECL npc_niby_the_almightyAI : public ScriptedAI
 
     bool m_bEventStarted;
 
-    void Reset()
+    void Reset() override
     {
         m_uiSummonTimer = 500;
         m_uiSpeech = 0;
@@ -204,7 +202,7 @@ struct MANGOS_DLL_DECL npc_niby_the_almightyAI : public ScriptedAI
         m_creature->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_bEventStarted)
         {
@@ -303,7 +301,7 @@ struct MANGOS_DLL_DECL npc_kroshiusAI : public ScriptedAI
 
     uint8 m_uiPhase;
 
-    void Reset()
+    void Reset() override
     {
         m_uiKnockBackTimer = urand(5000, 8000);
         m_playerGuid.Clear();
@@ -330,12 +328,12 @@ struct MANGOS_DLL_DECL npc_kroshiusAI : public ScriptedAI
         // TODO: A visual Flame Circle around the mob still missing
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         m_uiPhase = 0;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_uiPhase)
             return;

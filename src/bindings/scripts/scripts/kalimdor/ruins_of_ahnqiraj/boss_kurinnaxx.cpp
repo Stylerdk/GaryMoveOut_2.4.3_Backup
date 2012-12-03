@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -50,7 +48,7 @@ struct MANGOS_DLL_DECL boss_kurinnaxxAI : public ScriptedAI
 
     ObjectGuid m_sandtrapGuid;
 
-    void Reset()
+    void Reset() override
     {
         m_bEnraged = false;
 
@@ -61,7 +59,7 @@ struct MANGOS_DLL_DECL boss_kurinnaxxAI : public ScriptedAI
         m_uiTrapTriggerTimer = 0;
     }
 
-    void JustSummoned(GameObject* pGo)
+    void JustSummoned(GameObject* pGo) override
     {
         if (pGo->GetEntry() == GO_SAND_TRAP)
         {
@@ -70,7 +68,7 @@ struct MANGOS_DLL_DECL boss_kurinnaxxAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

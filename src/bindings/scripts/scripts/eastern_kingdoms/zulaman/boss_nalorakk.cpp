@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -76,7 +74,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
     uint8 m_uiCurrentWave;
     bool m_bIsInBearForm;
 
-    void Reset()
+    void Reset() override
     {
         m_uiChangeFormTimer         = 45000;
         m_uiBrutalSwipeTimer        = 12000;
@@ -89,7 +87,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
         m_bIsInBearForm             = false;
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         ScriptedAI::MoveInLineOfSight(pWho);
 
@@ -104,7 +102,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
         }
     }
 
-    void MovementInform(uint32 uiMotionType, uint32 uiPointId)
+    void MovementInform(uint32 uiMotionType, uint32 uiPointId) override
     {
         if (uiMotionType != POINT_MOTION_TYPE)
             return;
@@ -129,7 +127,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
     }
 
     // Nalorakk evades only after the trash waves are finished
-    void EnterEvadeMode()
+    void EnterEvadeMode() override
     {
         m_creature->RemoveAllAuras();
         m_creature->DeleteThreatList();
@@ -145,7 +143,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
         Reset();
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
 
@@ -153,12 +151,12 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
             m_pInstance->SetData(TYPE_NALORAKK, IN_PROGRESS);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         DoScriptText(urand(0, 1) ? SAY_SLAY1 : SAY_SLAY2, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -168,7 +166,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
         m_pInstance->SetData(TYPE_NALORAKK, DONE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())

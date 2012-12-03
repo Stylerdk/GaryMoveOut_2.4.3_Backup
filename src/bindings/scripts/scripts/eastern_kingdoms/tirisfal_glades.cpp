@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -99,7 +97,7 @@ struct MANGOS_DLL_DECL npc_calvin_montagueAI : public ScriptedAI
     uint32 m_uiPhaseTimer;
     ObjectGuid m_playerGuid;
 
-    void Reset()
+    void Reset() override
     {
         m_uiPhase = 0;
         m_uiPhaseTimer = 5000;
@@ -109,7 +107,7 @@ struct MANGOS_DLL_DECL npc_calvin_montagueAI : public ScriptedAI
             m_creature->setFaction(m_uiNormFaction);
     }
 
-    void AttackedBy(Unit* pAttacker)
+    void AttackedBy(Unit* pAttacker) override
     {
         if (m_creature->getVictim() || m_creature->IsFriendlyTo(pAttacker))
             return;
@@ -117,7 +115,7 @@ struct MANGOS_DLL_DECL npc_calvin_montagueAI : public ScriptedAI
         AttackStart(pAttacker);
     }
 
-    void DamageTaken(Unit* pDoneBy, uint32& uiDamage)
+    void DamageTaken(Unit* pDoneBy, uint32& uiDamage) override
     {
         if (uiDamage > m_creature->GetHealth() || ((m_creature->GetHealth() - uiDamage) * 100 / m_creature->GetMaxHealth() < 15))
         {
@@ -133,7 +131,7 @@ struct MANGOS_DLL_DECL npc_calvin_montagueAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_uiPhase)
         {

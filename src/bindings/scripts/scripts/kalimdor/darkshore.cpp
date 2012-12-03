@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -71,12 +69,12 @@ struct MANGOS_DLL_DECL npc_kerlonianAI : public FollowerAI
 
     uint32 m_uiFallAsleepTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiFallAsleepTimer = urand(10000, 45000);
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         FollowerAI::MoveInLineOfSight(pWho);
 
@@ -97,7 +95,7 @@ struct MANGOS_DLL_DECL npc_kerlonianAI : public FollowerAI
         }
     }
 
-    void SpellHit(Unit* pCaster, const SpellEntry* pSpell)
+    void SpellHit(Unit* pCaster, const SpellEntry* pSpell) override
     {
         if (HasFollowState(STATE_FOLLOW_INPROGRESS | STATE_FOLLOW_PAUSED) && pSpell->Id == SPELL_AWAKEN)
             ClearSleeping();
@@ -136,7 +134,7 @@ struct MANGOS_DLL_DECL npc_kerlonianAI : public FollowerAI
         SetFollowPaused(false);
     }
 
-    void UpdateFollowerAI(const uint32 uiDiff)
+    void UpdateFollowerAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
         {
@@ -211,7 +209,7 @@ struct MANGOS_DLL_DECL npc_prospector_remtravelAI : public npc_escortAI
 {
     npc_prospector_remtravelAI(Creature* pCreature) : npc_escortAI(pCreature) { Reset(); }
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         Player* pPlayer = GetPlayerForEscort();
 
@@ -274,15 +272,15 @@ struct MANGOS_DLL_DECL npc_prospector_remtravelAI : public npc_escortAI
         }
     }
 
-    void Reset() { }
+    void Reset() override { }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (urand(0, 1))
             DoScriptText(SAY_REM_AGGRO, m_creature, pWho);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         // unsure if it should be any
         // pSummoned->AI()->AttackStart(m_creature);
@@ -326,9 +324,9 @@ struct MANGOS_DLL_DECL npc_threshwackonatorAI : public FollowerAI
 {
     npc_threshwackonatorAI(Creature* pCreature) : FollowerAI(pCreature) { Reset(); }
 
-    void Reset() {}
+    void Reset() override {}
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         FollowerAI::MoveInLineOfSight(pWho);
 
@@ -432,13 +430,13 @@ struct MANGOS_DLL_DECL npc_volcorAI : public npc_escortAI
 
     uint32 m_uiQuestId;
 
-    void Reset()
+    void Reset() override
     {
         if (!HasEscortState(STATE_ESCORT_ESCORTING))
             m_uiQuestId = 0;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         // shouldn't always use text on agro
         switch (urand(0, 4))
@@ -449,7 +447,7 @@ struct MANGOS_DLL_DECL npc_volcorAI : public npc_escortAI
         }
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         // No combat for this quest
         if (m_uiQuestId == QUEST_ESCAPE_THROUGH_STEALTH)
@@ -458,7 +456,7 @@ struct MANGOS_DLL_DECL npc_volcorAI : public npc_escortAI
         npc_escortAI::MoveInLineOfSight(pWho);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         pSummoned->AI()->AttackStart(m_creature);
     }
@@ -484,7 +482,7 @@ struct MANGOS_DLL_DECL npc_volcorAI : public npc_escortAI
             Start(false, pPlayer, pQuest);
     }
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         switch (uiPointId)
         {

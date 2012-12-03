@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -94,7 +92,7 @@ struct MANGOS_DLL_DECL boss_the_lurker_belowAI : public Scripted_NoMovementAI
     uint32 m_uiSpoutTimer;
     uint32 m_uiSpoutEndTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiPhase           = PHASE_NORMAL;
         m_uiPhaseChangeTimer = 90000;
@@ -110,7 +108,7 @@ struct MANGOS_DLL_DECL boss_the_lurker_belowAI : public Scripted_NoMovementAI
         m_uiSpoutEndTimer   = 23000;
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_THELURKER_EVENT, FAIL);
@@ -118,13 +116,13 @@ struct MANGOS_DLL_DECL boss_the_lurker_belowAI : public Scripted_NoMovementAI
         m_creature->ForcedDespawn();
     }
 
-    void JustDied(Unit* pVictim)
+    void JustDied(Unit* pVictim) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_THELURKER_EVENT, DONE);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         // Allow the adds to attack
         pSummoned->SetInCombatWithZone();
@@ -165,7 +163,7 @@ struct MANGOS_DLL_DECL boss_the_lurker_belowAI : public Scripted_NoMovementAI
         return m_creature->SelectHostileTarget();
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!SelectHostileTarget())
             return;

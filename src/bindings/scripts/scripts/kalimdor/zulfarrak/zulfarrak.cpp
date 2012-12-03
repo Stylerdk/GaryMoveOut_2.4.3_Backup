@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -60,7 +58,7 @@ struct MANGOS_DLL_DECL npc_sergeant_blyAI : public ScriptedAI
     uint32 m_uiShieldBashTimer;
     uint32 m_uiRevengeTimer;                                // this is wrong, spell should never be used unless m_creature->getVictim() dodge, parry or block attack. Mangos support required.
 
-    void Reset()
+    void Reset() override
     {
         m_uiShieldBashTimer = 5000;
         m_uiRevengeTimer    = 8000;
@@ -71,19 +69,19 @@ struct MANGOS_DLL_DECL npc_sergeant_blyAI : public ScriptedAI
             m_pInstance->SetData(0, NOT_STARTED);*/
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         /*if (m_pInstance)
             m_pInstance->SetData(0, IN_PROGRESS);*/
     }
 
-    void JustDied(Unit* pVictim)
+    void JustDied(Unit* pVictim) override
     {
         /*if (m_pInstance)
             m_pInstance->SetData(0, DONE);*/
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -163,25 +161,25 @@ struct MANGOS_DLL_DECL npc_weegli_blastfuseAI : public ScriptedAI
 
     // ScriptedInstance* m_pInstance;
 
-    void Reset()
+    void Reset() override
     {
         /*if (m_pInstance)
             m_pInstance->SetData(0, NOT_STARTED);*/
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         /*if (m_pInstance)
             m_pInstance->SetData(0, IN_PROGRESS);*/
     }
 
-    void JustDied(Unit* pVictim)
+    void JustDied(Unit* pVictim) override
     {
         /*if (m_pInstance)
             m_pInstance->SetData(0, DONE);*/
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

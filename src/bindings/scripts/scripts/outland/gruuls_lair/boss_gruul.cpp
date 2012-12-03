@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -73,7 +71,7 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
 
     bool m_bPerformingGroundSlam;
 
-    void Reset()
+    void Reset() override
     {
         m_uiGrowthTimer             = 30000;
         m_uiCaveInTimer             = 27000;
@@ -84,7 +82,7 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
         m_bPerformingGroundSlam     = false;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
 
@@ -92,13 +90,13 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
             m_pInstance->SetData(TYPE_GRUUL_EVENT, IN_PROGRESS);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_GRUUL_EVENT, FAIL);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         switch (urand(0, 2))
         {
@@ -108,7 +106,7 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
         }
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -116,7 +114,7 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
             m_pInstance->SetData(TYPE_GRUUL_EVENT, DONE);
     }
 
-    void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell)
+    void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell) override
     {
         // This to emulate effect1 (77) of SPELL_GROUND_SLAM, knock back to any direction
         // It's initially wrong, since this will cause fall damage, which is by comments, not intended.
@@ -156,7 +154,7 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

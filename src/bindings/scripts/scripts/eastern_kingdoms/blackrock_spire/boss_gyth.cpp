@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -57,7 +55,7 @@ struct MANGOS_DLL_DECL boss_gythAI : public ScriptedAI
     bool m_bSummonedRend;
     bool m_bHasChromaticChaos;
 
-    void Reset()
+    void Reset() override
     {
         uiCorrosiveAcidTimer = 8000;
         uiFreezeTimer        = 11000;
@@ -68,12 +66,12 @@ struct MANGOS_DLL_DECL boss_gythAI : public ScriptedAI
         DoCastSpellIfCan(m_creature, SPELL_REND_MOUNTS);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         DoScriptText(EMOTE_KNOCKED_OFF, pSummoned);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())

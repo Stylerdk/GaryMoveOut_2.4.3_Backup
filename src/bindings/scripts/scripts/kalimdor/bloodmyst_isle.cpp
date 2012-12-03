@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -45,11 +43,11 @@ struct MANGOS_DLL_DECL mob_webbed_creatureAI : public Scripted_NoMovementAI
 {
     mob_webbed_creatureAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature) { Reset(); }
 
-    void Reset() { }
-    void AttackStart(Unit* pWho) { }
-    void MoveInLineOfSight(Unit* pWho) { }
+    void Reset() override { }
+    void AttackStart(Unit* pWho) override { }
+    void MoveInLineOfSight(Unit* pWho) override { }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         uint32 uiSpawnCreatureEntry = 0;
 

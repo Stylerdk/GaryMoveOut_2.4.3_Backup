@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -68,7 +66,7 @@ struct MANGOS_DLL_DECL boss_coren_direbrewAI : public ScriptedAI
     uint32 m_uiSummonTimer;
     uint8 m_uiPhase;
 
-    void Reset()
+    void Reset() override
     {
         m_uiDisarmTimer     = 10000;
         m_uiChargeTimer     = 5000;
@@ -76,14 +74,14 @@ struct MANGOS_DLL_DECL boss_coren_direbrewAI : public ScriptedAI
         m_uiPhase           = 0;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         // Spawn 3 minions on aggro
         for (uint8 i = 0; i < MAX_DIREBREW_MINIONS; ++i)
             DoCastSpellIfCan(m_creature, SPELL_SUMMON_DIREBREW_MINION, CAST_TRIGGERED);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         switch (pSummoned->GetEntry())
         {
@@ -97,7 +95,7 @@ struct MANGOS_DLL_DECL boss_coren_direbrewAI : public ScriptedAI
             pSummoned->AI()->AttackStart(m_creature->getVictim());
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

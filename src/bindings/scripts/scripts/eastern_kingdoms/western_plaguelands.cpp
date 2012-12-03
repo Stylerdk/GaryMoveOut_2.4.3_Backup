@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -37,7 +35,7 @@ struct MANGOS_DLL_DECL npc_the_scourge_cauldronAI : public ScriptedAI
 {
     npc_the_scourge_cauldronAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
 
-    void Reset() {}
+    void Reset() override {}
 
     void DoDie()
     {
@@ -49,7 +47,7 @@ struct MANGOS_DLL_DECL npc_the_scourge_cauldronAI : public ScriptedAI
             m_creature->SetRespawnDelay(600);
     }
 
-    void MoveInLineOfSight(Unit* who)
+    void MoveInLineOfSight(Unit* who) override
     {
         if (!who || who->GetTypeId() != TYPEID_PLAYER)
             return;

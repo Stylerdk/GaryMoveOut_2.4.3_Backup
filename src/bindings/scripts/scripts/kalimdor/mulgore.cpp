@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -55,7 +53,7 @@ struct MANGOS_DLL_DECL npc_kyle_the_frenziedAI : public ScriptedAI
     uint32 m_uiEventTimer;
     uint8 m_uiEventPhase;
 
-    void Reset()
+    void Reset() override
     {
         m_bEvent = false;
         m_bIsMovingToLunch = false;
@@ -67,7 +65,7 @@ struct MANGOS_DLL_DECL npc_kyle_the_frenziedAI : public ScriptedAI
             m_creature->UpdateEntry(NPC_KYLE_FRENZIED);
     }
 
-    void SpellHit(Unit* pCaster, SpellEntry const* pSpell)
+    void SpellHit(Unit* pCaster, SpellEntry const* pSpell) override
     {
         if (!m_creature->getVictim() && !m_bEvent && pSpell->Id == SPELL_LUNCH)
         {
@@ -87,7 +85,7 @@ struct MANGOS_DLL_DECL npc_kyle_the_frenziedAI : public ScriptedAI
         }
     }
 
-    void MovementInform(uint32 uiType, uint32 uiPointId)
+    void MovementInform(uint32 uiType, uint32 uiPointId) override
     {
         if (uiType != POINT_MOTION_TYPE || !m_bEvent)
             return;
@@ -96,7 +94,7 @@ struct MANGOS_DLL_DECL npc_kyle_the_frenziedAI : public ScriptedAI
             m_bIsMovingToLunch = false;
     }
 
-    void UpdateAI(const uint32 diff)
+    void UpdateAI(const uint32 diff) override
     {
         if (m_bEvent)
         {

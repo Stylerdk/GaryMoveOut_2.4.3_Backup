@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -70,7 +68,7 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
     bool m_bPhaseTwo;
     bool m_bInBerserk;
 
-    void Reset()
+    void Reset() override
     {
         m_uiHolyWrathTimer      = 40000;
         m_uiVenomSpitTimer      = 5500;
@@ -84,13 +82,13 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
         m_bInBerserk            = false;
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_VENOXIS, FAIL);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -98,7 +96,7 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
             m_pInstance->SetData(TYPE_VENOXIS, DONE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -91,7 +89,7 @@ struct MANGOS_DLL_DECL npc_eris_havenfireAI : public ScriptedAI
     ObjectGuid m_playerGuid;
     GuidList m_lSummonedGuidList;
 
-    void Reset()
+    void Reset() override
     {
         m_uiEventTimer      = 0;
         m_uiSadEndTimer     = 0;
@@ -105,7 +103,7 @@ struct MANGOS_DLL_DECL npc_eris_havenfireAI : public ScriptedAI
         m_creature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         switch (pSummoned->GetEntry())
         {
@@ -129,7 +127,7 @@ struct MANGOS_DLL_DECL npc_eris_havenfireAI : public ScriptedAI
         m_lSummonedGuidList.push_back(pSummoned->GetObjectGuid());
     }
 
-    void SummonedMovementInform(Creature* pSummoned, uint32 uiMotionType, uint32 uiPointId)
+    void SummonedMovementInform(Creature* pSummoned, uint32 uiMotionType, uint32 uiPointId) override
     {
         if (uiMotionType != POINT_MOTION_TYPE || !uiPointId)
             return;
@@ -152,7 +150,7 @@ struct MANGOS_DLL_DECL npc_eris_havenfireAI : public ScriptedAI
         }
     }
 
-    void SummonedCreatureJustDied(Creature* pSummoned)
+    void SummonedCreatureJustDied(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_INJURED_PEASANT || pSummoned->GetEntry() == NPC_PLAGUED_PEASANT)
         {
@@ -251,7 +249,7 @@ struct MANGOS_DLL_DECL npc_eris_havenfireAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_uiEventTimer)
         {

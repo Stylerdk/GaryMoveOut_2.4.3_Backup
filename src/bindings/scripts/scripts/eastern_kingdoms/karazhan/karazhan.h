@@ -1,20 +1,6 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
+ * This program is free software licensed under GPL version 2
+ * Please see the included DOCS/LICENSE.TXT for more information */
 
 #ifndef DEF_KARAZHAN_H
 #define DEF_KARAZHAN_H
@@ -123,24 +109,24 @@ class MANGOS_DLL_DECL instance_karazhan : public ScriptedInstance
         instance_karazhan(Map* pMap);
         ~instance_karazhan() {}
 
-        void Initialize();
-        bool IsEncounterInProgress() const;
+        void Initialize() override;
+        bool IsEncounterInProgress() const override;
 
-        void OnPlayerEnter(Player* pPlayer);
-        void OnCreatureCreate(Creature* pCreature);
-        void OnObjectCreate(GameObject* pGo);
+        void OnPlayerEnter(Player* pPlayer) override;
+        void OnCreatureCreate(Creature* pCreature) override;
+        void OnObjectCreate(GameObject* pGo) override;
 
-        void OnCreatureDeath(Creature* pCreature);
+        void OnCreatureDeath(Creature* pCreature) override;
 
-        void SetData(uint32 uiType, uint32 uiData);
-        uint32 GetData(uint32 uiType);
+        void SetData(uint32 uiType, uint32 uiData) override;
+        uint32 GetData(uint32 uiType) override;
 
         void DoPrepareOperaStage(Creature* pOrganizer);
 
         void GetNightbaneTriggers(GuidList& lList, bool bGround) { lList = bGround ? m_lNightbaneGroundTriggers : m_lNightbaneAirTriggers; }
 
-        void Load(const char* chrIn);
-        const char* Save() { return m_strInstData.c_str(); }
+        void Load(const char* chrIn) override;
+        const char* Save() override { return m_strInstData.c_str(); }
 
     private:
         uint32 m_auiEncounter[MAX_ENCOUNTER];

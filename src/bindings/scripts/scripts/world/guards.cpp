@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -127,7 +125,7 @@ struct MANGOS_DLL_DECL guard_shattrath_aldorAI : public guardAI
     ObjectGuid m_playerGuid;
     bool m_bCanTeleport;
 
-    void Reset()
+    void Reset() override
     {
         m_uiBanish_Timer = 5000;
         m_uiExile_Timer = 8500;
@@ -135,7 +133,7 @@ struct MANGOS_DLL_DECL guard_shattrath_aldorAI : public guardAI
         m_bCanTeleport = false;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -194,7 +192,7 @@ struct MANGOS_DLL_DECL guard_shattrath_scryerAI : public guardAI
     ObjectGuid m_playerGuid;
     bool m_bCanTeleport;
 
-    void Reset()
+    void Reset() override
     {
         m_uiBanish_Timer = 5000;
         m_uiExile_Timer = 8500;
@@ -202,7 +200,7 @@ struct MANGOS_DLL_DECL guard_shattrath_scryerAI : public guardAI
         m_bCanTeleport = false;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

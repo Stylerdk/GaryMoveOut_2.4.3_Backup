@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -65,7 +63,7 @@ struct MANGOS_DLL_DECL boss_murmurAI : public Scripted_NoMovementAI
     uint32 m_uiSonicShockTimer;
     uint32 m_uiThunderingStormTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiSonicBoomTimer          = urand(21000, 35000);
         m_uiMurmursTouchTimer       = urand(9000, 18000);
@@ -78,7 +76,7 @@ struct MANGOS_DLL_DECL boss_murmurAI : public Scripted_NoMovementAI
         m_creature->SetHealth(uint32(m_creature->GetMaxHealth()*.4));
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())

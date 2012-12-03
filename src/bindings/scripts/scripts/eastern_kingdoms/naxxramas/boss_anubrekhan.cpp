@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -85,14 +83,14 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
     uint32 m_uiSummonTimer;
     bool   m_bHasTaunted;
 
-    void Reset()
+    void Reset() override
     {
         m_uiImpaleTimer      = 15000;
         m_uiLocustSwarmTimer = 90000;
         m_uiSummonTimer      = 0;
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         // Force the player to spawn corpse scarabs via spell
         if (pVictim->GetTypeId() == TYPEID_PLAYER)
@@ -104,7 +102,7 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
         DoScriptText(SAY_SLAY, m_creature);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         switch (urand(0, 2))
         {
@@ -117,19 +115,19 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
             m_pInstance->SetData(TYPE_ANUB_REKHAN, IN_PROGRESS);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ANUB_REKHAN, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ANUB_REKHAN, FAIL);
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         if (!m_bHasTaunted && pWho->GetTypeId() == TYPEID_PLAYER && m_creature->IsWithinDistInMap(pWho, 110.0f) && m_creature->IsWithinLOSInMap(pWho))
         {
@@ -140,7 +138,7 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
         ScriptedAI::MoveInLineOfSight(pWho);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_CRYPT_GUARD)
             DoScriptText(EMOTE_CRYPT_GUARD, pSummoned);
@@ -149,7 +147,7 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
             pSummoned->AI()->AttackStart(pTarget);
     }
 
-    void SummonedCreatureDespawn(Creature* pSummoned)
+    void SummonedCreatureDespawn(Creature* pSummoned) override
     {
         // If creature despawns on out of combat, skip this
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
@@ -162,7 +160,7 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         m_introDialogue.DialogueUpdate(uiDiff);
 

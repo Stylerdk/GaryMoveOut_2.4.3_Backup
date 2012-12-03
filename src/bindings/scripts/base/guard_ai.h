@@ -1,20 +1,6 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
+ * This program is free software licensed under GPL version 2
+ * Please see the included DOCS/LICENSE.TXT for more information */
 
 #ifndef SC_GUARDAI_H
 #define SC_GUARDAI_H
@@ -47,13 +33,13 @@ struct MANGOS_DLL_DECL guardAI : public ScriptedAI
         uint32 m_uiGlobalCooldown;                          // This variable acts like the global cooldown that players have (1.5 seconds)
         uint32 m_uiBuffTimer;                               // This variable keeps track of buffs
 
-        void Reset();
+        void Reset() override;
 
-        void Aggro(Unit* pWho);
+        void Aggro(Unit* pWho) override;
 
-        void JustDied(Unit* pKiller);
+        void JustDied(Unit* pKiller) override;
 
-        void UpdateAI(const uint32 uiDiff);
+        void UpdateAI(const uint32 uiDiff) override;
 
         // Commonly used for guards in main cities
         void DoReplyToTextEmote(uint32 uiTextEmote);
@@ -63,14 +49,14 @@ struct MANGOS_DLL_DECL guardAI_orgrimmar : public guardAI
 {
     guardAI_orgrimmar(Creature* pCreature) : guardAI(pCreature) {}
 
-    void ReceiveEmote(Player* pPlayer, uint32 uiTextEmote);
+    void ReceiveEmote(Player* pPlayer, uint32 uiTextEmote) override;
 };
 
 struct MANGOS_DLL_DECL guardAI_stormwind : public guardAI
 {
     guardAI_stormwind(Creature* pCreature) : guardAI(pCreature) {}
 
-    void ReceiveEmote(Player* pPlayer, uint32 uiTextEmote);
+    void ReceiveEmote(Player* pPlayer, uint32 uiTextEmote) override;
 };
 
 #endif

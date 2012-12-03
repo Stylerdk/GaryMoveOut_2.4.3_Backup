@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -60,7 +58,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
 {
     npc_deathstalker_erlandAI(Creature* pCreature) : npc_escortAI(pCreature) { Reset(); }
 
-    void WaypointReached(uint32 i)
+    void WaypointReached(uint32 i) override
     {
         Player* pPlayer = GetPlayerForEscort();
 
@@ -99,9 +97,9 @@ struct MANGOS_DLL_DECL npc_deathstalker_erlandAI : public npc_escortAI
         }
     }
 
-    void Reset() {}
+    void Reset() override {}
 
-    void Aggro(Unit* who)
+    void Aggro(Unit* who) override
     {
         switch (urand(0, 2))
         {
@@ -179,7 +177,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_faerleiaAI : public ScriptedAI
 {
     npc_deathstalker_faerleiaAI(Creature* pCreature) : ScriptedAI(pCreature) { Reset(); }
 
-    void Reset() {}
+    void Reset() override {}
 
     ObjectGuid m_playerGuid;
     uint32 m_uiWaveTimer;
@@ -205,7 +203,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_faerleiaAI : public ScriptedAI
         m_creature->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (Player* pPlayer = m_creature->GetMap()->GetPlayer(m_playerGuid))
             pPlayer->SendQuestFailed(QUEST_PYREWOOD_AMBUSH);
@@ -213,7 +211,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_faerleiaAI : public ScriptedAI
         FinishEvent();
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         ++m_uiSummonCount;
 
@@ -223,7 +221,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_faerleiaAI : public ScriptedAI
         pSummoned->GetMotionMaster()->MovePoint(0, fX, fY, fZ);
     }
 
-    void SummonedCreatureJustDied(Creature* pKilled)
+    void SummonedCreatureJustDied(Creature* pKilled) override
     {
         --m_uiSummonCount;
 
@@ -244,7 +242,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_faerleiaAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_bEventStarted && !m_uiSummonCount)
         {

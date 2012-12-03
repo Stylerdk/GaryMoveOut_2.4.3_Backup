@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -48,7 +46,7 @@ struct MANGOS_DLL_DECL npc_shenthulAI : public ScriptedAI
 
     ObjectGuid m_playerGuid;
 
-    void Reset()
+    void Reset() override
     {
         m_uiSaluteTimer = 0;
         m_uiResetTimer = 0;
@@ -56,7 +54,7 @@ struct MANGOS_DLL_DECL npc_shenthulAI : public ScriptedAI
         m_playerGuid.Clear();
     }
 
-    void ReceiveEmote(Player* pPlayer, uint32 uiTextEmote)
+    void ReceiveEmote(Player* pPlayer, uint32 uiTextEmote) override
     {
         if (m_uiResetTimer && uiTextEmote == TEXTEMOTE_SALUTE && pPlayer->GetQuestStatus(QUEST_SHATTERED_SALUTE) == QUEST_STATUS_INCOMPLETE)
         {
@@ -71,7 +69,7 @@ struct MANGOS_DLL_DECL npc_shenthulAI : public ScriptedAI
         m_uiSaluteTimer = 6000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_uiResetTimer)
         {

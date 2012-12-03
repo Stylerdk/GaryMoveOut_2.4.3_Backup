@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -60,13 +58,13 @@ struct MANGOS_DLL_DECL mob_lumpAI : public ScriptedAI
     uint32 m_uiSpearThrowTimer;
     bool m_bReset;
 
-    void Reset()
+    void Reset() override
     {
         m_uiResetTimer = MINUTE * IN_MILLISECONDS;
         m_uiSpearThrowTimer = 2000;
     }
 
-    void AttackedBy(Unit* pAttacker)
+    void AttackedBy(Unit* pAttacker) override
     {
         if (m_creature->getVictim())
             return;
@@ -77,7 +75,7 @@ struct MANGOS_DLL_DECL mob_lumpAI : public ScriptedAI
         AttackStart(pAttacker);
     }
 
-    void DamageTaken(Unit* pDealer, uint32& uiDamage)
+    void DamageTaken(Unit* pDealer, uint32& uiDamage) override
     {
         if (m_creature->GetHealth() < uiDamage || (m_creature->GetHealth() - uiDamage) * 100 / m_creature->GetMaxHealth() < 30)
         {
@@ -97,7 +95,7 @@ struct MANGOS_DLL_DECL mob_lumpAI : public ScriptedAI
         }
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (m_creature->HasAura(SPELL_VISUAL_SLEEP, EFFECT_INDEX_0))
             m_creature->RemoveAurasDueToSpell(SPELL_VISUAL_SLEEP);
@@ -108,7 +106,7 @@ struct MANGOS_DLL_DECL mob_lumpAI : public ScriptedAI
         DoScriptText(urand(0, 1) ? SAY_LUMP_AGGRO_1 : SAY_LUMP_AGGRO_2, m_creature, pWho);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Check if we waiting for a reset
         if (m_bReset)
@@ -182,19 +180,19 @@ struct MANGOS_DLL_DECL npc_maghar_captiveAI : public npc_escortAI
     uint32 m_uiHealTimer;
     uint32 m_uiFrostShockTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiChainLightningTimer = 1000;
         m_uiHealTimer = 0;
         m_uiFrostShockTimer = 6000;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         m_creature->CastSpell(m_creature, SPELL_EARTHBIND_TOTEM, false);
     }
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         switch (uiPointId)
         {
@@ -220,7 +218,7 @@ struct MANGOS_DLL_DECL npc_maghar_captiveAI : public npc_escortAI
         }
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_MURK_BRUTE)
             DoScriptText(SAY_MAG_NO_ESCAPE, pSummoned);
@@ -232,7 +230,7 @@ struct MANGOS_DLL_DECL npc_maghar_captiveAI : public npc_escortAI
         pSummoned->GetMotionMaster()->MovePoint(0, m_creature->GetPositionX(), m_creature->GetPositionY(), m_creature->GetPositionZ());
     }
 
-    void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell)
+    void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell) override
     {
         if (pSpell->Id == SPELL_CHAIN_LIGHTNING)
         {
@@ -243,7 +241,7 @@ struct MANGOS_DLL_DECL npc_maghar_captiveAI : public npc_escortAI
         }
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -318,9 +316,9 @@ struct MANGOS_DLL_DECL npc_creditmarker_visit_with_ancestorsAI : public Scripted
 {
     npc_creditmarker_visit_with_ancestorsAI(Creature* pCreature) : ScriptedAI(pCreature) { Reset(); }
 
-    void Reset() {}
+    void Reset() override {}
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         if (pWho->GetTypeId() == TYPEID_PLAYER && m_creature->IsWithinDistInMap(pWho, 30.0f))
         {

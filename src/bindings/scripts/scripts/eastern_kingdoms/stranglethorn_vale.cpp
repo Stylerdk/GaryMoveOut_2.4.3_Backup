@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -48,9 +46,9 @@ struct MANGOS_DLL_DECL mob_yennikuAI : public ScriptedAI
 
     uint32 m_uiResetTimer;
 
-    void Reset() { m_uiResetTimer = 0; }
+    void Reset() override { m_uiResetTimer = 0; }
 
-    void SpellHit(Unit* pCaster, const SpellEntry* pSpell)
+    void SpellHit(Unit* pCaster, const SpellEntry* pSpell) override
     {
         if (pSpell->Id == SPELL_YENNIKUS_RELEASE && pCaster->GetTypeId() == TYPEID_PLAYER)
         {
@@ -62,7 +60,7 @@ struct MANGOS_DLL_DECL mob_yennikuAI : public ScriptedAI
         }
     }
 
-    void EnterEvadeMode()
+    void EnterEvadeMode() override
     {
         if (m_uiResetTimer)
         {
@@ -80,7 +78,7 @@ struct MANGOS_DLL_DECL mob_yennikuAI : public ScriptedAI
             ScriptedAI::EnterEvadeMode();
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_uiResetTimer)
         {

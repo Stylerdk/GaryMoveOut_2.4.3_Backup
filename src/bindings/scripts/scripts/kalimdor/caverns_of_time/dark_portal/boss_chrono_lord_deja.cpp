@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -59,7 +57,7 @@ struct MANGOS_DLL_DECL boss_chrono_lord_dejaAI : public ScriptedAI
     uint32 m_uiAttractionTimer;
     uint32 m_uiArcaneDischargeTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiArcaneBlastTimer     = urand(18000, 23000);
         m_uiTimeLapseTimer       = urand(10000, 15000);
@@ -67,12 +65,12 @@ struct MANGOS_DLL_DECL boss_chrono_lord_dejaAI : public ScriptedAI
         m_uiAttractionTimer      = urand(25000, 35000);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         // Despawn Time Keeper
         if (pWho->GetTypeId() == TYPEID_UNIT && pWho->GetEntry() == NPC_TIME_KEEPER)
@@ -87,17 +85,17 @@ struct MANGOS_DLL_DECL boss_chrono_lord_dejaAI : public ScriptedAI
         ScriptedAI::MoveInLineOfSight(pWho);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         DoScriptText(urand(0, 1) ? SAY_SLAY1 : SAY_SLAY2, m_creature);
     }
 
-    void JustDied(Unit* pVictim)
+    void JustDied(Unit* pVictim) override
     {
         DoScriptText(SAY_DEATH, m_creature);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())

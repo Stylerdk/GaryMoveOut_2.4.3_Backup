@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -107,7 +105,7 @@ struct MANGOS_DLL_DECL mob_omrogg_headsAI : public ScriptedAI
     uint32 m_uiDeathTimer;
     bool m_bDeathYell;
 
-    void Reset()
+    void Reset() override
     {
         m_uiDeathTimer = 2000;
         m_bDeathYell = false;
@@ -118,7 +116,7 @@ struct MANGOS_DLL_DECL mob_omrogg_headsAI : public ScriptedAI
         m_bDeathYell = true;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_bDeathYell)
             return;
@@ -166,7 +164,7 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
     uint32 m_uiThunderClapTimer;
     uint32 m_uiResetThreatTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_bAggroYell         = false;
         m_bThreatYell        = false;
@@ -200,7 +198,7 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
         m_bThreatYell = true;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         m_creature->SummonCreature(NPC_LEFT_HEAD, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_DEAD_DESPAWN, 0);
         m_creature->SummonCreature(NPC_RIGHT_HEAD, 0.0f, 0.0f, 0.0f, 0.0f, TEMPSUMMON_DEAD_DESPAWN, 0);
@@ -219,7 +217,7 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
             m_pInstance->SetData(TYPE_OMROGG, IN_PROGRESS);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_LEFT_HEAD)
             m_leftHeadGuid = pSummoned->GetObjectGuid();
@@ -227,7 +225,7 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
             m_rightHeadGuid = pSummoned->GetObjectGuid();
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         Creature* pLeftHead  = m_creature->GetMap()->GetCreature(m_leftHeadGuid);
         Creature* pRightHead = m_creature->GetMap()->GetCreature(m_rightHeadGuid);
@@ -253,7 +251,7 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
         }
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         Creature* pLeftHead  = m_creature->GetMap()->GetCreature(m_leftHeadGuid);
         Creature* pRightHead = m_creature->GetMap()->GetCreature(m_rightHeadGuid);
@@ -271,7 +269,7 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
             m_pInstance->SetData(TYPE_OMROGG, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (Creature* pLeftHead = m_creature->GetMap()->GetCreature(m_leftHeadGuid))
         {
@@ -289,7 +287,7 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
             m_pInstance->SetData(TYPE_OMROGG, FAIL);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_uiDelayTimer < uiDiff)
         {

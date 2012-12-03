@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -86,7 +84,7 @@ struct MANGOS_DLL_DECL boss_ouroAI : public Scripted_NoMovementAI
 
     ObjectGuid m_ouroTriggerGuid;
 
-    void Reset()
+    void Reset() override
     {
         m_uiSweepTimer        = urand(35000, 40000);
         m_uiSandBlastTimer    = urand(30000, 45000);
@@ -99,13 +97,13 @@ struct MANGOS_DLL_DECL boss_ouroAI : public Scripted_NoMovementAI
         m_bSubmerged          = false;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_OURO, IN_PROGRESS);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_OURO, FAIL);
@@ -113,13 +111,13 @@ struct MANGOS_DLL_DECL boss_ouroAI : public Scripted_NoMovementAI
         m_creature->ForcedDespawn();
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_OURO, DONE);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         switch (pSummoned->GetEntry())
         {
@@ -132,7 +130,7 @@ struct MANGOS_DLL_DECL boss_ouroAI : public Scripted_NoMovementAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no pTarget
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
@@ -262,13 +260,13 @@ struct MANGOS_DLL_DECL npc_ouro_spawnerAI : public Scripted_NoMovementAI
     uint32 m_uiQuakeTimer;
     bool m_bHasSummoned;
 
-    void Reset()
+    void Reset() override
     {
         m_uiQuakeTimer = 1000;
         m_bHasSummoned = false;
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         // Spawn Ouro on LoS check
         if (!m_bHasSummoned && pWho->GetTypeId() == TYPEID_PLAYER && !((Player*)pWho)->isGameMaster() && m_creature->IsWithinDistInMap(pWho, 50.0f))
@@ -280,7 +278,7 @@ struct MANGOS_DLL_DECL npc_ouro_spawnerAI : public Scripted_NoMovementAI
         ScriptedAI::MoveInLineOfSight(pWho);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         // Despanw when Ouro is spawned
         if (pSummoned->GetEntry() == NPC_OURO)
@@ -291,7 +289,7 @@ struct MANGOS_DLL_DECL npc_ouro_spawnerAI : public Scripted_NoMovementAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_bHasSummoned)
         {

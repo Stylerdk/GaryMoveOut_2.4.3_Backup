@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -85,7 +83,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
 
     bool m_bIsEnraged;
 
-    void Reset()
+    void Reset() override
     {
         m_uiBeamTimer               = urand(5000, 10000);
         m_uiCurrentBeam             = urand(0, 3);
@@ -101,7 +99,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
         // DoCastSpellIfCan(m_creature, SPELL_SABER_LASH_PROC);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_SHAHRAZ, IN_PROGRESS);
@@ -109,18 +107,18 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, m_creature);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_SHAHRAZ, FAIL);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         DoScriptText(urand(0, 1) ? SAY_SLAY_1 : SAY_SLAY_2, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_SHAHRAZ, DONE);
@@ -128,7 +126,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

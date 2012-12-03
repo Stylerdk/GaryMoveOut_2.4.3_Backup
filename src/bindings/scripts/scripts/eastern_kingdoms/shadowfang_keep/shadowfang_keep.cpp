@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -69,7 +67,7 @@ struct MANGOS_DLL_DECL npc_shadowfang_prisonerAI : public npc_escortAI
     ScriptedInstance* m_pInstance;
     uint32 m_uiNpcEntry;
 
-    void WaypointReached(uint32 uiPoint)
+    void WaypointReached(uint32 uiPoint) override
     {
         switch (uiPoint)
         {
@@ -120,11 +118,11 @@ struct MANGOS_DLL_DECL npc_shadowfang_prisonerAI : public npc_escortAI
         }
     }
 
-    void Reset() {}
+    void Reset() override {}
 
     // Let's prevent Adamant from charging into Ashcrombe's cell
     // And beating the crap out of him and vice versa XD
-    void AttackStart(Unit* pWho)
+    void AttackStart(Unit* pWho) override
     {
         if (pWho)
         {
@@ -216,7 +214,7 @@ struct MANGOS_DLL_DECL mob_arugal_voidwalkerAI : public ScriptedAI
     ScriptedInstance* m_pInstance;
     bool m_bIsLeader, m_bReverse, m_bWPDone;
 
-    void Reset()
+    void Reset() override
     {
         m_creature->SetWalk(true);
         m_uiDarkOffering = urand(4400, 12500);
@@ -269,7 +267,7 @@ struct MANGOS_DLL_DECL mob_arugal_voidwalkerAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_bIsLeader && m_bWPDone)
         {
@@ -298,7 +296,7 @@ struct MANGOS_DLL_DECL mob_arugal_voidwalkerAI : public ScriptedAI
         DoMeleeAttackIfReady();
     }
 
-    void MovementInform(uint32 uiMoveType, uint32 uiPointId)
+    void MovementInform(uint32 uiMoveType, uint32 uiPointId) override
     {
         if (uiMoveType != POINT_MOTION_TYPE || !m_bIsLeader)
             return;
@@ -325,7 +323,7 @@ struct MANGOS_DLL_DECL mob_arugal_voidwalkerAI : public ScriptedAI
         SendWaypoint();
     }
 
-    void JustDied(Unit* /*pKiller*/)
+    void JustDied(Unit* /*pKiller*/) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_VOIDWALKER, DONE);
@@ -371,7 +369,7 @@ struct MANGOS_DLL_DECL mob_arugal_voidwalkerAI : public ScriptedAI
         m_bReverse = bReverse;
     }
 
-    void EnterEvadeMode()
+    void EnterEvadeMode() override
     {
         m_creature->RemoveAllAuras();
         m_creature->DeleteThreatList();
@@ -458,7 +456,7 @@ struct MANGOS_DLL_DECL boss_arugalAI : public ScriptedAI
     uint8 m_uiSpeechStep;
     bool m_bAttacking, m_bEventMode;
 
-    void Reset()
+    void Reset() override
     {
         m_uiTeleportTimer = urand(22000, 26000);
         m_uiCurseTimer = urand(20000, 30000);
@@ -469,19 +467,19 @@ struct MANGOS_DLL_DECL boss_arugalAI : public ScriptedAI
         m_uiSpeechStep = 1;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(YELL_AGGRO, m_creature);
         DoCastSpellIfCan(pWho, SPELL_VOID_BOLT);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() == TYPEID_PLAYER)
             DoScriptText(YELL_KILLED_PLAYER, m_creature);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_bEventMode)
         {
@@ -662,7 +660,7 @@ struct MANGOS_DLL_DECL boss_arugalAI : public ScriptedAI
             DoMeleeAttackIfReady();
     }
 
-    void AttackStart(Unit* pWho)
+    void AttackStart(Unit* pWho) override
     {
         if (!m_bEventMode)
             ScriptedAI::AttackStart(pWho);
@@ -736,7 +734,7 @@ struct MANGOS_DLL_DECL npc_arugalAI : public ScriptedAI
     uint8 m_uiSpeechStep;
     ScriptedInstance* m_pInstance;
 
-    void Reset()
+    void Reset() override
     {
         m_uiSpeechTimer = 0;
         m_uiSpeechStep = 0;
@@ -747,7 +745,7 @@ struct MANGOS_DLL_DECL npc_arugalAI : public ScriptedAI
             m_uiSpeechStep = 1;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_uiSpeechStep)
             return;
@@ -822,7 +820,7 @@ struct MANGOS_DLL_DECL npc_arugalAI : public ScriptedAI
             m_uiSpeechTimer -= uiDiff;
     }
 
-    void AttackStart(Unit* /*who*/) { }
+    void AttackStart(Unit* /*who*/) override { }
 };
 
 CreatureAI* GetAI_npc_arugal(Creature* pCreature)
@@ -851,13 +849,13 @@ struct MANGOS_DLL_DECL npc_deathstalker_vincentAI : public ScriptedAI
 
     ScriptedInstance* m_pInstance;
 
-    void Reset()
+    void Reset() override
     {
         if (m_pInstance && m_pInstance->GetData(TYPE_INTRO) == DONE && !m_creature->GetByteValue(UNIT_FIELD_BYTES_1, 0))
             m_creature->SetStandState(UNIT_STAND_STATE_DEAD);
     }
 
-    void DamageTaken(Unit* pDoneBy, uint32& uiDamage)
+    void DamageTaken(Unit* pDoneBy, uint32& uiDamage) override
     {
         if (pDoneBy)
         {
@@ -877,7 +875,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_vincentAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_creature->isInCombat() && m_creature->getFaction() == FACTION_FRIENDLY)
             EnterEvadeMode();
@@ -885,7 +883,7 @@ struct MANGOS_DLL_DECL npc_deathstalker_vincentAI : public ScriptedAI
         ScriptedAI::UpdateAI(uiDiff);
     }
 
-    void EnterEvadeMode()
+    void EnterEvadeMode() override
     {
         m_creature->RemoveAllAuras();
         m_creature->DeleteThreatList();

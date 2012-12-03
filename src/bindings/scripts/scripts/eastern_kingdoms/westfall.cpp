@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -60,7 +58,7 @@ struct MANGOS_DLL_DECL npc_daphne_stilwellAI : public npc_escortAI
     uint32 m_uiWPHolder;
     uint32 m_uiShootTimer;
 
-    void Reset()
+    void Reset() override
     {
         if (HasEscortState(STATE_ESCORT_ESCORTING))
         {
@@ -77,7 +75,7 @@ struct MANGOS_DLL_DECL npc_daphne_stilwellAI : public npc_escortAI
         m_uiShootTimer = 0;
     }
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         m_uiWPHolder = uiPointId;
 
@@ -126,7 +124,7 @@ struct MANGOS_DLL_DECL npc_daphne_stilwellAI : public npc_escortAI
         }
     }
 
-    void AttackStart(Unit* pWho)
+    void AttackStart(Unit* pWho) override
     {
         if (!pWho)
             return;
@@ -141,12 +139,12 @@ struct MANGOS_DLL_DECL npc_daphne_stilwellAI : public npc_escortAI
         }
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         pSummoned->AI()->AttackStart(m_creature);
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -203,7 +201,7 @@ struct MANGOS_DLL_DECL npc_defias_traitorAI : public npc_escortAI
 {
     npc_defias_traitorAI(Creature* pCreature) : npc_escortAI(pCreature) { Reset(); }
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         switch (uiPointId)
         {
@@ -224,12 +222,12 @@ struct MANGOS_DLL_DECL npc_defias_traitorAI : public npc_escortAI
         }
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(urand(0, 1) ? SAY_AGGRO_1 : SAY_AGGRO_2, m_creature, pWho);
     }
 
-    void Reset() { }
+    void Reset() override { }
 };
 
 bool QuestAccept_npc_defias_traitor(Player* pPlayer, Creature* pCreature, const Quest* pQuest)

@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -73,7 +71,7 @@ struct MANGOS_DLL_DECL boss_thekalBaseAI : public ScriptedAI
     virtual void OnFakeingDeath() {}
     virtual void OnRevive() {}
 
-    void DamageTaken(Unit* pKiller, uint32& uiDamage)
+    void DamageTaken(Unit* pKiller, uint32& uiDamage) override
     {
         if (uiDamage < m_creature->GetHealth())
             return;
@@ -160,7 +158,7 @@ struct MANGOS_DLL_DECL boss_thekalAI : public boss_thekalBaseAI
 
     bool m_bEnraged;
 
-    void Reset()
+    void Reset() override
     {
         m_uiMortalCleaveTimer   = 4000;
         m_uiSilenceTimer        = 9000;
@@ -178,12 +176,12 @@ struct MANGOS_DLL_DECL boss_thekalAI : public boss_thekalBaseAI
         Revive(true);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -199,7 +197,7 @@ struct MANGOS_DLL_DECL boss_thekalAI : public boss_thekalBaseAI
             pLorkhan->ForcedDespawn();
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_THEKAL, FAIL);
@@ -254,7 +252,7 @@ struct MANGOS_DLL_DECL boss_thekalAI : public boss_thekalBaseAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -375,7 +373,7 @@ struct MANGOS_DLL_DECL mob_zealot_lorkhanAI : public boss_thekalBaseAI
     uint32 m_uiDisarmTimer;
     uint32 m_uiResurrectTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiShieldTimer         = 1000;
         m_uiBloodLustTimer      = 16000;
@@ -389,7 +387,7 @@ struct MANGOS_DLL_DECL mob_zealot_lorkhanAI : public boss_thekalBaseAI
         Revive(true);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_LORKHAN, IN_PROGRESS);
@@ -403,7 +401,7 @@ struct MANGOS_DLL_DECL mob_zealot_lorkhanAI : public boss_thekalBaseAI
             m_pInstance->SetData(TYPE_LORKHAN, SPECIAL);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -515,7 +513,7 @@ struct MANGOS_DLL_DECL mob_zealot_zathAI : public boss_thekalBaseAI
     uint32 m_uiBlindTimer;
     uint32 m_uiResurrectTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiSweepingStrikesTimer    = 13000;
         m_uiSinisterStrikeTimer     = 8000;
@@ -530,7 +528,7 @@ struct MANGOS_DLL_DECL mob_zealot_zathAI : public boss_thekalBaseAI
         Revive(true);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ZATH, IN_PROGRESS);
@@ -544,7 +542,7 @@ struct MANGOS_DLL_DECL mob_zealot_zathAI : public boss_thekalBaseAI
             m_pInstance->SetData(TYPE_ZATH, SPECIAL);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

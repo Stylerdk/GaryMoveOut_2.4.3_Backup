@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -68,7 +66,7 @@ struct MANGOS_DLL_DECL boss_pyroguard_emberseerAI : public ScriptedAI
     uint32 m_uiPyroBlastTimer;
     uint8 m_uiGrowingStacks;
 
-    void Reset()
+    void Reset() override
     {
         m_uiEncageTimer         = 10000;
         m_uiFireNovaTimer       = 6000;
@@ -79,13 +77,13 @@ struct MANGOS_DLL_DECL boss_pyroguard_emberseerAI : public ScriptedAI
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_EMBERSEER, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_EMBERSEER, FAIL);
@@ -120,7 +118,7 @@ struct MANGOS_DLL_DECL boss_pyroguard_emberseerAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Cast Encage spell on OOC timer
         if (m_uiEncageTimer)

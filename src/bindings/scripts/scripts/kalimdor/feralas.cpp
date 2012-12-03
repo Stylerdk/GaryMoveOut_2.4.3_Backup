@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -52,7 +50,7 @@ struct MANGOS_DLL_DECL npc_oox22feAI : public npc_escortAI
 {
     npc_oox22feAI(Creature* pCreature) : npc_escortAI(pCreature) { Reset(); }
 
-    void WaypointReached(uint32 i)
+    void WaypointReached(uint32 i) override
     {
         switch (i)
         {
@@ -87,13 +85,13 @@ struct MANGOS_DLL_DECL npc_oox22feAI : public npc_escortAI
         }
     }
 
-    void Reset()
+    void Reset() override
     {
         if (!HasEscortState(STATE_ESCORT_ESCORTING))
             m_creature->SetStandState(UNIT_STAND_STATE_DEAD);
     }
 
-    void Aggro(Unit* who)
+    void Aggro(Unit* who) override
     {
         // For an small probability the npc says something when he get aggro
         switch (urand(0, 9))
@@ -103,7 +101,7 @@ struct MANGOS_DLL_DECL npc_oox22feAI : public npc_escortAI
         }
     }
 
-    void JustSummoned(Creature* summoned)
+    void JustSummoned(Creature* summoned) override
     {
         summoned->AI()->AttackStart(m_creature);
     }

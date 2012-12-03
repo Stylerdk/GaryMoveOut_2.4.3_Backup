@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -78,7 +76,7 @@ struct MANGOS_DLL_DECL boss_pathaleon_the_calculatorAI : public ScriptedAI
     uint32 m_uiArcaneExplosionTimer;
     bool m_bIsEnraged;
 
-    void Reset()
+    void Reset() override
     {
         m_uiSummonTimer          = urand(12000, 23000);
         m_uiAngerTimer           = urand(31000, 42000);
@@ -89,17 +87,17 @@ struct MANGOS_DLL_DECL boss_pathaleon_the_calculatorAI : public ScriptedAI
         m_bIsEnraged             = false;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         DoScriptText(urand(0, 1) ? SAY_SLAY_1 : SAY_SLAY_2, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -107,13 +105,13 @@ struct MANGOS_DLL_DECL boss_pathaleon_the_calculatorAI : public ScriptedAI
             m_pInstance->SetData(TYPE_PATHALEON, DONE);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (m_creature->getVictim())
             pSummoned->AI()->AttackStart(m_creature->getVictim());
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
@@ -208,13 +206,13 @@ struct MANGOS_DLL_DECL mob_nether_wraithAI : public ScriptedAI
     uint32 m_uiArcaneMissilesTimer;
     bool m_bHasDetonated;
 
-    void Reset()
+    void Reset() override
     {
         m_uiArcaneMissilesTimer = urand(1000, 4000);
         m_bHasDetonated         = false;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

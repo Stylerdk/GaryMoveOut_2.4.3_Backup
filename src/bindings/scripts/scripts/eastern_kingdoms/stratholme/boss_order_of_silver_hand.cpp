@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -89,13 +87,13 @@ struct MANGOS_DLL_DECL boss_silver_hand_bossesAI : public ScriptedAI
 
     UNORDERED_MAP<uint8, uint32> m_mSpellTimers;
 
-    void Reset()
+    void Reset() override
     {
         for (UNORDERED_MAP<uint8, uint32>::iterator itr = m_mSpellTimers.begin(); itr != m_mSpellTimers.end(); ++itr)
             itr->second = m_aSilverHandAbility[itr->first].m_uiInitialTimer;
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
         {
@@ -143,7 +141,7 @@ struct MANGOS_DLL_DECL boss_silver_hand_bossesAI : public ScriptedAI
         return false;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Return since we have no target
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())

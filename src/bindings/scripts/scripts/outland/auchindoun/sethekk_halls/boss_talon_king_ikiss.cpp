@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -75,7 +73,7 @@ struct MANGOS_DLL_DECL boss_talon_king_ikissAI : public ScriptedAI
     bool m_bBlink;
     bool m_bIntro;
 
-    void Reset()
+    void Reset() override
     {
         m_uiArcaneVolleyTimer = urand(5000, 12000);
         m_uiSheepTimer = 8000;
@@ -87,7 +85,7 @@ struct MANGOS_DLL_DECL boss_talon_king_ikissAI : public ScriptedAI
         m_bManaShield = false;
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         if (!m_creature->getVictim() && pWho->isTargetableForAttack() && (m_creature->IsHostileTo(pWho)) && pWho->isInAccessablePlaceFor(m_creature))
         {
@@ -101,7 +99,7 @@ struct MANGOS_DLL_DECL boss_talon_king_ikissAI : public ScriptedAI
         ScriptedAI::MoveInLineOfSight(pWho);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         switch (urand(0, 2))
         {
@@ -114,7 +112,7 @@ struct MANGOS_DLL_DECL boss_talon_king_ikissAI : public ScriptedAI
             m_pInstance->SetData(TYPE_IKISS, IN_PROGRESS);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -122,18 +120,18 @@ struct MANGOS_DLL_DECL boss_talon_king_ikissAI : public ScriptedAI
             m_pInstance->SetData(TYPE_IKISS, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_IKISS, FAIL);
     }
 
-    void KilledUnit(Unit* pVctim)
+    void KilledUnit(Unit* pVctim) override
     {
         DoScriptText(urand(0, 1) ? SAY_SLAY_1 : SAY_SLAY_2, m_creature);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

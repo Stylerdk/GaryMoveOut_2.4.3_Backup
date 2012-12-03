@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -52,7 +50,7 @@ struct MANGOS_DLL_DECL npc_forest_frogAI : public ScriptedAI
 
     ScriptedInstance* m_pInstance;
 
-    void Reset() { }
+    void Reset() override { }
 
     void DoSpawnRandom()
     {
@@ -93,7 +91,7 @@ struct MANGOS_DLL_DECL npc_forest_frogAI : public ScriptedAI
         }
     }
 
-    void SpellHit(Unit* caster, const SpellEntry* spell)
+    void SpellHit(Unit* caster, const SpellEntry* spell) override
     {
         if (spell->Id == SPELL_REMOVE_AMANI_CURSE && caster->GetTypeId() == TYPEID_PLAYER && m_creature->GetEntry() == NPC_FOREST_FROG)
         {
@@ -135,7 +133,7 @@ struct MANGOS_DLL_DECL npc_harrison_jones_zaAI : public npc_escortAI
 
     ScriptedInstance* m_pInstance;
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         if (!m_pInstance)
             return;
@@ -161,7 +159,7 @@ struct MANGOS_DLL_DECL npc_harrison_jones_zaAI : public npc_escortAI
         }
     }
 
-    void Reset() { }
+    void Reset() override { }
 
     void StartEvent()
     {

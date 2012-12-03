@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -83,7 +81,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
 
     bool m_bEnrage;
 
-    void Reset()
+    void Reset() override
     {
         m_uiVanishTimer     = 30000;
         m_uiBlindTimer      = 35000;
@@ -95,7 +93,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
         DoSpawnGuests();
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
 
@@ -103,7 +101,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
             m_pInstance->SetData(TYPE_MOROES, IN_PROGRESS);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         switch (urand(0, 2))
         {
@@ -113,7 +111,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
         }
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         DoRemoveGarroteAura();
 
@@ -121,7 +119,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
             m_pInstance->SetData(TYPE_MOROES, FAIL);
     }
 
-    void JustDied(Unit* pVictim)
+    void JustDied(Unit* pVictim) override
     {
         DoScriptText(SAY_DEATH, m_creature);
         DoRemoveGarroteAura();
@@ -130,7 +128,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
             m_pInstance->SetData(TYPE_MOROES, DONE);
     }
 
-    void EnterEvadeMode()
+    void EnterEvadeMode() override
     {
         // Don't evade during vanish phase
         if (m_uiWaitTimer)
@@ -198,7 +196,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

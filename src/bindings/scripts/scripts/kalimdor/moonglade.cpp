@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -58,7 +56,7 @@ struct MANGOS_DLL_DECL npc_clintar_dw_spiritAI : public npc_escortAI
 {
     npc_clintar_dw_spiritAI(Creature* pCreature) : npc_escortAI(pCreature) { Reset(); }
 
-    void WaypointReached(uint32 i)
+    void WaypointReached(uint32 i) override
     {
         Player* pPlayer = GetPlayerForEscort();
 
@@ -99,12 +97,12 @@ struct MANGOS_DLL_DECL npc_clintar_dw_spiritAI : public npc_escortAI
         }
     }
 
-    void Aggro(Unit* who)
+    void Aggro(Unit* who) override
     {
         DoScriptText(urand(0, 1) ? SAY_AGGRO_1 : SAY_AGGRO_2, m_creature);
     }
 
-    void Reset()
+    void Reset() override
     {
         if (HasEscortState(STATE_ESCORT_ESCORTING))
             return;
@@ -132,7 +130,7 @@ struct MANGOS_DLL_DECL npc_clintar_dw_spiritAI : public npc_escortAI
         Start(false, pStarter && pStarter->GetTypeId() == TYPEID_PLAYER ? (Player*)pStarter : NULL);
     }
 
-    void JustSummoned(Creature* summoned)
+    void JustSummoned(Creature* summoned) override
     {
         summoned->AI()->AttackStart(m_creature);
     }
@@ -320,7 +318,7 @@ struct MANGOS_DLL_DECL npc_keeper_remulosAI : public npc_escortAI, private Dialo
 
     bool m_bIsFirstWave;
 
-    void Reset()
+    void Reset() override
     {
         if (!HasEscortState(STATE_ESCORT_ESCORTING))
         {
@@ -338,7 +336,7 @@ struct MANGOS_DLL_DECL npc_keeper_remulosAI : public npc_escortAI, private Dialo
         }
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         switch (pSummoned->GetEntry())
         {
@@ -358,7 +356,7 @@ struct MANGOS_DLL_DECL npc_keeper_remulosAI : public npc_escortAI, private Dialo
         }
     }
 
-    void SummonedMovementInform(Creature* pSummoned, uint32 uiType, uint32 uiPointId)
+    void SummonedMovementInform(Creature* pSummoned, uint32 uiType, uint32 uiPointId) override
     {
         if (uiType != POINT_MOTION_TYPE || pSummoned->GetEntry() != NPC_ERANIKUS_TYRANT)
             return;
@@ -378,7 +376,7 @@ struct MANGOS_DLL_DECL npc_keeper_remulosAI : public npc_escortAI, private Dialo
         }
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         // Make Eranikus evade in order to despawn all the summons
         if (Creature* pEranikus = m_creature->GetMap()->GetCreature(m_eranikusGuid))
@@ -387,7 +385,7 @@ struct MANGOS_DLL_DECL npc_keeper_remulosAI : public npc_escortAI, private Dialo
         npc_escortAI::JustDied(pKiller);
     }
 
-    void WaypointReached(uint32 uiPointId)
+    void WaypointReached(uint32 uiPointId) override
     {
         switch (uiPointId)
         {
@@ -412,7 +410,7 @@ struct MANGOS_DLL_DECL npc_keeper_remulosAI : public npc_escortAI, private Dialo
         }
     }
 
-    Creature* GetSpeakerByEntry(uint32 uiEntry)
+    Creature* GetSpeakerByEntry(uint32 uiEntry) override
     {
         switch (uiEntry)
         {
@@ -424,7 +422,7 @@ struct MANGOS_DLL_DECL npc_keeper_remulosAI : public npc_escortAI, private Dialo
         }
     }
 
-    void JustDidDialogueStep(int32 iEntry)
+    void JustDidDialogueStep(int32 iEntry) override
     {
         switch (iEntry)
         {
@@ -465,7 +463,7 @@ struct MANGOS_DLL_DECL npc_keeper_remulosAI : public npc_escortAI, private Dialo
         m_uiOutroTimer = 3000;
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 uiDiff) override
     {
         DialogueUpdate(uiDiff);
 
@@ -655,7 +653,7 @@ struct MANGOS_DLL_DECL boss_eranikusAI : public ScriptedAI
     ObjectGuid m_tyrandeGuid;
     GuidList m_lPriestessList;
 
-    void Reset()
+    void Reset() override
     {
         m_uiAcidBreathTimer         = 10000;
         m_uiNoxiousBreathTimer      = 3000;
@@ -673,7 +671,7 @@ struct MANGOS_DLL_DECL boss_eranikusAI : public ScriptedAI
         SetCombatMovement(false);
     }
 
-    void EnterEvadeMode()
+    void EnterEvadeMode() override
     {
         if (m_creature->GetHealthPercent() < 20.0f)
         {
@@ -710,7 +708,7 @@ struct MANGOS_DLL_DECL boss_eranikusAI : public ScriptedAI
         }
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() != TYPEID_PLAYER)
             return;
@@ -728,7 +726,7 @@ struct MANGOS_DLL_DECL boss_eranikusAI : public ScriptedAI
         }
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         switch (pSummoned->GetEntry())
         {
@@ -756,7 +754,7 @@ struct MANGOS_DLL_DECL boss_eranikusAI : public ScriptedAI
         }
     }
 
-    void SummonedMovementInform(Creature* pSummoned, uint32 uiType, uint32 uiPointId)
+    void SummonedMovementInform(Creature* pSummoned, uint32 uiType, uint32 uiPointId) override
     {
         if (uiType != POINT_MOTION_TYPE)
             return;
@@ -785,7 +783,7 @@ struct MANGOS_DLL_DECL boss_eranikusAI : public ScriptedAI
         }
     }
 
-    void MovementInform(uint32 uiType, uint32 uiPointId)
+    void MovementInform(uint32 uiType, uint32 uiPointId) override
     {
         if (uiType != POINT_MOTION_TYPE || uiPointId != POINT_ID_ERANIKUS_REDEEMED)
             return;
@@ -794,7 +792,7 @@ struct MANGOS_DLL_DECL boss_eranikusAI : public ScriptedAI
         m_uiEventTimer = 11000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_uiEventTimer)
         {

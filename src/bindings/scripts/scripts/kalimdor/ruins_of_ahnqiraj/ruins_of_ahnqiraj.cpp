@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -70,7 +68,7 @@ struct MANGOS_DLL_DECL mob_anubisath_guardianAI : public ScriptedAI
 
     bool m_bIsEnraged;
 
-    void Reset()
+    void Reset() override
     {
         m_uiSpell1 = urand(0, 1) ? SPELL_METEOR : SPELL_PLAGUE;
         m_uiSpell2 = urand(0, 1) ? SPELL_SHADOW_STORM : SPELL_THUNDER_CLAP;
@@ -85,24 +83,24 @@ struct MANGOS_DLL_DECL mob_anubisath_guardianAI : public ScriptedAI
         m_bIsEnraged    = false;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         // spell reflection
         DoCastSpellIfCan(m_creature, m_uiSpell3);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         pSummoned->AI()->AttackStart(m_creature->getVictim());
         ++m_uiSummonCount;
     }
 
-    void SummonedCreatureDespawn(Creature* pDespawned)
+    void SummonedCreatureDespawn(Creature* pDespawned) override
     {
         --m_uiSummonCount;
     }
 
-    void DamageTaken(Unit* pDoneBy, uint32& uiDamage)
+    void DamageTaken(Unit* pDoneBy, uint32& uiDamage) override
     {
         // when we reach 10% of HP explode or enrage
         if (!m_bIsEnraged && m_creature->GetHealthPercent() < 10.0f)
@@ -118,7 +116,7 @@ struct MANGOS_DLL_DECL mob_anubisath_guardianAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

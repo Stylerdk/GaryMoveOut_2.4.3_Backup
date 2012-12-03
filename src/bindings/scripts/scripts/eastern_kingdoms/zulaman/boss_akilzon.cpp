@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -70,7 +68,7 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
     uint32 m_uiSummonEagleTimer;
     uint32 m_uiBerserkTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiStaticDisruptTimer  = urand(7000, 14000);
         m_uiCallLightTimer      = urand(15000, 25000);
@@ -80,7 +78,7 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
         m_uiBerserkTimer        = 10 * MINUTE * IN_MILLISECONDS;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_AGGRO, m_creature);
 
@@ -88,12 +86,12 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
             m_pInstance->SetData(TYPE_AKILZON, IN_PROGRESS);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         DoScriptText(urand(0, 1) ? SAY_SLAY1 : SAY_SLAY2, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -103,13 +101,13 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
         m_pInstance->SetData(TYPE_AKILZON, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_AKILZON, FAIL);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         if (pSummoned->GetEntry() == NPC_SOARING_EAGLE)
         {
@@ -128,7 +126,7 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;
@@ -223,14 +221,14 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
     uint32 m_uiReturnTimer;
     bool m_bCanMoveToRandom;
 
-    void Reset()
+    void Reset() override
     {
         m_uiEagleSwoopTimer = 0;
         m_uiReturnTimer     = 800;
         m_bCanMoveToRandom  = false;
     }
 
-    void AttackStart(Unit* pWho)
+    void AttackStart(Unit* pWho) override
     {
         if (!pWho)
             return;
@@ -243,7 +241,7 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
         }
     }
 
-    void MovementInform(uint32 uiType, uint32 uiPointId)
+    void MovementInform(uint32 uiType, uint32 uiPointId) override
     {
         if (uiType != POINT_MOTION_TYPE || !uiPointId)
             return;
@@ -266,7 +264,7 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

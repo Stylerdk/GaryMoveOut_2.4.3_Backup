@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -123,7 +121,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
     GuidSet m_lIntroMobsSet;
     GuidSet m_lAddsSet;
 
-    void Reset()
+    void Reset() override
     {
         m_uiFrostBoltTimer      = urand(1000, 60000);       // It won't be more than a minute without cast it
         m_uiFrostBoltNovaTimer  = 15000;                    // Cast every 15 seconds
@@ -151,7 +149,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
         SetCombatMovement(false);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() != TYPEID_PLAYER)
             return;
@@ -160,7 +158,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
             DoScriptText(urand(0, 1) ? SAY_SLAY1 : SAY_SLAY2, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
         DespawnAdds();
@@ -169,7 +167,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
             m_pInstance->SetData(TYPE_KELTHUZAD, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         DespawnIntroCreatures();
         DespawnAdds();
@@ -178,7 +176,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
             m_pInstance->SetData(TYPE_KELTHUZAD, NOT_STARTED);
     }
 
-    void MoveInLineOfSight(Unit* pWho)
+    void MoveInLineOfSight(Unit* pWho) override
     {
         if (m_pInstance && m_pInstance->GetData(TYPE_KELTHUZAD) != IN_PROGRESS)
             return;
@@ -292,7 +290,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
         m_creature->SummonCreature(uiType, fX, fY, fZ, 0.0f, TEMPSUMMON_CORPSE_DESPAWN, 5000);
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         switch (pSummoned->GetEntry())
         {
@@ -329,7 +327,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
         }
     }
 
-    void SummonedCreatureJustDied(Creature* pSummoned)
+    void SummonedCreatureJustDied(Creature* pSummoned) override
     {
         switch (pSummoned->GetEntry())
         {
@@ -344,13 +342,13 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
         }
     }
 
-    void SummonedMovementInform(Creature* pSummoned, uint32 uiMotionType, uint32 uiPointId)
+    void SummonedMovementInform(Creature* pSummoned, uint32 uiMotionType, uint32 uiPointId) override
     {
         if (uiMotionType == POINT_MOTION_TYPE && uiPointId == 0)
             pSummoned->SetInCombatWithZone();
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

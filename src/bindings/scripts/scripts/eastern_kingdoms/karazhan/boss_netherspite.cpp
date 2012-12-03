@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -129,7 +127,7 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
 
     std::vector<uint32> m_vPortalEntryList;
 
-    void Reset()
+    void Reset() override
     {
         m_uiActivePhase       = BEAM_PHASE;
 
@@ -148,7 +146,7 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
             m_vPortalEntryList[i] = auiPortals[i];
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_NETHERSPITE, IN_PROGRESS);
@@ -157,13 +155,13 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
         DoCastSpellIfCan(m_creature, SPELL_NETHERBURN);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_NETHERSPITE, DONE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_NETHERSPITE, FAIL);
@@ -215,7 +213,7 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
         std::random_shuffle(m_vPortalEntryList.begin(), m_vPortalEntryList.end());
     }
 
-    void JustSummoned(Creature* pSummoned)
+    void JustSummoned(Creature* pSummoned) override
     {
         switch (pSummoned->GetEntry())
         {
@@ -234,7 +232,7 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_creature->SelectHostileTarget() || !m_creature->getVictim())
             return;

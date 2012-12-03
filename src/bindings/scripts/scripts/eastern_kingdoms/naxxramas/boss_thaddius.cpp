@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -106,7 +104,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public Scripted_NoMovementAI
     uint32 m_uiBallLightningTimer;
     uint32 m_uiBerserkTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiPolarityShiftTimer = 15 * IN_MILLISECONDS;
         m_uiChainLightningTimer = 8 * IN_MILLISECONDS;
@@ -116,7 +114,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public Scripted_NoMovementAI
         m_creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         switch (urand(0, 2))
         {
@@ -129,7 +127,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public Scripted_NoMovementAI
         m_creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
         {
@@ -151,7 +149,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public Scripted_NoMovementAI
         }
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() != TYPEID_PLAYER)
             return;
@@ -159,7 +157,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public Scripted_NoMovementAI
         DoScriptText(SAY_SLAY, m_creature);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_DEATH, m_creature);
 
@@ -178,7 +176,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public Scripted_NoMovementAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (!m_pInstance)
             return;
@@ -291,10 +289,10 @@ struct MANGOS_DLL_DECL npc_tesla_coilAI : public Scripted_NoMovementAI
     uint32 m_uiSetupTimer;
     uint32 m_uiOverloadTimer;
 
-    void Reset() {}
-    void MoveInLineOfSight(Unit* pWho) {}
+    void Reset() override {}
+    void MoveInLineOfSight(Unit* pWho) override {}
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(EMOTE_LOSING_LINK, m_creature);
     }
@@ -302,7 +300,7 @@ struct MANGOS_DLL_DECL npc_tesla_coilAI : public Scripted_NoMovementAI
     // Overwrite this function here to
     // * Keep Chain spells casted when evading after useless EnterCombat caused by 'buffing' the add
     // * To not remove the Passive spells when evading after ie killed a player
-    void EnterEvadeMode()
+    void EnterEvadeMode() override
     {
         m_creature->DeleteThreatList();
         m_creature->CombatStop();
@@ -357,7 +355,7 @@ struct MANGOS_DLL_DECL npc_tesla_coilAI : public Scripted_NoMovementAI
         m_uiOverloadTimer = 14 * IN_MILLISECONDS;           // it takes some time to overload and activate Thaddius
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         m_creature->SelectHostileTarget();
 
@@ -422,7 +420,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAddsAI : public ScriptedAI
     uint32 m_uiWarStompTimer;
     uint32 m_uiReviveTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_bFakeDeath = false;
         m_bBothDead = false;
@@ -448,7 +446,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAddsAI : public ScriptedAI
         }
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         if (!m_pInstance)
             return;
@@ -462,7 +460,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAddsAI : public ScriptedAI
         }
     }
 
-    void JustRespawned()
+    void JustRespawned() override
     {
         Reset();                                            // Needed to reset the flags properly
 
@@ -484,7 +482,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAddsAI : public ScriptedAI
         }
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (!m_pInstance)
             return;
@@ -528,7 +526,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAddsAI : public ScriptedAI
 
     virtual void UpdateAddAI(const uint32 uiDiff) {}        // Used for Add-specific spells
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         if (m_bBothDead)                                    // This is the case while fighting Thaddius
             return;
@@ -595,7 +593,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAddsAI : public ScriptedAI
         DoMeleeAttackIfReady();
     }
 
-    void DamageTaken(Unit* pKiller, uint32& uiDamage)
+    void DamageTaken(Unit* pKiller, uint32& uiDamage) override
     {
         if (uiDamage < m_creature->GetHealth())
             return;
@@ -640,24 +638,24 @@ struct MANGOS_DLL_DECL boss_stalaggAI : public boss_thaddiusAddsAI
     }
     uint32 m_uiPowerSurgeTimer;
 
-    void Reset()
+    void Reset() override
     {
         boss_thaddiusAddsAI::Reset();
         m_uiPowerSurgeTimer = urand(10 * IN_MILLISECONDS, 15 * IN_MILLISECONDS);
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_STAL_AGGRO, m_creature);
         boss_thaddiusAddsAI::Aggro(pWho);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_STAL_DEATH, m_creature);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() == TYPEID_PLAYER)
             DoScriptText(SAY_STAL_SLAY, m_creature);
@@ -693,25 +691,25 @@ struct MANGOS_DLL_DECL boss_feugenAI : public boss_thaddiusAddsAI
     uint32 m_uiStaticFieldTimer;
     uint32 m_uiMagneticPullTimer;                           // TODO, missing
 
-    void Reset()
+    void Reset() override
     {
         boss_thaddiusAddsAI::Reset();
         m_uiStaticFieldTimer = urand(10 * IN_MILLISECONDS, 15 * IN_MILLISECONDS);
         m_uiMagneticPullTimer = 20 * IN_MILLISECONDS;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         DoScriptText(SAY_FEUG_AGGRO, m_creature);
         boss_thaddiusAddsAI::Aggro(pWho);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         DoScriptText(SAY_FEUG_DEATH, m_creature);
     }
 
-    void KilledUnit(Unit* pVictim)
+    void KilledUnit(Unit* pVictim) override
     {
         if (pVictim->GetTypeId() == TYPEID_PLAYER)
             DoScriptText(SAY_FEUG_SLAY, m_creature);

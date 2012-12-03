@@ -1,6 +1,4 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -66,7 +64,7 @@ struct MANGOS_DLL_DECL boss_razorgoreAI : public ScriptedAI
     uint32 m_uiFireballVolleyTimer;
     uint32 m_uiConflagrationTimer;
 
-    void Reset()
+    void Reset() override
     {
         m_uiIntroVisualTimer    = 5000;
 
@@ -76,14 +74,14 @@ struct MANGOS_DLL_DECL boss_razorgoreAI : public ScriptedAI
         m_uiFireballVolleyTimer = 7000;
     }
 
-    void Aggro(Unit* pWho)
+    void Aggro(Unit* pWho) override
     {
         // TODO Temporarily add this InstData setting, must be started with Phase 1 which is not yet implemented
         if (m_pInstance)
             m_pInstance->SetData(TYPE_RAZORGORE, IN_PROGRESS);
     }
 
-    void JustDied(Unit* pKiller)
+    void JustDied(Unit* pKiller) override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_RAZORGORE, DONE);
@@ -91,13 +89,13 @@ struct MANGOS_DLL_DECL boss_razorgoreAI : public ScriptedAI
         DoScriptText(SAY_DEATH, m_creature);
     }
 
-    void JustReachedHome()
+    void JustReachedHome() override
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_RAZORGORE, FAIL);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 uiDiff) override
     {
         // Set visual on OOC timer
         if (m_uiIntroVisualTimer)

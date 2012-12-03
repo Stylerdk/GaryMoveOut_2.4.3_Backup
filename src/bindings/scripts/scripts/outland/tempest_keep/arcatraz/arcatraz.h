@@ -1,20 +1,6 @@
-/*
- * Copyright (C) 2006-2012 ScriptDev2 <http://www.scriptdev2.com/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+/* Copyright (C) 2006 - 2012 ScriptDev2 <http://www.scriptdev2.com/>
+ * This program is free software licensed under GPL version 2
+ * Please see the included DOCS/LICENSE.TXT for more information */
 
 #ifndef DEF_ARCATRAZ_H
 #define DEF_ARCATRAZ_H
@@ -97,23 +83,23 @@ class MANGOS_DLL_DECL instance_arcatraz : public ScriptedInstance, private Dialo
     public:
         instance_arcatraz(Map* pMap);
 
-        void Initialize();
+        void Initialize() override;
 
-        void OnPlayerEnter(Player* pPlayer);
-        void OnObjectCreate(GameObject* pGo);
-        void OnCreatureCreate(Creature* pCreature);
-        void OnCreatureDeath(Creature* pCreature);
+        void OnPlayerEnter(Player* pPlayer) override;
+        void OnObjectCreate(GameObject* pGo) override;
+        void OnCreatureCreate(Creature* pCreature) override;
+        void OnCreatureDeath(Creature* pCreature) override;
 
-        void SetData(uint32 uiType, uint32 uiData);
-        uint32 GetData(uint32 uiType);
+        void SetData(uint32 uiType, uint32 uiData) override;
+        uint32 GetData(uint32 uiType) override;
 
-        const char* Save() { return m_strInstData.c_str(); }
-        void Load(const char* chrIn);
+        const char* Save() override { return m_strInstData.c_str(); }
+        void Load(const char* chrIn) override;
 
-        void Update(uint32 uiDiff);
+        void Update(uint32 uiDiff) override;
 
     private:
-        void JustDidDialogueStep(int32 iEntry);
+        void JustDidDialogueStep(int32 iEntry) override;
 
         uint32 m_auiEncounter[MAX_ENCOUNTER];
         std::string m_strInstData;
