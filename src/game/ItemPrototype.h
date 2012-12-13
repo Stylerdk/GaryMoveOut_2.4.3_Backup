@@ -601,6 +601,8 @@ struct ItemPrototype
 #pragma pack(pop)
 #endif
 
+typedef UNORDERED_MAP<uint32, uint32> ItemFakeEntryContainer; // transmogrification
+
 struct ItemLocale
 {
     std::vector<std::string> Name;

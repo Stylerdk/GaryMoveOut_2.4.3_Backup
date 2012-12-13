@@ -91,6 +91,20 @@ enum BuyBankSlotResult
     ERR_BANKSLOT_OK                 = 3
 };
 
+enum TransmogrificationResult //transmogrification
+{
+    ERR_FAKE_NEW_BAD_QUALITY,
+    ERR_FAKE_OLD_BAD_QUALITY,
+    ERR_FAKE_SAME_DISPLAY,
+    ERR_FAKE_SAME_DISPLAY_FAKE,
+    ERR_FAKE_CANT_USE,
+    ERR_FAKE_NOT_SAME_CLASS,
+    ERR_FAKE_BAD_CLASS,
+    ERR_FAKE_BAD_SUBLCASS,
+    ERR_FAKE_BAD_INVENTORYTYPE,
+    ERR_FAKE_OK
+};
+
 enum PlayerSpellState
 {
     PLAYERSPELL_UNCHANGED = 0,
@@ -1111,6 +1125,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         Item* GetItemByGuid(ObjectGuid guid) const;
         Item* GetItemByPos(uint16 pos) const;
         Item* GetItemByPos(uint8 bag, uint8 slot) const;
+        Bag*  GetBagByPos(uint8 slot) const; //transmogrification
         uint32 GetItemDisplayIdInSlot(uint8 bag, uint8 slot) const;
         Item* GetWeaponForAttack(WeaponAttackType attackType) const { return GetWeaponForAttack(attackType, false, false); }
         Item* GetWeaponForAttack(WeaponAttackType attackType, bool nonbroken, bool useable) const;
@@ -2230,6 +2245,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool HasTitle(uint32 bitIndex) const;
         bool HasTitle(CharTitlesEntry const* title) const { return HasTitle(title->bit_index); }
         void SetTitle(CharTitlesEntry const* title, bool lost = false);
+
+        uint32 SuitableForTransmogrification(Item* oldItem, Item* newItem); //transmogrification
 
         // Playerbot mod:
         // A Player can either have a playerbotMgr (to manage its bots), or have playerbotAI (if it is a bot), or

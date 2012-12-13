@@ -550,6 +550,7 @@ void Item::DeleteFromDB()
 {
     static SqlStatementID delItem ;
 
+    DeleteFakeFromDB(GetGUIDLow()); // transmogrification
     SqlStatement stmt = CharacterDatabase.CreateStatement(delItem, "DELETE FROM item_instance WHERE guid = ?");
     stmt.PExecute(GetGUIDLow());
 }
@@ -1116,6 +1117,43 @@ void Item::BuildUpdateData(UpdateDataMapType& update_players)
         BuildUpdateDataForPlayer(pl, update_players);
 
     ClearUpdateMask(false);
+}
+
+uint32 Item::GetFakeEntry() // transmogrification
+{
+    ItemFakeEntryContainer::const_iterator itr = objmgr._itemFakeEntryStore.find(GetGUIDLow());
+    if (itr == objmgr._itemFakeEntryStore.end()) return NULL;
+    return itr->second;
+}
+
+bool Item::DeleteFakeEntry() // transmogrification
+{
+    if (!GetFakeEntry())
+        return false;
+    GetOwner()->SetUInt32Value(PLAYER_VISIBLE_ITEM_1_0 + (GetSlot() * 2), GetEntry());
+    DeleteFakeFromDB(GetGUIDLow());
+    return true;
+}
+
+void Item::DeleteFakeFromDB(uint32 lowGUID) // custom
+{
+    objmgr._itemFakeEntryStore.erase(lowGUID);
+    CharacterDatabase.PExecute("DELETE FROM custom_transmogrification WHERE GUID = %u", lowGUID);
+}
+
+void Item::SetFakeEntry(uint32 entry) // custom
+{
+    GetOwner()->SetUInt32Value(PLAYER_VISIBLE_ITEM_1_0 + (GetSlot() * 2), entry);
+    objmgr._itemFakeEntryStore[GetGUIDLow()] = entry;
+    CharacterDatabase.PExecute("REPLACE INTO custom_transmogrification (GUID, FakeEntry) VALUES (%u, %u)", GetGUIDLow(), entry);
+}
+
+bool Item::HasGoodFakeQuality() // custom
+{
+    uint32 quality = GetProto()->Quality;
+    if (quality == ITEM_QUALITY_UNCOMMON || quality == ITEM_QUALITY_RARE || quality == ITEM_QUALITY_EPIC)
+        return true;
+    return false;
 }
 
 InventoryResult Item::CanBeMergedPartlyWith(ItemPrototype const* proto) const

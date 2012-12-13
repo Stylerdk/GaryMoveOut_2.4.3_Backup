@@ -10,3 +10,10 @@ CREATE TABLE `mail_external` (
   `item_count` bigint(20) unsigned NOT NULL default '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Transmogrification
+CREATE TABLE IF NOT EXISTS `custom_transmogrification` (
+  `GUID` int(10) unsigned NOT NULL DEFAULT '0',
+  `FakeEntry` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`GUID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='version 1.0';

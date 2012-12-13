@@ -362,6 +362,14 @@ class MANGOS_DLL_SPEC Item : public Object
         void AddToClientUpdateList() override;
         void RemoveFromClientUpdateList() override;
         void BuildUpdateData(UpdateDataMapType& update_players) override;
+         // transmogrification
+        uint32 GetFakeEntry();
+        bool DeleteFakeEntry();
+        static void DeleteFakeFromDB(uint32 lowGUID);
+        void SetFakeEntry(uint32 entry);
+        bool HasGoodFakeQuality();
+        Bag* ToBag() { if (IsBag()) return reinterpret_cast<Bag*>(this); else return NULL; }
+        const Bag* ToBag() const { if (IsBag()) return reinterpret_cast<const Bag*>(this); else return NULL; }
     private:
         uint8 m_slot;
         Bag* m_container;

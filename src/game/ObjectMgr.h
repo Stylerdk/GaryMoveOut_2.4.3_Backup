@@ -421,6 +421,8 @@ class ObjectMgr
         ObjectMgr();
         ~ObjectMgr();
 
+        ItemFakeEntryContainer _itemFakeEntryStore;
+
         typedef UNORDERED_MAP<uint32, Item*> ItemMap;
 
         typedef UNORDERED_MAP<uint32, Group*> GroupMap;
@@ -625,6 +627,7 @@ class ObjectMgr
         void LoadItemPrototypes();
         void LoadItemRequiredTarget();
         void LoadItemLocales();
+        void LoadTransmogrifications(); //transmogrification
         void LoadQuestLocales();
         void LoadGossipTextLocales();
         void LoadPageTextLocales();

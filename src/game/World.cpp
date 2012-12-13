@@ -1039,6 +1039,9 @@ void World::SetInitialWorldSettings()
     sLog.outString("Loading Item Texts...");
     sObjectMgr.LoadItemTexts();
 
+    sLog.outString("Loading Transmogrifications...");           //transmogrification
+    objmgr.LoadTransmogrifications();
+
     sLog.outString("Loading Creature Model Based Info Data...");
     sObjectMgr.LoadCreatureModelInfo();
 
